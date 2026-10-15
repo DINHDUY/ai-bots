@@ -1,0 +1,3 @@
+CREATE TABLE file_blobs (id TEXT PRIMARY KEY,bot_id TEXT NOT NULL REFERENCES bots(id) ON DELETE CASCADE,session_id TEXT NOT NULL,path TEXT NOT NULL,revision TEXT NOT NULL,size INTEGER NOT NULL,mime TEXT NOT NULL,created_at TEXT NOT NULL);
+CREATE TABLE uploads (id TEXT PRIMARY KEY,bot_id TEXT NOT NULL REFERENCES bots(id) ON DELETE CASCADE,user_id TEXT NOT NULL REFERENCES users(id),session_id TEXT NOT NULL,generation INTEGER NOT NULL,blob_id TEXT NOT NULL REFERENCES file_blobs(id),path TEXT NOT NULL,revision TEXT NOT NULL,created_at TEXT NOT NULL);
+CREATE INDEX blob_versions ON file_blobs(bot_id,session_id,path,revision);

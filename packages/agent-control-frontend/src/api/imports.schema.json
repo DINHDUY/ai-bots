@@ -1,0 +1,460 @@
+{
+  "$defs": {
+    "AgentOverrides": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
+        },
+        "purpose": {
+          "anyOf": [
+            {
+              "maxLength": 2000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Purpose"
+        },
+        "runtime": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RuntimeChoice"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "title": "AgentOverrides",
+      "type": "object"
+    },
+    "ImportCommand": {
+      "additionalProperties": false,
+      "properties": {
+        "workspace_name": {
+          "maxLength": 1000,
+          "title": "Workspace Name",
+          "type": "string"
+        },
+        "defaults": {
+          "$ref": "#/$defs/RuntimeChoice"
+        },
+        "files": {
+          "items": {
+            "$ref": "#/$defs/SourceFile"
+          },
+          "maxItems": 50,
+          "minItems": 1,
+          "title": "Files",
+          "type": "array"
+        },
+        "request_id": {
+          "maxLength": 128,
+          "minLength": 8,
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "preview_digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Preview Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workspace_name",
+        "files",
+        "request_id",
+        "preview_digest"
+      ],
+      "title": "ImportCommand",
+      "type": "object"
+    },
+    "ImportDraft": {
+      "additionalProperties": false,
+      "properties": {
+        "workspace_name": {
+          "maxLength": 1000,
+          "title": "Workspace Name",
+          "type": "string"
+        },
+        "defaults": {
+          "$ref": "#/$defs/RuntimeChoice"
+        },
+        "files": {
+          "items": {
+            "$ref": "#/$defs/SourceFile"
+          },
+          "maxItems": 50,
+          "minItems": 1,
+          "title": "Files",
+          "type": "array"
+        }
+      },
+      "required": [
+        "workspace_name",
+        "files"
+      ],
+      "title": "ImportDraft",
+      "type": "object"
+    },
+    "ImportIssue": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "title": "Field",
+          "type": "string"
+        },
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field",
+        "code",
+        "message"
+      ],
+      "title": "ImportIssue",
+      "type": "object"
+    },
+    "ImportPreview": {
+      "additionalProperties": false,
+      "properties": {
+        "workspace_name": {
+          "title": "Workspace Name",
+          "type": "string"
+        },
+        "files": {
+          "items": {
+            "$ref": "#/$defs/PreviewFile"
+          },
+          "title": "Files",
+          "type": "array"
+        },
+        "errors": {
+          "items": {
+            "$ref": "#/$defs/ImportIssue"
+          },
+          "title": "Errors",
+          "type": "array"
+        },
+        "valid": {
+          "default": false,
+          "title": "Valid",
+          "type": "boolean"
+        },
+        "parser_version": {
+          "default": "1",
+          "title": "Parser Version",
+          "type": "string"
+        },
+        "preview_digest": {
+          "default": "",
+          "title": "Preview Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workspace_name",
+        "files"
+      ],
+      "title": "ImportPreview",
+      "type": "object"
+    },
+    "ImportResult": {
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "title": "Request Id",
+          "type": "string"
+        },
+        "workspace_id": {
+          "title": "Workspace Id",
+          "type": "string"
+        },
+        "workspace_name": {
+          "title": "Workspace Name",
+          "type": "string"
+        },
+        "bots": {
+          "items": {
+            "$ref": "#/$defs/ImportedBot"
+          },
+          "title": "Bots",
+          "type": "array"
+        },
+        "computer_mode": {
+          "const": "shared",
+          "default": "shared",
+          "title": "Computer Mode",
+          "type": "string"
+        },
+        "computer_provider": {
+          "const": "docker",
+          "default": "docker",
+          "title": "Computer Provider",
+          "type": "string"
+        },
+        "collaboration_enabled": {
+          "const": true,
+          "default": true,
+          "title": "Collaboration Enabled",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "request_id",
+        "workspace_id",
+        "workspace_name",
+        "bots"
+      ],
+      "title": "ImportResult",
+      "type": "object"
+    },
+    "ImportTool": {
+      "additionalProperties": false,
+      "properties": {
+        "library_id": {
+          "maxLength": 128,
+          "title": "Library Id",
+          "type": "string"
+        },
+        "tool_id": {
+          "maxLength": 128,
+          "title": "Tool Id",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 40,
+          "title": "Version",
+          "type": "string"
+        },
+        "configuration": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 1,
+          "title": "Configuration",
+          "type": "object"
+        }
+      },
+      "required": [
+        "library_id",
+        "tool_id",
+        "version"
+      ],
+      "title": "ImportTool",
+      "type": "object"
+    },
+    "ImportedBot": {
+      "additionalProperties": false,
+      "properties": {
+        "file_id": {
+          "title": "File Id",
+          "type": "string"
+        },
+        "filename": {
+          "title": "Filename",
+          "type": "string"
+        },
+        "bot_id": {
+          "title": "Bot Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "source_hash": {
+          "title": "Source Hash",
+          "type": "string"
+        },
+        "body_hash": {
+          "title": "Body Hash",
+          "type": "string"
+        }
+      },
+      "required": [
+        "file_id",
+        "filename",
+        "bot_id",
+        "name",
+        "source_hash",
+        "body_hash"
+      ],
+      "title": "ImportedBot",
+      "type": "object"
+    },
+    "PreviewFile": {
+      "additionalProperties": false,
+      "properties": {
+        "file_id": {
+          "title": "File Id",
+          "type": "string"
+        },
+        "filename": {
+          "title": "Filename",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "purpose": {
+          "title": "Purpose",
+          "type": "string"
+        },
+        "instructions": {
+          "title": "Instructions",
+          "type": "string"
+        },
+        "runtime": {
+          "$ref": "#/$defs/RuntimeChoice"
+        },
+        "errors": {
+          "items": {
+            "$ref": "#/$defs/ImportIssue"
+          },
+          "title": "Errors",
+          "type": "array"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "file_id",
+        "filename",
+        "name",
+        "purpose",
+        "instructions",
+        "runtime"
+      ],
+      "title": "PreviewFile",
+      "type": "object"
+    },
+    "RuntimeChoice": {
+      "additionalProperties": false,
+      "properties": {
+        "framework": {
+          "default": "microsoft",
+          "maxLength": 40,
+          "title": "Framework",
+          "type": "string"
+        },
+        "credential_id": {
+          "default": "",
+          "maxLength": 128,
+          "title": "Credential Id",
+          "type": "string"
+        },
+        "model": {
+          "default": "",
+          "maxLength": 128,
+          "title": "Model",
+          "type": "string"
+        },
+        "tool_selection": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/ImportTool"
+              },
+              "maxItems": 64,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool Selection"
+        }
+      },
+      "title": "RuntimeChoice",
+      "type": "object"
+    },
+    "SourceFile": {
+      "additionalProperties": false,
+      "properties": {
+        "file_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "title": "File Id",
+          "type": "string"
+        },
+        "filename": {
+          "maxLength": 255,
+          "minLength": 1,
+          "title": "Filename",
+          "type": "string"
+        },
+        "content": {
+          "maxLength": 1048576,
+          "title": "Content",
+          "type": "string"
+        },
+        "overrides": {
+          "$ref": "#/$defs/AgentOverrides"
+        }
+      },
+      "required": [
+        "file_id",
+        "filename",
+        "content"
+      ],
+      "title": "SourceFile",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Root for generating all frontend request/response types.",
+  "properties": {
+    "draft": {
+      "$ref": "#/$defs/ImportDraft"
+    },
+    "command": {
+      "$ref": "#/$defs/ImportCommand"
+    },
+    "preview": {
+      "$ref": "#/$defs/ImportPreview"
+    },
+    "result": {
+      "$ref": "#/$defs/ImportResult"
+    }
+  },
+  "required": [
+    "draft",
+    "command",
+    "preview",
+    "result"
+  ],
+  "title": "ImportContracts",
+  "type": "object"
+}

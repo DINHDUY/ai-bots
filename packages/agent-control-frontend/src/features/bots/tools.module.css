@@ -1,0 +1,12 @@
+.picker { min-width: 0; display: grid; gap: 10px; }
+.picker h3 { margin: 0; }
+.picker small { font-size: 12px; font-weight: 400; color: var(--text-muted, #a5a7af); }
+.picker p { margin: 0; font-size: 12px; color: var(--text-muted, #a5a7af); }
+.bar { display: flex; flex-wrap: wrap; gap: 6px; }
+.bar input { flex: 1; min-width: 120px; }
+.picker details { border: 1px solid var(--border, #33363e); border-radius: 8px; padding: 10px; }
+.picker summary { cursor: pointer; font-size: 13px; }
+.tool { display: grid; gap: 8px; padding: 12px 0; }
+.tool + .tool { border-top: 1px solid var(--border, #33363e); }
+.picker .check { display: flex; align-items: center; gap: 8px; }
+.picker .check input { width: 16px; height: 16px; flex: 0 0 auto; }

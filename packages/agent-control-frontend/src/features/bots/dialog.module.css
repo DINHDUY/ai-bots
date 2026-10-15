@@ -1,0 +1,181 @@
+.dialog {
+  width: 100%;
+  background: var(--base);
+  display: grid;
+  gap: 17px;
+  min-width: 0;
+}
+.dialog > p {
+  color: var(--muted);
+  font-size: 12px;
+}
+.dialog ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.dialog li {
+  border-bottom: 1px solid var(--line);
+  padding: 12px 0;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.dialog li button {
+  margin: 8px 0 0 6px;
+}
+.dialog h3 {
+  font-size: 13px;
+}
+.settingsDialog:global(.dialog-shell) {
+  width: min(1040px, calc(100vw - 32px));
+  overflow: hidden;
+}
+.settingsDialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+.settingsDialog > :global(.dialog-heading) {
+  flex-shrink: 0;
+  position: static;
+}
+.settingsDialog > :global(.dialog-content) {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.settingsForm {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  gap: 0;
+  overflow: hidden;
+}
+.settingsBody {
+  container: bot-settings / inline-size;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  padding: 21px 23px;
+}
+.settingsColumns {
+  display: grid;
+  align-items: start;
+  gap: 28px;
+}
+.settingsColumn {
+  display: grid;
+  align-content: start;
+  gap: 17px;
+  min-width: 0;
+}
+.settingsColumn > p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.settingsFooter {
+  flex-shrink: 0;
+  padding: 15px 23px;
+  background: var(--base);
+  border-top: 1px solid var(--line-strong);
+  box-shadow: 0 -8px 24px #00000014;
+  z-index: 1;
+}
+.settingsFooter .actions {
+  padding-top: 0;
+}
+.settingsFooter > p {
+  font-size: 12px;
+  margin-bottom: 10px;
+  max-height: 80px;
+  overflow: auto;
+  overflow-wrap: anywhere;
+}
+.approvalRules {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 12px;
+}
+.approvalRules summary {
+  cursor: pointer;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.approvalRules > summary {
+  font-size: 13px;
+}
+.approvalRules li {
+  padding: 0;
+}
+.approvalRules li:last-child {
+  border-bottom: 0;
+}
+.approvalRule > summary {
+  padding-block: 12px;
+}
+.ruleBody {
+  display: grid;
+  gap: 10px;
+  padding-top: 12px;
+  min-width: 0;
+}
+.ruleBody p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+.approvalRule .ruleBody {
+  padding: 0 0 12px;
+}
+.approvalRules .ruleBody button {
+  justify-self: start;
+  margin: 0;
+}
+@container bot-settings (min-width: 720px) {
+  .settingsColumns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.computerSettings {
+  min-width: 0;
+  margin: 0;
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.computerSettings legend {
+  padding: 0 6px;
+  font-size: 13px;
+}
+.computerSettings p {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.computerActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.actions {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 7px;
+  flex-wrap: wrap;
+}
+.modalActions {
+  position: sticky;
+  bottom: -21px;
+  padding: 15px 0;
+  background: var(--base);
+  border-top: 1px solid var(--line);
+}

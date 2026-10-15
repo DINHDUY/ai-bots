@@ -1,0 +1,5 @@
+CREATE TABLE recordings (id TEXT PRIMARY KEY, bot_id TEXT NOT NULL REFERENCES bots(id) ON DELETE CASCADE, user_id TEXT NOT NULL, lease_id TEXT NOT NULL REFERENCES control_leases(id), state TEXT NOT NULL, private INTEGER NOT NULL DEFAULT 0, steps TEXT NOT NULL, created_at TEXT NOT NULL);
+CREATE UNIQUE INDEX one_recording ON recordings(lease_id) WHERE state!='stopped';
+CREATE TABLE skill_versions (id TEXT PRIMARY KEY, bot_id TEXT NOT NULL REFERENCES bots(id) ON DELETE CASCADE, name TEXT NOT NULL, description TEXT NOT NULL, parameters TEXT NOT NULL, steps TEXT NOT NULL, created_at TEXT NOT NULL);
+CREATE TABLE connections (id TEXT PRIMARY KEY, bot_id TEXT NOT NULL REFERENCES bots(id) ON DELETE CASCADE, owner_id TEXT NOT NULL, provider TEXT NOT NULL, repository TEXT NOT NULL, secret TEXT, version INTEGER NOT NULL, status TEXT NOT NULL, checked_at TEXT);
+CREATE TABLE installations (bot_id TEXT REFERENCES bots(id) ON DELETE CASCADE, kind TEXT NOT NULL, resource_id TEXT NOT NULL, PRIMARY KEY(bot_id,kind,resource_id));

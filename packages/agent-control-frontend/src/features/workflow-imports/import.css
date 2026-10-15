@@ -1,0 +1,16 @@
+.workflow-import-dialog { width: min(960px, calc(100vw - 32px)); }
+.workflow-import-dialog fieldset { min-width: 0; border: 0; padding: 0; }
+.workflow-import-dialog label { display: flex; flex-direction: column; gap: 6px; }
+.workflow-import-dialog input, .workflow-import-dialog select, .workflow-import-dialog textarea { width: 100%; min-width: 0; }
+.workflow-import-dialog .import-check { flex-direction: row; align-items: center; margin: 12px 0; }
+.workflow-import-dialog .import-check input { width: auto; }
+.import-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin: 12px 0; }
+.import-drop { border: 1px dashed var(--border); padding: 20px; margin: 20px 0; border-radius: 8px; }
+.import-file, .import-summary, .import-recovery { padding: 16px; border: 1px solid var(--border); border-radius: 8px; margin: 16px 0; }
+.import-file-heading, .import-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+.import-file-heading h3 { overflow-wrap: anywhere; min-width: 0; }
+.import-replace { max-width: 100%; font-size: 0.85rem; }
+.import-body { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 320px; overflow: auto; padding: 12px; }
+.workflow-import-dialog details { margin: 12px 0; }
+.workflow-import-dialog summary { cursor: pointer; }
+@media (max-width: 560px) { .workflow-import-dialog { width: calc(100vw - 16px); } .import-grid { grid-template-columns: 1fr; } .import-actions { align-items: stretch; flex-direction: column; } }

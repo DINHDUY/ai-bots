@@ -1,0 +1,25 @@
+# Qualified subset of Microsoft UFO a795552 (Python 3.11, Windows).
+# Retrieval, Galaxy, Office COM, external grounding and arbitrary MCP are disabled.
+pydantic==2.11.7
+websockets==15.0.1
+cryptography==46.0.2
+httpx==0.28.1
+Pillow==11.3.0
+pywin32==311
+pywinauto==0.6.9
+comtypes==1.4.15
+uiautomation==2.0.18
+pyautogui==0.9.54
+psutil==7.1.0
+PyYAML==6.0.3
+rich==14.1.0
+colorama==0.4.6
+art==6.1
+requests==2.32.5
+openai==1.66.2
+anthropic==0.64.0
+gradio_client==1.12.1
+fastmcp==2.11.3
+fastapi==0.116.1
+mcp==1.13.1
+flask==3.0.0

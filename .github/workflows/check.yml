@@ -1,0 +1,57 @@
+name: Quality gates
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  unit:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ['3.11', '3.13']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.11.14'
+          python-version: ${{ matrix.python }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+          cache-dependency-path: packages/agent-control-frontend/package-lock.json
+      - run: uv sync --locked --python ${{ matrix.python }}
+      - run: uv run --no-sync python scripts/verify_core.py
+      - run: uv run --no-sync python -I -c "import agentbot_control.app, agentbot_computer_agent.host"
+      - run: uv run --no-sync ruff check packages deploy docs/usecases scripts tests conftest.py
+      - run: uv run --no-sync python scripts/check_python_size.py
+      - run: uv run --no-sync pyright
+      - run: uv run --no-sync pyright --project pyrightconfig.foundation.json
+      - run: uv run --no-sync pytest -m 'not docker and not windows_desktop'
+      - run: uv run --no-sync python scripts/docs_check.py
+      - run: npm ci --prefix packages/agent-control-frontend
+      - run: uv run --no-sync python scripts/check_wire.py
+      - run: npm run lint --prefix packages/agent-control-frontend
+      - run: npm run build --prefix packages/agent-control-frontend
+      - run: npm test --prefix packages/agent-control-frontend
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.11.14'
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - run: uv sync --locked
+      - run: docker build -f docker/sandbox/Dockerfile -t agentbot-sandbox .
+      - run: uv run --no-sync pytest -m docker --require-docker
+      - run: npm ci --prefix packages/agent-control-frontend
+      - run: npx --prefix packages/agent-control-frontend playwright install --with-deps chromium
+      - run: npm run test:e2e --prefix packages/agent-control-frontend

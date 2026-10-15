@@ -1,0 +1,16 @@
+[project]
+name = "agentbot-product-tools"
+version = "0.1.0"
+description = "Maintained Agent Control workflow and collaboration integrations"
+requires-python = ">=3.11"
+dependencies = ["agentbot"]
+
+[project.optional-dependencies]
+ufo = ["agentbot-windows-companion"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

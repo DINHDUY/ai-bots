@@ -1,0 +1,17 @@
+{
+  "pythonVersion": "3.11",
+  "typeCheckingMode": "strict",
+  "reportMissingTypeStubs": false,
+  "extraPaths": [
+    "packages/agent-control-backend/src",
+    "packages/agentbot/src"
+  ],
+  "include": [
+    "packages/agent-control-backend/src/agentbot_control/notifications.py",
+    "packages/agent-control-backend/src/agentbot_control/supervision.py",
+    "packages/agent-control-backend/src/agentbot_control/vault.py",
+    "packages/agent-control-backend/src/agentbot_control/wire.py",
+    "packages/agent-control-backend/src/agentbot_control/repositories/auth_limits.py",
+    "packages/agent-control-backend/src/agentbot_control/repositories/vault.py"
+  ]
+}

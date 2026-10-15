@@ -1,0 +1,82 @@
+[
+  {
+    "name": "Framework adapters",
+    "status": "Implemented; provider limits apply",
+    "source": "packages/agentbot/src/agentbot/kernel.py"
+  },
+  {
+    "name": "Durable runs and replay",
+    "status": "Implemented; provider limits apply",
+    "source": "packages/agent-control-backend/src/agentbot_control/runtime/__init__.py"
+  },
+  {
+    "name": "Approvals and Autopilot",
+    "status": "Implemented; provider limits apply",
+    "source": "packages/agent-control-backend/src/agentbot_control/approvals/__init__.py"
+  },
+  {
+    "name": "Computer observation and control",
+    "status": "Implemented; provider limits apply",
+    "source": "packages/agent-control-backend/src/agentbot_control/computer.py"
+  },
+  {
+    "name": "Files and attachments",
+    "status": "Implemented; provider limits apply",
+    "source": "packages/agent-control-backend/src/agentbot_control/files.py"
+  },
+  {
+    "name": "PTY terminals",
+    "status": "Implemented; provider limits apply",
+    "source": "packages/agent-control-backend/src/agentbot_control/terminals.py"
+  },
+  {
+    "name": "Lifecycle",
+    "status": "Implemented; provider limits apply",
+    "source": "packages/agent-control-backend/src/agentbot_control/lifecycle.py"
+  },
+  {
+    "name": "Workspaces and sharing",
+    "status": "Implemented; provider limits apply",
+    "source": "packages/agent-control-backend/src/agentbot_control/workspaces/__init__.py"
+  },
+  {
+    "name": "Groups and channels",
+    "status": "Implemented; provider limits apply",
+    "source": "packages/agent-control-backend/src/agentbot_control/channels/__init__.py"
+  },
+  {
+    "name": "Markdown workflow import",
+    "status": "Implemented; Microsoft/Anthropic, YAML frontmatter",
+    "source": "packages/agent-control-backend/src/agentbot_control/workflow_imports/service.py"
+  },
+  {
+    "name": "Workspace deletion",
+    "status": "Implemented; owner-only, idle workspaces, durable cleanup",
+    "source": "packages/agent-control-backend/src/agentbot_control/workspace_deletions/service.py"
+  },
+  {
+    "name": "Tools and skills",
+    "status": "Implemented; provider limits apply",
+    "source": "packages/agent-control-backend/src/agentbot_control/toolkit/__init__.py"
+  },
+  {
+    "name": "Routines",
+    "status": "Implemented; provider limits apply",
+    "source": "packages/agent-control-backend/src/agentbot_control/routines/__init__.py"
+  },
+  {
+    "name": "Azure computers",
+    "status": "Implemented; provider limits apply",
+    "source": "packages/agent-control-backend/src/agentbot_control/cloud/__init__.py"
+  },
+  {
+    "name": "Windows companion",
+    "status": "Implemented; provider limits apply",
+    "source": "packages/agentbot-windows-companion/src/agentbot_windows/service.py"
+  },
+  {
+    "name": "Capture retention",
+    "status": "Implemented; provider limits apply",
+    "source": "packages/agent-control-backend/src/agentbot_control/capture_retention/__init__.py"
+  }
+]

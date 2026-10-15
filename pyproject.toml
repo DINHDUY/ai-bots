@@ -1,0 +1,93 @@
+[project]
+name = "agentbot-workspace"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = ["agent-control-backend[dev]", "agentbot-computer-agent"]
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["packages/agentbot-product-tools", "packages/agentbot", "packages/agent-control-backend", "packages/agentbot-computer-agent", "packages/agentbot-windows-companion"]
+
+[tool.uv.sources]
+agentbot = { workspace = true }
+agentbot-product-tools = { workspace = true }
+agent-control-backend = { workspace = true }
+agentbot-computer-agent = { workspace = true }
+agentbot-windows-companion = { workspace = true }
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "packages/agentbot/tests", "packages/agent-control-backend/tests", "packages/agentbot-windows-companion/tests", "packages/agentbot-computer-agent/tests", "docs/usecases/tests"]
+pythonpath = [
+    ".",
+    "packages/agentbot/src",
+    "packages/agentbot-product-tools/src",
+    "packages/agentbot/tests",
+    "packages/agent-control-backend/src",
+    "packages/agent-control-backend/tests",
+    "packages/agentbot-windows-companion/src",
+    "packages/agentbot-computer-agent/src",
+]
+asyncio_mode = "auto"
+markers = [
+    "docker: requires Docker and the agentbot-sandbox image",
+    "windows_desktop: requires an explicitly enabled interactive Windows test desktop",
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+extend-exclude = ["data", "docs/mockups", "**/build"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+# E501: existing modules are not wrapped at 100 columns; formatting the tree is out of scope.
+# B904/E701/B012/B023/E402: pre-existing patterns. New code should still avoid them;
+# they stay ignored until a dedicated cleanup so the gate is green on this baseline.
+ignore = ["E501", "B904", "E701", "B012", "B023", "E402"]
+
+[tool.pyright]
+pythonVersion = "3.11"
+typeCheckingMode = "basic"
+# Baseline diagnostics are warnings so `pyright` exits 0. The counts are tracked
+# in docs/adr/0015-local-quality-gates.md and should only go down.
+reportAttributeAccessIssue = "warning"
+reportArgumentType = "warning"
+reportMissingImports = "warning"
+reportOptionalMemberAccess = "warning"
+reportCallIssue = "warning"
+reportOptionalSubscript = "warning"
+reportIndexIssue = "warning"
+reportGeneralTypeIssues = "warning"
+reportOperatorIssue = "warning"
+reportOptionalIterable = "warning"
+reportOptionalOperand = "warning"
+include = [
+    "packages/agentbot/src",
+    "packages/agentbot-product-tools/src",
+    "packages/agentbot-computer-agent/src",
+    "packages/agent-control-backend/src",
+    "packages/agentbot-windows-companion/src",
+]
+exclude = ["**/build", "data", ".venv"]
+
+[[tool.pyright.executionEnvironments]]
+root = "packages/agentbot/src"
+extraPaths = ["packages/agentbot-product-tools/src", "packages/agentbot/src"]
+reportMissingTypeStubs = false
+
+[[tool.pyright.executionEnvironments]]
+root = "packages/agentbot-computer-agent/src"
+extraPaths = ["packages/agentbot-product-tools/src", "packages/agentbot-computer-agent/src"]
+reportMissingTypeStubs = false
+
+# Backend and the Windows companion stay on basic checking. The warning list
+# is recorded in docs/adr/0015-local-quality-gates.md.
+[[tool.pyright.executionEnvironments]]
+root = "packages/agent-control-backend/src"
+extraPaths = ["packages/agentbot-product-tools/src", "packages/agent-control-backend/src", "packages/agentbot/src", "packages/agentbot-windows-companion/src"]
+
+[[tool.pyright.executionEnvironments]]
+root = "packages/agentbot-windows-companion/src"
+extraPaths = ["packages/agentbot-product-tools/src", "packages/agentbot-windows-companion/src"]

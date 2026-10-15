@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8" /><title>Orders preview fixture</title
+  ><style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      color: #243347;
+      background: #f6f8fb;
+      font:
+        15px/1.6 "Segoe UI",
+        sans-serif;
+    }
+    header {
+      background: #fff;
+      padding: 20px 34px;
+      border-bottom: 1px solid #e0e6ef;
+      color: #607286;
+    }
+    main {
+      padding: 44px;
+    }
+    small {
+      color: #677b90;
+    }
+    h1 {
+      font-size: 34px;
+      letter-spacing: -1px;
+      margin: 12px 0 0;
+    }
+    p {
+      margin: 5px 0;
+      color: #64768a;
+    }
+    .cards {
+      display: flex;
+      gap: 18px;
+      margin: 34px 0;
+    }
+    .cards > div {
+      background: #fff;
+      border: 1px solid #e1e7ef;
+      border-radius: 9px;
+      flex: 1;
+      padding: 20px;
+    }
+    .cards strong {
+      display: block;
+      font-size: 32px;
+      line-height: 1.8;
+    }
+    .table {
+      background: white;
+      border: 1px solid #e1e7ef;
+      border-radius: 9px;
+      overflow: hidden;
+    }
+    .table h2 {
+      font-size: 16px;
+      margin: 0;
+      padding: 18px 23px;
+      border-bottom: 1px solid #e1e7ef;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    td,
+    th {
+      text-align: left;
+      padding: 16px 23px;
+      border-bottom: 1px solid #e9edf3;
+    }
+    th {
+      font-size: 12px;
+      font-weight: 500;
+      background: #fafbfd;
+      color: #627489;
+    }
+    .paid {
+      color: #177151;
+      background: #e6f4ed;
+      padding: 4px 9px;
+      border-radius: 5px;
+    }
+    .note {
+      font-size: 12px;
+      margin-top: 22px;
+    }
+  </style>
+  <header>ORDERS / DAILY PIPELINE</header>
+  <main>
+    <small>Workspace / Orders / October 6, 2026</small>
+    <h1>Daily orders</h1>
+    <p>Curated orders · October 6, 2026 · USD</p>
+    <div class="cards">
+      <div><small>Source rows</small><strong>3</strong></div>
+      <div><small>Paid orders</small><strong>2</strong></div>
+      <div><small>Total order value</small><strong>$15.75</strong></div>
+    </div>
+    <div class="table">
+      <h2>Curated orders</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Amount</th>
+            <th>Currency</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1001</td>
+            <td>c-9</td>
+            <td>12.50</td>
+            <td>USD</td>
+            <td><span class="paid">Paid</span></td>
+          </tr>
+          <tr>
+            <td>1003</td>
+            <td>c-9</td>
+            <td>3.25</td>
+            <td>USD</td>
+            <td><span class="paid">Paid</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Validation passed. One cancelled order excluded.</p>
+  </main>
+</html>

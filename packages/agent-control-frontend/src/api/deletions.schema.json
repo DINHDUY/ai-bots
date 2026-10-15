@@ -1,0 +1,304 @@
+{
+  "$defs": {
+    "Blocker": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "url"
+      ],
+      "title": "Blocker",
+      "type": "object"
+    },
+    "BotSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ],
+      "title": "BotSummary",
+      "type": "object"
+    },
+    "CleanupStatus": {
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "enum": [
+            "pending",
+            "needs_attention",
+            "complete"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "remaining": {
+          "title": "Remaining",
+          "type": "integer"
+        },
+        "bytes_remaining": {
+          "title": "Bytes Remaining",
+          "type": "integer"
+        },
+        "errors": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Errors",
+          "type": "array"
+        }
+      },
+      "required": [
+        "state",
+        "remaining",
+        "bytes_remaining",
+        "errors"
+      ],
+      "title": "CleanupStatus",
+      "type": "object"
+    },
+    "DeleteCommand": {
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "maxLength": 128,
+          "minLength": 8,
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "preview_digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Preview Digest",
+          "type": "string"
+        },
+        "confirm_name": {
+          "maxLength": 100,
+          "title": "Confirm Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "preview_digest",
+        "confirm_name"
+      ],
+      "title": "DeleteCommand",
+      "type": "object"
+    },
+    "DeletionHistory": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "$ref": "#/$defs/DeletionResult"
+          },
+          "title": "Items",
+          "type": "array"
+        },
+        "next_cursor": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Next Cursor"
+        }
+      },
+      "required": [
+        "items"
+      ],
+      "title": "DeletionHistory",
+      "type": "object"
+    },
+    "DeletionPreview": {
+      "additionalProperties": false,
+      "properties": {
+        "workspace_id": {
+          "title": "Workspace Id",
+          "type": "string"
+        },
+        "workspace_name": {
+          "title": "Workspace Name",
+          "type": "string"
+        },
+        "bots": {
+          "items": {
+            "$ref": "#/$defs/BotSummary"
+          },
+          "title": "Bots",
+          "type": "array"
+        },
+        "counts": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Counts",
+          "type": "object"
+        },
+        "blockers": {
+          "items": {
+            "$ref": "#/$defs/Blocker"
+          },
+          "title": "Blockers",
+          "type": "array"
+        },
+        "retained": {
+          "items": {
+            "$ref": "#/$defs/RetainedComputer"
+          },
+          "title": "Retained",
+          "type": "array"
+        },
+        "preview_digest": {
+          "title": "Preview Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "workspace_id",
+        "workspace_name",
+        "bots",
+        "counts",
+        "blockers",
+        "retained",
+        "preview_digest"
+      ],
+      "title": "DeletionPreview",
+      "type": "object"
+    },
+    "DeletionResult": {
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "title": "Request Id",
+          "type": "string"
+        },
+        "workspace_id": {
+          "title": "Workspace Id",
+          "type": "string"
+        },
+        "workspace_name": {
+          "title": "Workspace Name",
+          "type": "string"
+        },
+        "deleted_at": {
+          "title": "Deleted At",
+          "type": "string"
+        },
+        "counts": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Counts",
+          "type": "object"
+        },
+        "retained": {
+          "items": {
+            "$ref": "#/$defs/RetainedComputer"
+          },
+          "title": "Retained",
+          "type": "array"
+        },
+        "cleanup": {
+          "$ref": "#/$defs/CleanupStatus"
+        }
+      },
+      "required": [
+        "request_id",
+        "workspace_id",
+        "workspace_name",
+        "deleted_at",
+        "counts",
+        "retained",
+        "cleanup"
+      ],
+      "title": "DeletionResult",
+      "type": "object"
+    },
+    "RetainedComputer": {
+      "additionalProperties": false,
+      "properties": {
+        "binding_id": {
+          "title": "Binding Id",
+          "type": "string"
+        },
+        "provider": {
+          "title": "Provider",
+          "type": "string"
+        },
+        "resource_id": {
+          "title": "Resource Id",
+          "type": "string"
+        },
+        "cleanup_state": {
+          "title": "Cleanup State",
+          "type": "string"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "binding_id",
+        "provider",
+        "resource_id",
+        "cleanup_state",
+        "url"
+      ],
+      "title": "RetainedComputer",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "command": {
+      "$ref": "#/$defs/DeleteCommand"
+    },
+    "preview": {
+      "$ref": "#/$defs/DeletionPreview"
+    },
+    "result": {
+      "$ref": "#/$defs/DeletionResult"
+    },
+    "history": {
+      "$ref": "#/$defs/DeletionHistory"
+    }
+  },
+  "required": [
+    "command",
+    "preview",
+    "result",
+    "history"
+  ],
+  "title": "DeletionContracts",
+  "type": "object"
+}

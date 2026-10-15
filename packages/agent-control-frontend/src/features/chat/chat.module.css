@@ -1,0 +1,378 @@
+.threadWrapper {
+  position: relative;
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.thread {
+  overflow: auto;
+  min-height: 0;
+  flex: 1;
+  padding: 23px 30px;
+  overscroll-behavior: contain;
+}
+.separator {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 11px;
+  color: var(--quiet);
+  margin: 0 0 25px;
+}
+.separator::before,
+.separator::after {
+  content: "";
+  height: 1px;
+  background: var(--line);
+  flex: 1;
+}
+.message {
+  display: flex;
+  gap: 12px;
+  margin: 23px 0;
+  min-width: 0;
+}
+.message > :global(.avatar) {
+  width: 29px;
+  height: 29px;
+  border-radius: 8px;
+  margin-top: 2px;
+}
+.messageBody {
+  flex: 1;
+  min-width: 0;
+}
+.meta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 11px;
+}
+.meta strong {
+  font-weight: 550;
+}
+.meta time {
+  color: var(--quiet);
+  font-size: 10px;
+}
+.messageText {
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+.messageText p + p {
+  margin-top: 12px;
+}
+.messageText ul,
+.messageText ol {
+  padding-left: 22px;
+}
+.messageText pre {
+  background: var(--base);
+  border: 1px solid var(--line);
+  padding: 13px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+.messageText code {
+  font-size: 0.92em;
+}
+.messageText table {
+  display: block;
+  max-width: 100%;
+  overflow: auto;
+  border-collapse: collapse;
+}
+.messageText th,
+.messageText td {
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+}
+.user {
+  max-width: 84%;
+  margin-left: auto;
+}
+.user .meta {
+  justify-content: flex-end;
+}
+.user .messageText {
+  padding: 14px 18px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px 14px 3px 14px;
+}
+.system .messageText {
+  color: var(--muted);
+}
+.error .messageText {
+  color: var(--danger);
+}
+.thought {
+  margin: 15px 0 15px 41px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.thought summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--thinking);
+}
+.thought p {
+  margin-top: 9px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.approvalWrap {
+  margin: 19px 0 22px 41px;
+}
+.approval {
+  border: 1px solid color-mix(in srgb, var(--warn) 30%, transparent);
+  border-radius: 12px;
+  background: linear-gradient(
+    115deg,
+    color-mix(in srgb, var(--warn) 5%, var(--bg)),
+    var(--base)
+  );
+  min-width: 0;
+  overflow: hidden;
+}
+.approvalContent {
+  padding: 16px;
+}
+.approval > details {
+  margin: 0 16px 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--muted);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.approval > details summary {
+  cursor: pointer;
+}
+.approval > details p {
+  line-height: 1.7;
+}
+.approval > details select {
+  margin: 0 8px;
+}
+.approval > .approvalHint {
+  padding: 0 16px;
+}
+.approvalTitle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--warn);
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+.approvalTitle :global(.badge) {
+  color: var(--warn);
+  font-size: 10px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+.approvalDetail {
+  font: 12px/1.8 var(--mono);
+  margin: 13px 0 10px;
+  padding: 12px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  max-height: 230px;
+  overflow: auto;
+}
+.approvalHint,
+.decision {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.decision span {
+  color: var(--quiet);
+}
+.approvalActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid color-mix(in srgb, var(--warn) 12%, transparent);
+  padding: 11px 14px;
+  background: var(--overlay);
+}
+.approvalActions button {
+  font-size: 11px;
+}
+.always {
+  margin-right: auto;
+  font-size: 11px;
+  color: var(--muted);
+}
+.always summary {
+  cursor: pointer;
+  padding: 7px 0;
+}
+.always[open] {
+  flex-basis: 100%;
+}
+.always p {
+  max-width: 500px;
+  line-height: 1.8;
+}
+.always button {
+  margin-top: 10px;
+}
+.composerWrap {
+  padding: 13px 28px 17px;
+  flex-shrink: 0;
+}
+.composer {
+  background: var(--panel);
+  border: 1px solid var(--line-strong);
+  border-radius: 13px;
+  padding: 13px 13px 10px;
+  box-shadow: 0 5px 25px #0001;
+}
+.pauseNotice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: var(--raised);
+  color: var(--muted);
+  font-size: 12px;
+}
+.pauseNotice p {
+  flex: 1 1 220px;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.pauseNotice strong {
+  color: var(--ink);
+}
+.pauseNotice button {
+  flex-shrink: 0;
+}
+.composer textarea {
+  border: 0;
+  background: none;
+  padding: 0;
+  min-height: 44px;
+  max-height: 170px;
+  resize: vertical;
+  font-size: 13px;
+  line-height: 1.65;
+}
+.composerToolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin-top: 8px;
+}
+.composerToolbar button {
+  font-size: 11px;
+}
+.composerToolbar :global(.icon) {
+  width: 15px;
+  height: 15px;
+}
+.composerToolbar input[type="file"] {
+  display: none;
+}
+.uploadFeedback {
+  order: 1;
+  flex-basis: 100%;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.uploadFeedback p {
+  margin: 0;
+  color: var(--danger);
+  overflow-wrap: anywhere;
+}
+.composerCaption {
+  margin-top: 9px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  color: var(--quiet);
+  font-size: 10px;
+}
+.composerCaption > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.composerCaption i {
+  color: var(--ok);
+}
+.composerCaption [data-connected="false"] i {
+  color: var(--warn);
+}
+.newMessages {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--raised);
+  box-shadow: var(--shadow);
+  color: var(--accent);
+}
+@media (max-width: 1279px) {
+  .thread {
+    padding-inline: 20px;
+  }
+  .composerWrap {
+    padding-inline: 20px;
+  }
+  .composerCaption > span:last-child {
+    display: none;
+  }
+  .approvalWrap {
+    margin-left: 0;
+  }
+}
+@media (max-width: 767px) {
+  .thread {
+    padding: 15px;
+  }
+  .user {
+    max-width: 94%;
+  }
+  .composerWrap {
+    padding: 10px 12px;
+  }
+  .messageText {
+    font-size: 14px;
+  }
+  .composer textarea {
+    font-size: 16px;
+  }
+  .approvalActions button {
+    min-height: 44px;
+  }
+  .composerCaption {
+    display: none;
+  }
+}

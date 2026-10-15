@@ -1,0 +1,11 @@
+.workspace-deletion { margin-top: 1.5rem; }
+.workspace-deletion > summary { cursor: pointer; font-size: 18px; font-weight: 600; }
+.workspace-deletion[open] > summary { margin-bottom: 1rem; }
+.workspace-deletion article { padding-block: 1rem; border-bottom: 1px solid var(--border); }
+.workspace-deletion details { margin-top: 1rem; }
+.workspace-deletion p, .workspace-deletion article { overflow-wrap: anywhere; }
+.deletion-counts { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: .5rem; }
+.deletion-counts div { display: flex; gap: .75rem; justify-content: space-between; }
+.deletion-counts dt { text-transform: capitalize; }
+.deletion-counts dd { margin: 0; }
+.deletion-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1rem; }

@@ -1,0 +1,3 @@
+CREATE TABLE computer_control (session_id TEXT PRIMARY KEY REFERENCES computer_sessions(id),paused INTEGER NOT NULL DEFAULT 0,fence INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE control_leases (id TEXT PRIMARY KEY,bot_id TEXT NOT NULL REFERENCES bots(id),session_id TEXT NOT NULL REFERENCES computer_sessions(id),generation INTEGER NOT NULL,user_id TEXT NOT NULL,login_digest TEXT NOT NULL,client_id TEXT NOT NULL,surface TEXT NOT NULL,surface_id TEXT NOT NULL,viewport_revision TEXT NOT NULL,fence INTEGER NOT NULL,expires_at TEXT NOT NULL,status TEXT NOT NULL,last_sequence INTEGER NOT NULL DEFAULT 0,held TEXT NOT NULL DEFAULT '{}');
+CREATE UNIQUE INDEX single_control_lease ON control_leases(session_id) WHERE status IN ('active','releasing');

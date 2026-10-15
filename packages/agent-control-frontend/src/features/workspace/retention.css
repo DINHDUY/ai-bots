@@ -1,0 +1,62 @@
+.retention-settings {
+  position: relative;
+  min-width: 0;
+}
+.retention-limits {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 24px;
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+.retention-limits > div {
+  min-width: 0;
+}
+.retention-limits label {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.retention-limits .retention-toggle {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 20px;
+}
+.retention-limits .retention-toggle input[type="checkbox"] {
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  margin: 2px 0 0;
+  padding: 0;
+  accent-color: var(--accent);
+}
+.retention-toggle > span {
+  min-width: 0;
+  flex: 1;
+}
+.retention-size {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 90px;
+  gap: 12px;
+}
+.retention-actions {
+  display: flex;
+  gap: 8px;
+  position: sticky;
+  bottom: 0;
+  padding: 12px 0;
+  background: var(--bg-panel, #111316);
+  z-index: 2;
+}
+.capture-unavailable {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  color: var(--text-muted, #aab0ba);
+}

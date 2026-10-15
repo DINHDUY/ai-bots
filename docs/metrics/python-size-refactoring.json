@@ -1,0 +1,2343 @@
+{
+  "baseline_revision": "839b6bbfd72608a7011176a9e45668ba9f25e07e",
+  "scope": "Maintained Python files; counts exclude blanks, comments and AST docstrings.",
+  "python_content_sha256": "d4ede6fc00b397adb65d6df8a0887ba898c91dda3b134a0965e39539e7514d6e",
+  "baseline_summary": {
+    "files": 185,
+    "over_500": 18,
+    "at_450_to_500": 3,
+    "maximum_active": 1860
+  },
+  "current_summary": {
+    "files": 272,
+    "at_or_above_450": 0,
+    "maximum_active": 432
+  },
+  "test_collection": {
+    "baseline": 436,
+    "final": 459,
+    "preserved": 436,
+    "added": 23,
+    "missing": 0,
+    "duplicate": 0,
+    "skipped": 0,
+    "moved_node_ids": {
+      "packages/agent-control-backend/tests/test_autopilot.py::test_mode_survives_restart_and_computer_lifecycle": "packages/agent-control-backend/tests/test_autopilot_lifecycle.py::test_mode_survives_restart_and_computer_lifecycle",
+      "packages/agent-control-backend/tests/test_autopilot.py::test_autopilot_does_not_resume_human_pause": "packages/agent-control-backend/tests/test_autopilot_lifecycle.py::test_autopilot_does_not_resume_human_pause",
+      "packages/agent-control-backend/tests/test_autopilot.py::test_group_handoffs_use_each_target_mode": "packages/agent-control-backend/tests/test_autopilot_lifecycle.py::test_group_handoffs_use_each_target_mode",
+      "packages/agent-control-backend/tests/test_autopilot.py::test_routine_policy_override_and_normal_policy_after_disabling": "packages/agent-control-backend/tests/test_autopilot_lifecycle.py::test_routine_policy_override_and_normal_policy_after_disabling",
+      "packages/agent-control-backend/tests/test_autopilot.py::test_autopilot_rechecks_changed_workspace_before_execution": "packages/agent-control-backend/tests/test_autopilot_lifecycle.py::test_autopilot_rechecks_changed_workspace_before_execution",
+      "packages/agent-control-backend/tests/test_autopilot.py::test_real_sandbox_autopilot_write_then_manual_gate": "packages/agent-control-backend/tests/test_autopilot_lifecycle.py::test_real_sandbox_autopilot_write_then_manual_gate",
+      "packages/agent-control-backend/tests/test_autopilot.py::test_restart_keeps_committed_mode_but_interrupts_unfinished_action": "packages/agent-control-backend/tests/test_autopilot_lifecycle.py::test_restart_keeps_committed_mode_but_interrupts_unfinished_action",
+      "packages/agent-control-backend/tests/test_autopilot.py::test_migration_preserves_existing_decisions_and_defaults_off": "packages/agent-control-backend/tests/test_autopilot_recovery.py::test_migration_preserves_existing_decisions_and_defaults_off",
+      "packages/agent-control-backend/tests/test_autopilot.py::test_revoked_execution_grant_still_blocks_autopilot_dispatch": "packages/agent-control-backend/tests/test_autopilot_recovery.py::test_revoked_execution_grant_still_blocks_autopilot_dispatch",
+      "packages/agent-control-backend/tests/test_autopilot.py::test_disabling_during_routine_execution_keeps_its_actual_outcome": "packages/agent-control-backend/tests/test_autopilot_recovery.py::test_disabling_during_routine_execution_keeps_its_actual_outcome",
+      "packages/agent-control-backend/tests/test_channels.py::test_computer_work_waits_and_cancel_never_provisions": "packages/agent-control-backend/tests/test_channels_delivery.py::test_computer_work_waits_and_cancel_never_provisions",
+      "packages/agent-control-backend/tests/test_channels.py::test_settings_are_atomic_and_opt_out_survives_restart": "packages/agent-control-backend/tests/test_channels_delivery.py::test_settings_are_atomic_and_opt_out_survives_restart",
+      "packages/agent-control-backend/tests/test_channels.py::test_explicit_creation_enrollment_and_legacy_empty_selection": "packages/agent-control-backend/tests/test_channels_delivery.py::test_explicit_creation_enrollment_and_legacy_empty_selection",
+      "packages/agent-control-backend/tests/test_channels.py::test_budget_rate_and_utf8_limits_do_not_partially_post": "packages/agent-control-backend/tests/test_channels_delivery.py::test_budget_rate_and_utf8_limits_do_not_partially_post",
+      "packages/agent-control-backend/tests/test_channels.py::test_revoked_member_cannot_replay_a_message_or_keep_stream": "packages/agent-control-backend/tests/test_channels_delivery.py::test_revoked_member_cannot_replay_a_message_or_keep_stream",
+      "packages/agent-control-backend/tests/test_channels.py::test_restart_reconciles_receipt_without_repeating_an_unconfirmed_run": "packages/agent-control-backend/tests/test_channels_delivery.py::test_restart_reconciles_receipt_without_repeating_an_unconfirmed_run",
+      "packages/agent-control-backend/tests/test_channels.py::test_communication_can_yield_for_computer_without_starting_it": "packages/agent-control-backend/tests/test_channels_delivery.py::test_communication_can_yield_for_computer_without_starting_it",
+      "packages/agent-control-backend/tests/test_channels.py::test_artifact_grant_is_explicit_protected_and_revocable": "packages/agent-control-backend/tests/test_channels_artifacts.py::test_artifact_grant_is_explicit_protected_and_revocable",
+      "packages/agent-control-backend/tests/test_channels.py::test_channel_computer_actions_still_require_and_recheck_approval": "packages/agent-control-backend/tests/test_channels_artifacts.py::test_channel_computer_actions_still_require_and_recheck_approval",
+      "packages/agent-control-backend/tests/test_channels.py::test_group_descendants_share_root_budget_and_revocation": "packages/agent-control-backend/tests/test_channels_artifacts.py::test_group_descendants_share_root_budget_and_revocation",
+      "packages/agent-control-backend/tests/test_cloud.py::test_real_websocket_bridge_fences_lost_mutation_response": "packages/agent-control-backend/tests/test_cloud_recovery.py::test_real_websocket_bridge_fences_lost_mutation_response",
+      "packages/agent-control-backend/tests/test_cloud.py::test_managed_create_and_cleanup_survive_response_loss_and_catalog_deletion": "packages/agent-control-backend/tests/test_cloud_recovery.py::test_managed_create_and_cleanup_survive_response_loss_and_catalog_deletion",
+      "packages/agent-control-backend/tests/test_workspace_services.py::test_group_duplicate_dispatch_and_member_scope": "packages/agent-control-backend/tests/test_workspace_collaboration.py::test_group_duplicate_dispatch_and_member_scope",
+      "packages/agent-control-backend/tests/test_workspace_services.py::test_schedule_dst[2026-03-08T06:00:00+00:00-2026-03-09T06:30:00+00:00]": "packages/agent-control-backend/tests/test_workspace_collaboration.py::test_schedule_dst[2026-03-08T06:00:00+00:00-2026-03-09T06:30:00+00:00]",
+      "packages/agent-control-backend/tests/test_workspace_services.py::test_schedule_dst[2026-11-01T04:00:00+00:00-2026-11-01T05:30:00+00:00]": "packages/agent-control-backend/tests/test_workspace_collaboration.py::test_schedule_dst[2026-11-01T04:00:00+00:00-2026-11-01T05:30:00+00:00]",
+      "packages/agent-control-backend/tests/test_workspace_services.py::test_schedule_dst[2026-11-01T05:31:00+00:00-2026-11-02T06:30:00+00:00]": "packages/agent-control-backend/tests/test_workspace_collaboration.py::test_schedule_dst[2026-11-01T05:31:00+00:00-2026-11-02T06:30:00+00:00]",
+      "packages/agent-control-backend/tests/test_workspace_services.py::test_signed_webhook_dedup_and_routine_admission": "packages/agent-control-backend/tests/test_workspace_collaboration.py::test_signed_webhook_dedup_and_routine_admission"
+    }
+  },
+  "baseline_inventory": [
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/channels.py",
+      "active": 1860,
+      "physical": 1956
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/cloud.py",
+      "active": 1515,
+      "physical": 1605
+    },
+    {
+      "path": "deploy/azure-infra.py",
+      "active": 848,
+      "physical": 947
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/routines.py",
+      "active": 740,
+      "physical": 783
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/runtime.py",
+      "active": 698,
+      "physical": 731
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/toolkit.py",
+      "active": 672,
+      "physical": 731
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_channels.py",
+      "active": 667,
+      "physical": 719
+    },
+    {
+      "path": "docs/usecases/steps/support.py",
+      "active": 632,
+      "physical": 744
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/control.py",
+      "active": 615,
+      "physical": 653
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/event_store.py",
+      "active": 586,
+      "physical": 630
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/windows.py",
+      "active": 578,
+      "physical": 644
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/app.py",
+      "active": 565,
+      "physical": 641
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_autopilot.py",
+      "active": 565,
+      "physical": 617
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/sandbox/docker.py",
+      "active": 561,
+      "physical": 630
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/workspaces.py",
+      "active": 549,
+      "physical": 609
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/capture_retention.py",
+      "active": 546,
+      "physical": 588
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/approvals.py",
+      "active": 541,
+      "physical": 576
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/store.py",
+      "active": 535,
+      "physical": 613
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/adapters/anthropic.py",
+      "active": 491,
+      "physical": 544
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/groups.py",
+      "active": 471,
+      "physical": 497
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_workspace_services.py",
+      "active": 460,
+      "physical": 498
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_cloud.py",
+      "active": 446,
+      "physical": 493
+    },
+    {
+      "path": "packages/agentbot-windows-companion/tests/native_probe.py",
+      "active": 443,
+      "physical": 477
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/computer_agents.py",
+      "active": 432,
+      "physical": 458
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/native.py",
+      "active": 420,
+      "physical": 465
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_approvals.py",
+      "active": 415,
+      "physical": 468
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/providers/azure.py",
+      "active": 414,
+      "physical": 440
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/tool_libraries.py",
+      "active": 398,
+      "physical": 429
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/adapters/microsoft.py",
+      "active": 395,
+      "physical": 450
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_automation.py",
+      "active": 374,
+      "physical": 400
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_control.py",
+      "active": 370,
+      "physical": 425
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/transport.py",
+      "active": 336,
+      "physical": 377
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/service.py",
+      "active": 329,
+      "physical": 367
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_capture_retention.py",
+      "active": 318,
+      "physical": 366
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_runtime.py",
+      "active": 315,
+      "physical": 358
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/files.py",
+      "active": 314,
+      "physical": 337
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_windows.py",
+      "active": 299,
+      "physical": 317
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_service_limits.py",
+      "active": 297,
+      "physical": 335
+    },
+    {
+      "path": "packages/agentbot-computer-agent/src/agentbot_computer_agent/host.py",
+      "active": 297,
+      "physical": 320
+    },
+    {
+      "path": "packages/agentbot/tests/test_microsoft.py",
+      "active": 293,
+      "physical": 353
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/computer.py",
+      "active": 291,
+      "physical": 317
+    },
+    {
+      "path": "docs/usecases/steps/etl_steps.py",
+      "active": 279,
+      "physical": 368
+    },
+    {
+      "path": "packages/agentbot-product-tools/src/agentbot_tools/ufo.py",
+      "active": 269,
+      "physical": 287
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/lifecycle.py",
+      "active": 263,
+      "physical": 281
+    },
+    {
+      "path": "packages/agentbot-computer-agent/src/agentbot_computer_agent/app.py",
+      "active": 257,
+      "physical": 284
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/files.py",
+      "active": 253,
+      "physical": 274
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/app.py",
+      "active": 247,
+      "physical": 279
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_tool_libraries.py",
+      "active": 244,
+      "physical": 275
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/win_session.py",
+      "active": 242,
+      "physical": 289
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/sandbox/bridge.py",
+      "active": 240,
+      "physical": 268
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/terminals.py",
+      "active": 239,
+      "physical": 263
+    },
+    {
+      "path": "packages/agentbot-computer-agent/tests/test_bridge.py",
+      "active": 239,
+      "physical": 267
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/planner.py",
+      "active": 236,
+      "physical": 253
+    },
+    {
+      "path": "docs/usecases/blob_orders.py",
+      "active": 231,
+      "physical": 264
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/policies.py",
+      "active": 226,
+      "physical": 251
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/sandbox/desktop_plan.py",
+      "active": 219,
+      "physical": 256
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/tools/registry.py",
+      "active": 216,
+      "physical": 238
+    },
+    {
+      "path": "packages/agentbot-windows-companion/tests/test_execution.py",
+      "active": 210,
+      "physical": 237
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/compute_profiles.py",
+      "active": 203,
+      "physical": 214
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/db.py",
+      "active": 199,
+      "physical": 236
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/composition.py",
+      "active": 197,
+      "physical": 245
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_autopilot_performance.py",
+      "active": 189,
+      "physical": 226
+    },
+    {
+      "path": "packages/agentbot-windows-companion/tests/test_protocol.py",
+      "active": 189,
+      "physical": 214
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/interfaces.py",
+      "active": 182,
+      "physical": 261
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/terminald.py",
+      "active": 169,
+      "physical": 191
+    },
+    {
+      "path": "packages/agentbot/tests/test_computer_services_docker.py",
+      "active": 168,
+      "physical": 178
+    },
+    {
+      "path": "packages/agentbot/tests/test_model_telemetry.py",
+      "active": 168,
+      "physical": 195
+    },
+    {
+      "path": "packages/agentbot/tests/test_docker.py",
+      "active": 162,
+      "physical": 177
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/browserd.py",
+      "active": 160,
+      "physical": 182
+    },
+    {
+      "path": "packages/agentbot/tests/test_anthropic.py",
+      "active": 154,
+      "physical": 182
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/autopilot.py",
+      "active": 152,
+      "physical": 169
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/events.py",
+      "active": 147,
+      "physical": 184
+    },
+    {
+      "path": "packages/agentbot/tests/test_ufo.py",
+      "active": 143,
+      "physical": 170
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/protocol.py",
+      "active": 141,
+      "physical": 163
+    },
+    {
+      "path": "packages/agentbot/tests/test_peer_messaging.py",
+      "active": 138,
+      "physical": 155
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/revisions.py",
+      "active": 136,
+      "physical": 156
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/tools/context.py",
+      "active": 132,
+      "physical": 161
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_live_api_docker.py",
+      "active": 129,
+      "physical": 134
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/kernel.py",
+      "active": 128,
+      "physical": 153
+    },
+    {
+      "path": "docs/usecases/tests/test_blob_orders.py",
+      "active": 126,
+      "physical": 157
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/command.py",
+      "active": 117,
+      "physical": 131
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/bootstrap.py",
+      "active": 117,
+      "physical": 128
+    },
+    {
+      "path": "packages/agentbot-windows-companion/tests/test_native_reads.py",
+      "active": 117,
+      "physical": 139
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/gateway/app.py",
+      "active": 117,
+      "physical": 145
+    },
+    {
+      "path": "packages/agentbot-windows-companion/tests/test_input_policy.py",
+      "active": 115,
+      "physical": 135
+    },
+    {
+      "path": "scripts/arch_metrics.py",
+      "active": 113,
+      "physical": 125
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_architecture.py",
+      "active": 111,
+      "physical": 139
+    },
+    {
+      "path": "packages/agentbot/tests/fakes.py",
+      "active": 110,
+      "physical": 136
+    },
+    {
+      "path": "packages/agentbot/tests/test_tool_registry.py",
+      "active": 103,
+      "physical": 128
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/desktop.py",
+      "active": 102,
+      "physical": 125
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_security_foundation.py",
+      "active": 102,
+      "physical": 122
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/backup.py",
+      "active": 97,
+      "physical": 118
+    },
+    {
+      "path": "packages/agentbot-product-tools/src/agentbot_tools/messaging.py",
+      "active": 95,
+      "physical": 123
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/worker.py",
+      "active": 94,
+      "physical": 105
+    },
+    {
+      "path": "packages/agentbot-windows-companion/tests/test_planner.py",
+      "active": 94,
+      "physical": 113
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_azure_infra.py",
+      "active": 92,
+      "physical": 102
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_supervision.py",
+      "active": 87,
+      "physical": 108
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/state.py",
+      "active": 87,
+      "physical": 104
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/input.py",
+      "active": 84,
+      "physical": 94
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/watch_files.py",
+      "active": 84,
+      "physical": 92
+    },
+    {
+      "path": "deploy/azure/check-sdk.py",
+      "active": 83,
+      "physical": 96
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/sandbox/remote.py",
+      "active": 78,
+      "physical": 111
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/supervision.py",
+      "active": 76,
+      "physical": 98
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_commit_notifications.py",
+      "active": 75,
+      "physical": 88
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/dispatch.py",
+      "active": 74,
+      "physical": 89
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/blob_store.py",
+      "active": 73,
+      "physical": 86
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_database.py",
+      "active": 71,
+      "physical": 81
+    },
+    {
+      "path": "packages/agentbot/tests/test_kernel.py",
+      "active": 70,
+      "physical": 89
+    },
+    {
+      "path": "packages/agentbot-windows-companion/tests/test_text_input.py",
+      "active": 63,
+      "physical": 80
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/adapters/telemetry.py",
+      "active": 63,
+      "physical": 78
+    },
+    {
+      "path": "docs/mockups/agent-control/render.py",
+      "active": 59,
+      "physical": 74
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/wire.py",
+      "active": 57,
+      "physical": 79
+    },
+    {
+      "path": "packages/agentbot-product-tools/src/agentbot_tools/registry.py",
+      "active": 57,
+      "physical": 61
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/repositories/events.py",
+      "active": 56,
+      "physical": 67
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/vault.py",
+      "active": 56,
+      "physical": 69
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/text_input.py",
+      "active": 56,
+      "physical": 76
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_admission_capacity.py",
+      "active": 54,
+      "physical": 61
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_backup.py",
+      "active": 54,
+      "physical": 59
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/repositories/admission.py",
+      "active": 50,
+      "physical": 62
+    },
+    {
+      "path": "scripts/docs_check.py",
+      "active": 50,
+      "physical": 62
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/supervise.py",
+      "active": 49,
+      "physical": 57
+    },
+    {
+      "path": "packages/agentbot-windows-companion/tests/job_probe.py",
+      "active": 49,
+      "physical": 56
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/authentication.py",
+      "active": 48,
+      "physical": 59
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/models.py",
+      "active": 47,
+      "physical": 64
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/maintenance.py",
+      "active": 46,
+      "physical": 56
+    },
+    {
+      "path": "packages/agentbot-windows-companion/tests/test_mouse_activity.py",
+      "active": 46,
+      "physical": 62
+    },
+    {
+      "path": "deploy/azure/build-host-bundle.py",
+      "active": 45,
+      "physical": 51
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/schemas.py",
+      "active": 45,
+      "physical": 65
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/auth.py",
+      "active": 44,
+      "physical": 56
+    },
+    {
+      "path": "packages/agentbot/tests/test_desktop_plan.py",
+      "active": 42,
+      "physical": 52
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/common.py",
+      "active": 40,
+      "physical": 55
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/sandbox/paths.py",
+      "active": 39,
+      "physical": 57
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/probe.py",
+      "active": 36,
+      "physical": 43
+    },
+    {
+      "path": "packages/agentbot/tests/test_gateway.py",
+      "active": 35,
+      "physical": 42
+    },
+    {
+      "path": "packages/agentbot-computer-agent/src/agentbot_computer_agent/bootstrap.py",
+      "active": 33,
+      "physical": 42
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/adapters/streaming.py",
+      "active": 33,
+      "physical": 42
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/browserctl.py",
+      "active": 32,
+      "physical": 41
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/run_streamer.py",
+      "active": 32,
+      "physical": 40
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/process_lock.py",
+      "active": 31,
+      "physical": 39
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/request_limits.py",
+      "active": 31,
+      "physical": 38
+    },
+    {
+      "path": "docs/usecases/seed-data.py",
+      "active": 30,
+      "physical": 37
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/notifications.py",
+      "active": 30,
+      "physical": 38
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/providers/bootstrap.py",
+      "active": 30,
+      "physical": 34
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/repositories/vault.py",
+      "active": 26,
+      "physical": 32
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/execution.py",
+      "active": 26,
+      "physical": 38
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/adapters/conversation.py",
+      "active": 26,
+      "physical": 34
+    },
+    {
+      "path": "packages/agentbot/tests/test_events.py",
+      "active": 26,
+      "physical": 37
+    },
+    {
+      "path": "packages/agentbot/tests/tool_fakes.py",
+      "active": 26,
+      "physical": 37
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/repositories/computers.py",
+      "active": 25,
+      "physical": 37
+    },
+    {
+      "path": "scripts/verify_core.py",
+      "active": 25,
+      "physical": 28
+    },
+    {
+      "path": "conftest.py",
+      "active": 24,
+      "physical": 36
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/sandbox/providers.py",
+      "active": 24,
+      "physical": 31
+    },
+    {
+      "path": "packages/agentbot/tests/test_sandbox_protocols.py",
+      "active": 23,
+      "physical": 35
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/hooks.py",
+      "active": 22,
+      "physical": 40
+    },
+    {
+      "path": "packages/agentbot/tests/test_paths.py",
+      "active": 22,
+      "physical": 32
+    },
+    {
+      "path": "scripts/check_wire.py",
+      "active": 22,
+      "physical": 26
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/repositories/auth_limits.py",
+      "active": 21,
+      "physical": 29
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_wire_contract.py",
+      "active": 21,
+      "physical": 23
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/bootstrap.py",
+      "active": 20,
+      "physical": 26
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/authorization.py",
+      "active": 19,
+      "physical": 26
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/registry.py",
+      "active": 18,
+      "physical": 30
+    },
+    {
+      "path": "docs/usecases/environment.py",
+      "active": 17,
+      "physical": 32
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/repositories/approvals.py",
+      "active": 17,
+      "physical": 21
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/repositories/receipts.py",
+      "active": 16,
+      "physical": 24
+    },
+    {
+      "path": "packages/agentbot/tests/test_registry.py",
+      "active": 16,
+      "physical": 23
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/adapters/context.py",
+      "active": 15,
+      "physical": 21
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/ports.py",
+      "active": 14,
+      "physical": 22
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/mouse_activity.py",
+      "active": 14,
+      "physical": 20
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/terminalctl.py",
+      "active": 13,
+      "physical": 14
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/repositories/workspaces.py",
+      "active": 11,
+      "physical": 14
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/repositories/runs.py",
+      "active": 9,
+      "physical": 16
+    },
+    {
+      "path": "packages/agentbot-product-tools/src/agentbot_tools/bindings.py",
+      "active": 8,
+      "physical": 13
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/adapters/__init__.py",
+      "active": 3,
+      "physical": 6
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/execution.py",
+      "active": 3,
+      "physical": 10
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/tools/__init__.py",
+      "active": 3,
+      "physical": 6
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/__init__.py",
+      "active": 2,
+      "physical": 4
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/__init__.py",
+      "active": 1,
+      "physical": 3
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/__init__.py",
+      "active": 1,
+      "physical": 3
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/providers/__init__.py",
+      "active": 0,
+      "physical": 1
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/repositories/__init__.py",
+      "active": 0,
+      "physical": 1
+    },
+    {
+      "path": "packages/agentbot-computer-agent/src/agentbot_computer_agent/__init__.py",
+      "active": 0,
+      "physical": 1
+    },
+    {
+      "path": "packages/agentbot-product-tools/src/agentbot_tools/__init__.py",
+      "active": 0,
+      "physical": 1
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/gateway/__init__.py",
+      "active": 0,
+      "physical": 1
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/sandbox/__init__.py",
+      "active": 0,
+      "physical": 1
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/workflows/__init__.py",
+      "active": 0,
+      "physical": 1
+    }
+  ],
+  "current_inventory": [
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/computer_agents.py",
+      "active": 432,
+      "physical": 458
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/native.py",
+      "active": 420,
+      "physical": 465
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/providers/azure.py",
+      "active": 414,
+      "physical": 440
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/tool_libraries.py",
+      "active": 398,
+      "physical": 429
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/workspaces/http.py",
+      "active": 395,
+      "physical": 428
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/adapters/microsoft.py",
+      "active": 395,
+      "physical": 450
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/routines/__init__.py",
+      "active": 352,
+      "physical": 384
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/channels/scheduling.py",
+      "active": 349,
+      "physical": 366
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_windows.py",
+      "active": 343,
+      "physical": 361
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_automation.py",
+      "active": 342,
+      "physical": 366
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_approvals.py",
+      "active": 340,
+      "physical": 378
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/adapters/anthropic/adapter.py",
+      "active": 340,
+      "physical": 358
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/transport.py",
+      "active": 336,
+      "physical": 377
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/approvals/decisions.py",
+      "active": 335,
+      "physical": 349
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_control.py",
+      "active": 333,
+      "physical": 375
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/app/http.py",
+      "active": 330,
+      "physical": 357
+    },
+    {
+      "path": "deploy/azure_infra/provisioning.py",
+      "active": 329,
+      "physical": 350
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/service.py",
+      "active": 329,
+      "physical": 367
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/app/__init__.py",
+      "active": 325,
+      "physical": 385
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/sandbox/docker/client.py",
+      "active": 324,
+      "physical": 365
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/files.py",
+      "active": 314,
+      "physical": 337
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_capture_retention.py",
+      "active": 312,
+      "physical": 360
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/windows/enrollment.py",
+      "active": 310,
+      "physical": 331
+    },
+    {
+      "path": "docs/usecases/tests/behavior/steps/etl_steps.py",
+      "active": 305,
+      "physical": 397
+    },
+    {
+      "path": "packages/agentbot-windows-companion/tests/native_support.py",
+      "active": 302,
+      "physical": 325
+    },
+    {
+      "path": "packages/agentbot-computer-agent/src/agentbot_computer_agent/host.py",
+      "active": 297,
+      "physical": 320
+    },
+    {
+      "path": "packages/agentbot/tests/test_microsoft.py",
+      "active": 293,
+      "physical": 353
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/store/__init__.py",
+      "active": 292,
+      "physical": 370
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/computer.py",
+      "active": 291,
+      "physical": 317
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/toolkit/http.py",
+      "active": 289,
+      "physical": 305
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/cloud/__init__.py",
+      "active": 282,
+      "physical": 361
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/channels/__init__.py",
+      "active": 280,
+      "physical": 354
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_service_limits.py",
+      "active": 280,
+      "physical": 318
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_runtime.py",
+      "active": 276,
+      "physical": 311
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/runtime/execution.py",
+      "active": 274,
+      "physical": 285
+    },
+    {
+      "path": "packages/agentbot-product-tools/src/agentbot_tools/ufo.py",
+      "active": 269,
+      "physical": 287
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/channels/binding.py",
+      "active": 267,
+      "physical": 279
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/lifecycle.py",
+      "active": 263,
+      "physical": 281
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/channels/admission_ops.py",
+      "active": 262,
+      "physical": 288
+    },
+    {
+      "path": "deploy/azure_infra/cli.py",
+      "active": 260,
+      "physical": 276
+    },
+    {
+      "path": "packages/agentbot-computer-agent/src/agentbot_computer_agent/app.py",
+      "active": 257,
+      "physical": 284
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/channels/publication.py",
+      "active": 254,
+      "physical": 266
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/files.py",
+      "active": 253,
+      "physical": 274
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/app.py",
+      "active": 247,
+      "physical": 279
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/control/leases.py",
+      "active": 246,
+      "physical": 258
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/win_session.py",
+      "active": 242,
+      "physical": 289
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/groups/__init__.py",
+      "active": 240,
+      "physical": 261
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/sandbox/bridge.py",
+      "active": 240,
+      "physical": 268
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/terminals.py",
+      "active": 239,
+      "physical": 263
+    },
+    {
+      "path": "packages/agentbot-computer-agent/tests/test_bridge.py",
+      "active": 239,
+      "physical": 267
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/runtime/__init__.py",
+      "active": 238,
+      "physical": 267
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_autopilot.py",
+      "active": 237,
+      "physical": 258
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/planner.py",
+      "active": 236,
+      "physical": 253
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/routines/http.py",
+      "active": 232,
+      "physical": 246
+    },
+    {
+      "path": "docs/usecases/blob_orders.py",
+      "active": 231,
+      "physical": 264
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/event_store/__init__.py",
+      "active": 231,
+      "physical": 274
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_tool_libraries.py",
+      "active": 230,
+      "physical": 262
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_channels.py",
+      "active": 227,
+      "physical": 243
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_workspace_services.py",
+      "active": 227,
+      "physical": 238
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/policies.py",
+      "active": 226,
+      "physical": 251
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_autopilot_lifecycle.py",
+      "active": 226,
+      "physical": 245
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/tools/registry.py",
+      "active": 222,
+      "physical": 245
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/sandbox/desktop_plan.py",
+      "active": 219,
+      "physical": 256
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_channels_delivery.py",
+      "active": 218,
+      "physical": 236
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/approvals/dispatch.py",
+      "active": 214,
+      "physical": 236
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/routines/dispatching.py",
+      "active": 212,
+      "physical": 223
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/channels/conversation.py",
+      "active": 211,
+      "physical": 230
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/control/__init__.py",
+      "active": 211,
+      "physical": 242
+    },
+    {
+      "path": "packages/agentbot-windows-companion/tests/test_execution.py",
+      "active": 210,
+      "physical": 237
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/cloud/provisioning.py",
+      "active": 206,
+      "physical": 213
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/capture_retention/images.py",
+      "active": 204,
+      "physical": 221
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/compute_profiles.py",
+      "active": 203,
+      "physical": 214
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/channels/membership.py",
+      "active": 202,
+      "physical": 224
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/db.py",
+      "active": 199,
+      "physical": 236
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/sandbox/docker/sessions.py",
+      "active": 199,
+      "physical": 225
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_cloud.py",
+      "active": 198,
+      "physical": 221
+    },
+    {
+      "path": "docs/usecases/tests/behavior/lifecycle.py",
+      "active": 197,
+      "physical": 226
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/composition.py",
+      "active": 197,
+      "physical": 245
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/event_store/recording.py",
+      "active": 197,
+      "physical": 213
+    },
+    {
+      "path": "packages/agentbot-windows-companion/tests/native_probe.py",
+      "active": 194,
+      "physical": 208
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/cloud/status.py",
+      "active": 193,
+      "physical": 216
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/cloud/http.py",
+      "active": 190,
+      "physical": 205
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/workspaces/__init__.py",
+      "active": 189,
+      "physical": 223
+    },
+    {
+      "path": "packages/agentbot-windows-companion/tests/test_protocol.py",
+      "active": 189,
+      "physical": 214
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_autopilot_performance.py",
+      "active": 183,
+      "physical": 220
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/interfaces.py",
+      "active": 182,
+      "physical": 261
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/store/bots.py",
+      "active": 173,
+      "physical": 191
+    },
+    {
+      "path": "deploy/azure_infra/profiles.py",
+      "active": 169,
+      "physical": 195
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/terminald.py",
+      "active": 169,
+      "physical": 191
+    },
+    {
+      "path": "packages/agentbot/tests/test_computer_services_docker.py",
+      "active": 168,
+      "physical": 178
+    },
+    {
+      "path": "packages/agentbot/tests/test_model_telemetry.py",
+      "active": 168,
+      "physical": 195
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_architecture.py",
+      "active": 167,
+      "physical": 199
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/capture_retention/cleanup.py",
+      "active": 166,
+      "physical": 187
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/cloud/admission_ops.py",
+      "active": 166,
+      "physical": 171
+    },
+    {
+      "path": "docs/usecases/tests/behavior/gateway.py",
+      "active": 165,
+      "physical": 188
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_channels_artifacts.py",
+      "active": 163,
+      "physical": 176
+    },
+    {
+      "path": "packages/agentbot/tests/test_docker.py",
+      "active": 162,
+      "physical": 177
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/browserd.py",
+      "active": 160,
+      "physical": 182
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/cloud/configuration.py",
+      "active": 154,
+      "physical": 180
+    },
+    {
+      "path": "packages/agentbot/tests/test_anthropic.py",
+      "active": 154,
+      "physical": 182
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/autopilot.py",
+      "active": 152,
+      "physical": 169
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/event_store/admission_ops.py",
+      "active": 149,
+      "physical": 158
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/runtime/cleanup.py",
+      "active": 148,
+      "physical": 159
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/events.py",
+      "active": 147,
+      "physical": 184
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/groups/handoffs.py",
+      "active": 146,
+      "physical": 152
+    },
+    {
+      "path": "deploy/azure_infra/discovery.py",
+      "active": 144,
+      "physical": 160
+    },
+    {
+      "path": "packages/agentbot/tests/test_ufo.py",
+      "active": 143,
+      "physical": 170
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/store/credentials.py",
+      "active": 142,
+      "physical": 157
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_cloud_recovery.py",
+      "active": 142,
+      "physical": 153
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/protocol.py",
+      "active": 141,
+      "physical": 163
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/capture_retention/policy.py",
+      "active": 139,
+      "physical": 162
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/event_store/replay.py",
+      "active": 138,
+      "physical": 155
+    },
+    {
+      "path": "packages/agentbot/tests/test_peer_messaging.py",
+      "active": 138,
+      "physical": 155
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/revisions.py",
+      "active": 136,
+      "physical": 156
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/channels/http.py",
+      "active": 133,
+      "physical": 154
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/cloud/observations.py",
+      "active": 133,
+      "physical": 152
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/control/input.py",
+      "active": 133,
+      "physical": 138
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/toolkit/skills.py",
+      "active": 133,
+      "physical": 154
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/tools/context.py",
+      "active": 132,
+      "physical": 161
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/groups/http.py",
+      "active": 130,
+      "physical": 141
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/runtime/lifecycle.py",
+      "active": 129,
+      "physical": 142
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/toolkit/binding.py",
+      "active": 129,
+      "physical": 140
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_live_api_docker.py",
+      "active": 129,
+      "physical": 134
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_workspace_collaboration.py",
+      "active": 128,
+      "physical": 135
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/kernel.py",
+      "active": 128,
+      "physical": 153
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/cloud/lifecycle.py",
+      "active": 127,
+      "physical": 143
+    },
+    {
+      "path": "docs/usecases/tests/test_blob_orders.py",
+      "active": 126,
+      "physical": 157
+    },
+    {
+      "path": "packages/agentbot/tests/test_tool_registry.py",
+      "active": 124,
+      "physical": 153
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_security_foundation.py",
+      "active": 121,
+      "physical": 141
+    },
+    {
+      "path": "docs/usecases/tests/behavior/storage.py",
+      "active": 118,
+      "physical": 143
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/command.py",
+      "active": 117,
+      "physical": 131
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/toolkit/connectors.py",
+      "active": 117,
+      "physical": 135
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/windows/provider.py",
+      "active": 117,
+      "physical": 136
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/bootstrap.py",
+      "active": 117,
+      "physical": 128
+    },
+    {
+      "path": "packages/agentbot-windows-companion/tests/test_native_reads.py",
+      "active": 117,
+      "physical": 139
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/gateway/app.py",
+      "active": 117,
+      "physical": 145
+    },
+    {
+      "path": "packages/agentbot-windows-companion/tests/test_input_policy.py",
+      "active": 115,
+      "physical": 135
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/capture_retention/__init__.py",
+      "active": 114,
+      "physical": 153
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/cloud/reconciliation.py",
+      "active": 113,
+      "physical": 123
+    },
+    {
+      "path": "scripts/arch_metrics.py",
+      "active": 113,
+      "physical": 125
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_autopilot_recovery.py",
+      "active": 110,
+      "physical": 126
+    },
+    {
+      "path": "packages/agentbot/tests/fakes.py",
+      "active": 110,
+      "physical": 136
+    },
+    {
+      "path": "scripts/check_python_size.py",
+      "active": 110,
+      "physical": 136
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_supervision.py",
+      "active": 108,
+      "physical": 129
+    },
+    {
+      "path": "docs/usecases/tests/behavior/constants.py",
+      "active": 107,
+      "physical": 136
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/control/http.py",
+      "active": 106,
+      "physical": 120
+    },
+    {
+      "path": "packages/agent-control-backend/tests/cloud_support.py",
+      "active": 103,
+      "physical": 121
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/desktop.py",
+      "active": 102,
+      "physical": 125
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/toolkit/__init__.py",
+      "active": 99,
+      "physical": 134
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/backup.py",
+      "active": 97,
+      "physical": 118
+    },
+    {
+      "path": "packages/agentbot-product-tools/src/agentbot_tools/messaging.py",
+      "active": 95,
+      "physical": 123
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/worker.py",
+      "active": 94,
+      "physical": 105
+    },
+    {
+      "path": "packages/agentbot-windows-companion/tests/test_planner.py",
+      "active": 94,
+      "physical": 113
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_azure_infra.py",
+      "active": 92,
+      "physical": 102
+    },
+    {
+      "path": "packages/agent-control-backend/tests/workspace_services_support.py",
+      "active": 91,
+      "physical": 113
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/store/identity.py",
+      "active": 90,
+      "physical": 105
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/state.py",
+      "active": 87,
+      "physical": 104
+    },
+    {
+      "path": "docs/usecases/tests/behavior/scripted.py",
+      "active": 86,
+      "physical": 111
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/channels/access.py",
+      "active": 85,
+      "physical": 101
+    },
+    {
+      "path": "tests/test_repository_rules.py",
+      "active": 85,
+      "physical": 105
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/input.py",
+      "active": 84,
+      "physical": 94
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/watch_files.py",
+      "active": 84,
+      "physical": 92
+    },
+    {
+      "path": "deploy/azure/check-sdk.py",
+      "active": 83,
+      "physical": 96
+    },
+    {
+      "path": "deploy/azure_infra/commands.py",
+      "active": 83,
+      "physical": 110
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/windows/sandbox.py",
+      "active": 82,
+      "physical": 94
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/sandbox/remote.py",
+      "active": 78,
+      "physical": 111
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/supervision.py",
+      "active": 76,
+      "physical": 98
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_commit_notifications.py",
+      "active": 75,
+      "physical": 88
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/dispatch.py",
+      "active": 74,
+      "physical": 89
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/blob_store.py",
+      "active": 73,
+      "physical": 86
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_database.py",
+      "active": 71,
+      "physical": 81
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/adapters/anthropic/client.py",
+      "active": 71,
+      "physical": 81
+    },
+    {
+      "path": "scripts/repository_rules.py",
+      "active": 71,
+      "physical": 81
+    },
+    {
+      "path": "packages/agent-control-backend/tests/control_support.py",
+      "active": 70,
+      "physical": 83
+    },
+    {
+      "path": "packages/agentbot/tests/test_kernel.py",
+      "active": 70,
+      "physical": 89
+    },
+    {
+      "path": "deploy/azure-infra.py",
+      "active": 66,
+      "physical": 78
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/cloud/phases.py",
+      "active": 66,
+      "physical": 75
+    },
+    {
+      "path": "packages/agentbot-windows-companion/tests/test_text_input.py",
+      "active": 63,
+      "physical": 80
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/adapters/telemetry.py",
+      "active": 63,
+      "physical": 78
+    },
+    {
+      "path": "docs/mockups/agent-control/render.py",
+      "active": 59,
+      "physical": 74
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/adapters/anthropic/results.py",
+      "active": 58,
+      "physical": 72
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/wire.py",
+      "active": 57,
+      "physical": 79
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_admission_capacity.py",
+      "active": 57,
+      "physical": 64
+    },
+    {
+      "path": "packages/agentbot-product-tools/src/agentbot_tools/registry.py",
+      "active": 57,
+      "physical": 61
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/repositories/events.py",
+      "active": 56,
+      "physical": 67
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/vault.py",
+      "active": 56,
+      "physical": 69
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/text_input.py",
+      "active": 56,
+      "physical": 76
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_backup.py",
+      "active": 54,
+      "physical": 59
+    },
+    {
+      "path": "scripts/docs_check.py",
+      "active": 51,
+      "physical": 63
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/repositories/admission.py",
+      "active": 50,
+      "physical": 62
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/supervise.py",
+      "active": 49,
+      "physical": 57
+    },
+    {
+      "path": "packages/agent-control-backend/tests/approvals_support.py",
+      "active": 49,
+      "physical": 66
+    },
+    {
+      "path": "packages/agentbot-windows-companion/tests/job_probe.py",
+      "active": 49,
+      "physical": 56
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/authentication.py",
+      "active": 48,
+      "physical": 59
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/windows/connection.py",
+      "active": 48,
+      "physical": 56
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/models.py",
+      "active": 47,
+      "physical": 64
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/maintenance.py",
+      "active": 46,
+      "physical": 56
+    },
+    {
+      "path": "packages/agent-control-backend/tests/channels_support.py",
+      "active": 46,
+      "physical": 53
+    },
+    {
+      "path": "packages/agentbot-windows-companion/tests/test_mouse_activity.py",
+      "active": 46,
+      "physical": 62
+    },
+    {
+      "path": "deploy/azure/build-host-bundle.py",
+      "active": 45,
+      "physical": 51
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/schemas.py",
+      "active": 45,
+      "physical": 65
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/auth.py",
+      "active": 44,
+      "physical": 56
+    },
+    {
+      "path": "packages/agentbot/tests/test_desktop_plan.py",
+      "active": 42,
+      "physical": 52
+    },
+    {
+      "path": "docs/usecases/tests/behavior/support.py",
+      "active": 41,
+      "physical": 43
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/common.py",
+      "active": 40,
+      "physical": 55
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/sandbox/paths.py",
+      "active": 39,
+      "physical": 57
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/probe.py",
+      "active": 36,
+      "physical": 43
+    },
+    {
+      "path": "packages/agentbot/tests/test_gateway.py",
+      "active": 35,
+      "physical": 42
+    },
+    {
+      "path": "packages/agentbot-computer-agent/src/agentbot_computer_agent/bootstrap.py",
+      "active": 33,
+      "physical": 42
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/adapters/streaming.py",
+      "active": 33,
+      "physical": 42
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/browserctl.py",
+      "active": 32,
+      "physical": 41
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/run_streamer.py",
+      "active": 32,
+      "physical": 40
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/process_lock.py",
+      "active": 31,
+      "physical": 39
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/request_limits.py",
+      "active": 31,
+      "physical": 38
+    },
+    {
+      "path": "docs/usecases/seed-data.py",
+      "active": 30,
+      "physical": 37
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/notifications.py",
+      "active": 30,
+      "physical": 38
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/providers/bootstrap.py",
+      "active": 30,
+      "physical": 34
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/adapters/anthropic/models.py",
+      "active": 29,
+      "physical": 39
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/repositories/vault.py",
+      "active": 26,
+      "physical": 32
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/execution.py",
+      "active": 26,
+      "physical": 38
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/adapters/conversation.py",
+      "active": 26,
+      "physical": 34
+    },
+    {
+      "path": "packages/agentbot/tests/test_events.py",
+      "active": 26,
+      "physical": 37
+    },
+    {
+      "path": "packages/agentbot/tests/tool_fakes.py",
+      "active": 26,
+      "physical": 37
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/repositories/computers.py",
+      "active": 25,
+      "physical": 37
+    },
+    {
+      "path": "scripts/verify_core.py",
+      "active": 25,
+      "physical": 28
+    },
+    {
+      "path": "conftest.py",
+      "active": 24,
+      "physical": 36
+    },
+    {
+      "path": "packages/agent-control-backend/tests/test_wire_contract.py",
+      "active": 24,
+      "physical": 26
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/sandbox/providers.py",
+      "active": 24,
+      "physical": 31
+    },
+    {
+      "path": "packages/agentbot/tests/test_sandbox_protocols.py",
+      "active": 23,
+      "physical": 35
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/hooks.py",
+      "active": 22,
+      "physical": 40
+    },
+    {
+      "path": "packages/agentbot/tests/test_paths.py",
+      "active": 22,
+      "physical": 32
+    },
+    {
+      "path": "scripts/check_wire.py",
+      "active": 22,
+      "physical": 26
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/repositories/auth_limits.py",
+      "active": 21,
+      "physical": 29
+    },
+    {
+      "path": "packages/agent-control-backend/tests/runtime_support.py",
+      "active": 21,
+      "physical": 30
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/bootstrap.py",
+      "active": 20,
+      "physical": 26
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/authorization.py",
+      "active": 19,
+      "physical": 26
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/adapters/anthropic/__init__.py",
+      "active": 19,
+      "physical": 21
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/registry.py",
+      "active": 18,
+      "physical": 30
+    },
+    {
+      "path": "deploy/azure_infra/constants.py",
+      "active": 17,
+      "physical": 45
+    },
+    {
+      "path": "docs/usecases/tests/behavior/environment.py",
+      "active": 17,
+      "physical": 32
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/repositories/approvals.py",
+      "active": 17,
+      "physical": 21
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/repositories/receipts.py",
+      "active": 16,
+      "physical": 24
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/windows/models.py",
+      "active": 16,
+      "physical": 29
+    },
+    {
+      "path": "packages/agentbot/tests/test_registry.py",
+      "active": 16,
+      "physical": 23
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/adapters/context.py",
+      "active": 15,
+      "physical": 21
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/ports.py",
+      "active": 14,
+      "physical": 22
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/mouse_activity.py",
+      "active": 14,
+      "physical": 20
+    },
+    {
+      "path": "docker/sandbox/agentbot_sandbox/terminalctl.py",
+      "active": 13,
+      "physical": 14
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/repositories/workspaces.py",
+      "active": 11,
+      "physical": 14
+    },
+    {
+      "path": "packages/agent-control-backend/tests/automation_support.py",
+      "active": 10,
+      "physical": 13
+    },
+    {
+      "path": "packages/agent-control-backend/tests/autopilot_support.py",
+      "active": 10,
+      "physical": 14
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/adapters/anthropic/constants.py",
+      "active": 10,
+      "physical": 21
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/repositories/runs.py",
+      "active": 9,
+      "physical": 16
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/windows/__init__.py",
+      "active": 9,
+      "physical": 11
+    },
+    {
+      "path": "packages/agentbot-product-tools/src/agentbot_tools/bindings.py",
+      "active": 8,
+      "physical": 13
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/sandbox/docker/__init__.py",
+      "active": 8,
+      "physical": 10
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/sandbox/docker/constants.py",
+      "active": 8,
+      "physical": 20
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/adapters/__init__.py",
+      "active": 3,
+      "physical": 6
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/execution.py",
+      "active": 3,
+      "physical": 10
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/tools/__init__.py",
+      "active": 3,
+      "physical": 6
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/approvals/__init__.py",
+      "active": 2,
+      "physical": 4
+    },
+    {
+      "path": "packages/agentbot-windows-companion/src/agentbot_windows/__init__.py",
+      "active": 2,
+      "physical": 4
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/__init__.py",
+      "active": 1,
+      "physical": 3
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/__init__.py",
+      "active": 1,
+      "physical": 3
+    },
+    {
+      "path": "deploy/azure_infra/__init__.py",
+      "active": 0,
+      "physical": 1
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/providers/__init__.py",
+      "active": 0,
+      "physical": 1
+    },
+    {
+      "path": "packages/agent-control-backend/src/agentbot_control/repositories/__init__.py",
+      "active": 0,
+      "physical": 1
+    },
+    {
+      "path": "packages/agentbot-computer-agent/src/agentbot_computer_agent/__init__.py",
+      "active": 0,
+      "physical": 1
+    },
+    {
+      "path": "packages/agentbot-product-tools/src/agentbot_tools/__init__.py",
+      "active": 0,
+      "physical": 1
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/gateway/__init__.py",
+      "active": 0,
+      "physical": 1
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/sandbox/__init__.py",
+      "active": 0,
+      "physical": 1
+    },
+    {
+      "path": "packages/agentbot/src/agentbot/workflows/__init__.py",
+      "active": 0,
+      "physical": 1
+    }
+  ]
+}

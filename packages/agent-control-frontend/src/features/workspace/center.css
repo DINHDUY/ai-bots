@@ -1,0 +1,104 @@
+.workspace-center {
+  padding: 28px;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  overflow: auto;
+  height: 100%;
+}
+.center-heading,
+.center-toolbar,
+.center-tabs,
+.center-line {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+.center-heading h1 {
+  font-size: 24px;
+  margin: 0;
+}
+.center-toolbar {
+  margin: 24px 0;
+  flex-wrap: wrap;
+}
+.center-toolbar button {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.center-tabs {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border, #30363b);
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+}
+.center-tabs button[aria-pressed="true"] {
+  background: var(--accent, #bce58b);
+  color: #172117;
+}
+.center-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 370px), 1fr));
+  gap: 20px;
+  align-items: start;
+}
+.center-card {
+  border: 1px solid var(--border, #30363b);
+  border-radius: 12px;
+  padding: 22px;
+  background: var(--panel, #171b1f);
+}
+.center-card h2 {
+  font-size: 18px;
+  margin: 0 0 16px;
+}
+.center-card form,
+.center-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.center-card form {
+  gap: 16px;
+}
+.center-card input:where(:not([type="checkbox"])),
+.center-card textarea,
+.center-card select,
+.center-toolbar input:where(:not([type="checkbox"])),
+.center-toolbar select {
+  border: 1px solid var(--border, #30363b);
+  background: var(--bg, #101316);
+  color: inherit;
+  border-radius: 6px;
+  padding: 9px;
+}
+.center-card textarea {
+  min-height: 90px;
+}
+.center-card p {
+  line-height: 1.5;
+}
+.center-card button {
+  margin: 4px;
+}
+.center-card pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  max-height: 240px;
+  overflow: auto;
+}
+.center-card code {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.center-message {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border, #30363b);
+}
+.center-bot {
+  display: block;
+  margin-bottom: 20px;
+}
