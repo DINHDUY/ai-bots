@@ -9,7 +9,7 @@ dependencies = ["agentbot"]
 ufo = ["agentbot-windows-companion"]
 
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=84.0.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]

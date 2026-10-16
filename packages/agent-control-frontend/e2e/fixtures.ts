@@ -134,26 +134,12 @@ export async function fixture(page: Page, initial = "/#/bots/orders") {
     new URL("./fixtures/orders-preview.html", import.meta.url),
     "utf8",
   );
-  const capturePreview = async () => {
-    const imagePage = await page.context().newPage();
-    try {
-      await imagePage.setViewportSize({ width: 1024, height: 768 });
-      await imagePage.setContent(preview);
-      return await imagePage.screenshot();
-    } finally {
-      await imagePage.close();
-    }
-  };
-  let screenshot: Buffer;
-  try {
-    screenshot = await capturePreview();
-  } catch (error) {
-    if (!(error instanceof Error) || !error.message.includes("Unable to capture screenshot")) {
-      throw error;
-    }
-    screenshot = await capturePreview();
-  }
-  const screenshotBase64 = screenshot.toString("base64");
+  let screenshot = "";
+  await expect(async () => {
+    await imagePage.bringToFront();
+    screenshot = (await imagePage.screenshot()).toString("base64");
+  }).toPass({ timeout: 10_000 });
+  await imagePage.close();
   await page.goto(initial);
   await expect.poll(() => sockets.length).toBe(4);
   await expect(
