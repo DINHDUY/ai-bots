@@ -138,7 +138,11 @@ export async function fixture(page: Page, initial = "/#/bots/orders") {
       "utf8",
     ),
   );
-  const screenshot = (await imagePage.screenshot()).toString("base64");
+  let screenshot = "";
+  await expect(async () => {
+    await imagePage.bringToFront();
+    screenshot = (await imagePage.screenshot()).toString("base64");
+  }).toPass({ timeout: 10_000 });
   await imagePage.close();
   await page.goto(initial);
   await expect.poll(() => sockets.length).toBe(4);
