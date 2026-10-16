@@ -61,7 +61,7 @@ requires-dist = [
     { name = "azure-ai-ml", marker = "extra == 'azure'", specifier = ">=1.35.1,<2" },
     { name = "azure-identity", marker = "extra == 'azure'", specifier = ">=1.19,<2" },
     { name = "azure-keyvault-secrets", marker = "extra == 'azure'", specifier = ">=4.9,<5" },
-    { name = "azure-mgmt-compute", marker = "extra == 'azure'", specifier = ">=37.2,<38" },
+    { name = "azure-mgmt-compute", marker = "extra == 'azure'", specifier = ">=38.4.0,<39" },
     { name = "azure-mgmt-network", marker = "extra == 'azure'", specifier = ">=30.2,<31" },
     { name = "azure-storage-blob", marker = "extra == 'dev'", specifier = ">=12.24" },
     { name = "behave", marker = "extra == 'dev'", specifier = ">=1.2.6" },
@@ -384,16 +384,16 @@ wheels = [
 
 [[package]]
 name = "azure-mgmt-compute"
-version = "37.2.0"
+version = "38.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "azure-mgmt-core" },
     { name = "isodate" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e2/e3/c887e27260754014dc63fc33bf612f1c7f1751f74e80d1aaa32491af3ffa/azure_mgmt_compute-37.2.0.tar.gz", hash = "sha256:23499d4d5ad2b2bf40a4c59df2684cc4c9cef0f9672a4e842bb9a1cf6b62f628", size = 534068, upload-time = "2026-01-27T06:39:05.39Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ac/5d/264f77dfb852e0c2f03c348b8be618a8794e57ba16d2b55c22dcb81ef5aa/azure_mgmt_compute-38.4.0.tar.gz", hash = "sha256:7bf2f2b49e2b7cedf5f3eb2a71cf501b70e5898bd45d2421650029b95d589835", size = 700150, upload-time = "2026-09-25T16:47:16.078Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/be/78/8dcdb92dd9f716d08a3ac6b31c31a12cfcf8c430b2c312cbf9cc6e4695e8/azure_mgmt_compute-37.2.0-py3-none-any.whl", hash = "sha256:70741c26ac94c30408a3b20f4fdfe93e6481e308b3c14a6dbefdfd4794028616", size = 686212, upload-time = "2026-01-27T06:39:07.016Z" },
+    { url = "https://files.pythonhosted.org/packages/52/50/598f17c9de8ca3194c337561cc48ae463445068fa40e74621f04a2843d08/azure_mgmt_compute-38.4.0-py3-none-any.whl", hash = "sha256:1421fbdc73b0c7c0875eeec559eae6ca9009598f3c73ee792097a7145b407053", size = 595834, upload-time = "2026-09-25T16:47:18.101Z" },
 ]
 
 [[package]]
