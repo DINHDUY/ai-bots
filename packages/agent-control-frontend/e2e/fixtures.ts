@@ -130,13 +130,9 @@ export async function fixture(page: Page, initial = "/#/bots/orders") {
     socket.send(JSON.stringify({ type: "snapshot", data: snapshot(bid) }));
     socket.send(JSON.stringify({ type: "ready", seq: eventLists[bid].length }));
   });
-  const imagePage = await page.context().newPage();
-  await imagePage.setViewportSize({ width: 1024, height: 768 });
-  await imagePage.setContent(
-    await readFile(
-      new URL("./fixtures/orders-preview.html", import.meta.url),
-      "utf8",
-    ),
+  const preview = await readFile(
+    new URL("./fixtures/orders-preview.html", import.meta.url),
+    "utf8",
   );
   let screenshot = "";
   await expect(async () => {
@@ -165,7 +161,7 @@ export async function fixture(page: Page, initial = "/#/bots/orders") {
     type: "TOOL_CALL",
     payload: "browser_open: file:///workspace/preview.html",
   });
-  send({ event: "log", type: "SCREENSHOT_CAPTURE", payload: screenshot });
+  send({ event: "log", type: "SCREENSHOT_CAPTURE", payload: screenshotBase64 });
   send({
     event: "log",
     type: "TOOL_CALL",
