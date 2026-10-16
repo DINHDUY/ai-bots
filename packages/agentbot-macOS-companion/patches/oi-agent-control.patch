@@ -1,0 +1,175 @@
+--- a/app/interpreter.py
++++ b/app/interpreter.py
+@@ -1,4 +1,3 @@
+-import json
+ from multiprocessing import Queue
+ from time import sleep
+ from typing import Any
+@@ -34,19 +33,9 @@
+         function_name = json_command['function']
+         parameters = json_command.get('parameters', {})
+         human_readable_justification = json_command.get('human_readable_justification')
+-        print(f'Now performing - {function_name} - {parameters} - {human_readable_justification}')
+         self.status_queue.put(human_readable_justification)
+-        try:
+-            self.execute_function(function_name, parameters)
+-            return True
+-        except Exception as e:
+-            print(f'\nError:\nWe are having a problem executing this step - {type(e)} - {e}')
+-            print(f'This was the json we received from the LLM: {json.dumps(json_command, indent=2)}')
+-            print(f'This is what we extracted:')
+-            print(f'\t function_name:{function_name}')
+-            print(f'\t parameters:{parameters}')
+-
+-            return False
++        self.execute_function(function_name, parameters)
++        return True
+ 
+     def execute_function(self, function_name: str, parameters: dict[str, Any]) -> None:
+         """
+@@ -54,43 +43,15 @@
+             1. time.sleep() - to wait for web pages, applications, and other things to load.
+             2. pyautogui calls to interact with system's mouse and keyboard.
+         """
+-        # Strip to bare name to normalize
+-        if function_name.startswith('pyautogui.'):
+-            function_name = function_name.split('.')[-1]
+-
+-        # Sometimes pyautogui needs warming up i.e. sometimes first call isn't executed hence padding a random call here
+-        pyautogui.press("command", interval=0.2)
+-
+-        if function_name == "sleep" and parameters.get("secs"):
+-            sleep(parameters.get("secs"))
+-        elif hasattr(pyautogui, function_name):
+-            # Execute the corresponding pyautogui function i.e. Keyboard or Mouse commands.
+-            function_to_call = getattr(pyautogui, function_name)
+-
+-            # Special handling for the 'write' function
+-            if function_name == 'write' and ('string' in parameters or 'text' in parameters or 'message' in parameters):
+-                # 'write' function expects a string, not a 'text' keyword argument but LLM sometimes gets confused on the parameter name.
+-                string_to_write = parameters.get('string') or parameters.get('text') or parameters.get('message')
+-                interval = parameters.get('interval', 0.1)
+-                function_to_call(string_to_write, interval=interval)
+-            elif function_name == 'press' and ('keys' in parameters or 'key' in parameters):
+-                # 'press' can take a list of keys or a single key
+-                keys_to_press = parameters.get('keys') or parameters.get('key')
+-                presses = parameters.get('presses', 1)
+-                interval = parameters.get('interval', 0.2)
+-                function_to_call(keys_to_press, presses=presses, interval=interval)
+-            elif function_name == 'hotkey':
+-                # 'hotkey' function expects multiple key arguments, not a list
+-                keys_to_press = parameters.get('keys') or parameters.get('key')
+-                if isinstance(keys_to_press, list):
+-                    function_to_call(*keys_to_press)
+-                elif isinstance(keys_to_press, str):
+-                    function_to_call(keys_to_press)
+-                else:
+-                    keys = list(parameters.values())
+-                    function_to_call(*keys)
+-            else:
+-                # For other functions, pass the parameters as they are
+-                function_to_call(**parameters)
+-        else:
+-            print(f'No such function {function_name} in our interface\'s interpreter')
++        operations = {
++            "click": pyautogui.click,
++            "moveTo": pyautogui.moveTo,
++            "scroll": pyautogui.scroll,
++            "dragTo": pyautogui.dragTo,
++            "press": pyautogui.press,
++            "hotkey": lambda keys: pyautogui.hotkey(*keys),
++            "sleep": lambda secs: sleep(secs),
++        }
++        if function_name not in operations:
++            raise ValueError("Unsupported Open-Interface operation")
++        operations[function_name](**parameters)
+--- a/app/utils/screen.py
++++ b/app/utils/screen.py
+@@ -1,11 +1,8 @@
+ import base64
+ import io
+-import os
+-import tempfile
+ 
+ import pyautogui
+ from PIL import Image
+-from utils.settings import Settings
+ 
+ 
+ class Screen:
+@@ -32,16 +29,3 @@
+         img_bytes.seek(0)
+         return img_bytes
+ 
+-    def get_temp_filename_for_current_screenshot(self):
+-        with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as tmpfile:
+-            screenshot = self.get_screenshot()
+-            screenshot.save(tmpfile.name)
+-            return tmpfile.name
+-
+-    def get_screenshot_file(self):
+-        # Gonna always keep a screenshot.png in ~/.open-interface/ because file objects, temp files, every other way has an error
+-        filename = 'screenshot.png'
+-        filepath = os.path.join(Settings().get_settings_directory_path(), filename)
+-        img = self.get_screenshot()
+-        img.save(filepath)
+-        return filepath
+--- a/app/llm.py
++++ b/app/llm.py
+@@ -1,10 +1,6 @@
+ from pathlib import Path
+ from typing import Any
+ 
+-from models.factory import ModelFactory
+-from utils import local_info
+-from utils.screen import Screen
+-from utils.settings import Settings
+ 
+ DEFAULT_MODEL_NAME = 'gpt-5.2'
+ 
+@@ -49,40 +45,13 @@
+         to be communicated to the user if it's present.
+     """
+ 
+-    def __init__(self):
+-        self.settings_dict: dict[str, str] = Settings().get_dict()
+-        model_name, base_url, api_key = self.get_settings_values()
+-
+-        self.model_name = model_name
+-        context = self.read_context_txt_file()
+-
+-        self.model = ModelFactory.create_model(self.model_name, base_url, api_key, context)
+-
+-    def get_settings_values(self) -> tuple[str, str, str]:
+-        model_name = self.settings_dict.get('model') or DEFAULT_MODEL_NAME
+-        base_url = (self.settings_dict.get('base_url') or 'https://api.openai.com/v1/').rstrip('/') + '/'
+-        api_key = self.settings_dict.get('api_key')
+-
+-        return model_name, base_url, api_key
++    def __init__(self, model):
++        # Agent Control injects an admitted, credential-free proposal model.
++        self.model = model
+ 
+     def read_context_txt_file(self) -> str:
+-        # Construct context for the assistant by reading context.txt and adding extra system information
+-        context = ''
+-        path_to_context_file = Path(__file__).resolve().parent.joinpath('resources', 'context.txt')
+-        with open(path_to_context_file, 'r') as file:
+-            context += file.read()
+-
+-        context += f' Locally installed apps are {",".join(local_info.locally_installed_apps)}.'
+-        context += f' OS is {local_info.operating_system}.'
+-        context += f' Primary screen size is {Screen().get_size()}.\n'
+-
+-        if 'default_browser' in self.settings_dict.keys() and self.settings_dict['default_browser']:
+-            context += f'\nDefault browser is {self.settings_dict["default_browser"]}.'
+-
+-        if 'custom_llm_instructions' in self.settings_dict:
+-            context += f'\nCustom user-added info: {self.settings_dict["custom_llm_instructions"]}.'
+-
+-        return context
++        path = Path(__file__).resolve().parent / "resources" / "context.txt"
++        return path.read_text(encoding="utf-8")
+ 
+     def get_instructions_for_objective(self, original_user_request: str, step_num: int = 0) -> dict[str, Any]:
+         return self.model.get_instructions_for_objective(original_user_request, step_num)

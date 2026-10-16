@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 
     from agentbot_control.control import Control
     from agentbot_control.event_store import EventStore
+    from agentbot_control.macos import MacComputers
     from agentbot_control.ports import StopRun
     from agentbot_control.windows import WindowsComputers
 
@@ -47,6 +48,7 @@ class Lifecycle:
         stop: StopRun,
         tasks: dict[str, asyncio.Task],
         windows: WindowsComputers,
+        macos: MacComputers | None = None,
     ) -> None:
         self.store = store
         self.action_locks = action_locks
@@ -57,6 +59,7 @@ class Lifecycle:
         self.stop = stop
         self.tasks = tasks
         self.windows = windows
+        self.macos = macos
 
     def retention(self, sid):
         with self.store.transaction() as db:
@@ -75,6 +78,13 @@ class Lifecycle:
             )
         with self.store.transaction() as db:
             native = db.execute("SELECT framework FROM bots WHERE id=?", (bot_id,)).fetchone()
+        if native and native[0] == "open_interface":
+            if self.macos:
+                await self.macos.refresh()
+            if not self.macos or not self.macos.config(bot_id):
+                raise Conflict("Select a paired Mac in bot settings first.")
+            if operation not in {"create", "close"}:
+                raise Conflict("Personal Macs support connect/disconnect only.")
         if native and native[0] == "ufo" and not self.windows.config(bot_id):
             raise Conflict("Select a paired Windows computer in bot settings first.")
         if self.windows.config(bot_id) and operation not in {"create", "close"}:

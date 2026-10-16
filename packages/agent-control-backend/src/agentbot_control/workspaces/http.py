@@ -190,7 +190,7 @@ def register_workspace_routes(app):
     @app.post("/api/bots/{bot_id}/shares")
     async def share(bot_id: str, request: Request):
         bot = service.bot(service.user(request).id, bot_id, "owner")
-        if bot.framework == "ufo":
+        if bot.framework in {"ufo", "open_interface"}:
             raise HTTPException(403, "Personal Windows desktop history cannot be shared.")
         command = await body(request, Share)
         if command.session_id:
@@ -419,7 +419,7 @@ def register_workspace_routes(app):
                 "INSERT INTO search_index SELECT id,bot_id,'message',role,content FROM messages"
             )
             rows = db.execute(
-                "SELECT f.resource_id,f.bot_id,f.kind,f.title,snippet(search_index,4,'[',']','...',20) AS snippet FROM search_index f JOIN bot_streams b ON b.bot_id=f.bot_id JOIN bots c ON c.id=f.bot_id JOIN workspace_members m ON m.workspace_id=b.workspace_id WHERE search_index MATCH ? AND b.workspace_id=? AND m.user_id=? AND (c.framework!='ufo' OR c.owner_id=?) AND (?='all' OR f.kind=?) LIMIT 50 OFFSET ?",
+                "SELECT f.resource_id,f.bot_id,f.kind,f.title,snippet(search_index,4,'[',']','...',20) AS snippet FROM search_index f JOIN bot_streams b ON b.bot_id=f.bot_id JOIN bots c ON c.id=f.bot_id JOIN workspace_members m ON m.workspace_id=b.workspace_id WHERE search_index MATCH ? AND b.workspace_id=? AND m.user_id=? AND (c.framework NOT IN ('ufo','open_interface') OR c.owner_id=?) AND (?='all' OR f.kind=?) LIMIT 50 OFFSET ?",
                 (query, wid, uid, uid, kind, kind, cursor),
             ).fetchall()
         return {

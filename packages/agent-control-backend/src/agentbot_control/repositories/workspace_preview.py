@@ -125,6 +125,13 @@ def preview(db: sqlite3.Connection, owner: str, wid: str) -> DeletionPreview:
             f"/channel?workspace={wid}",
         ),
         (
+            "macos_bindings",
+            f"bot_id IN ({BOTS}) AND active=1",
+            "recovery_required",
+            "Disconnect the workspace Mac sessions.",
+            url + "&tab=computer",
+        ),
+        (
             "windows_bindings",
             f"bot_id IN ({BOTS}) AND active=1",
             "recovery_required",

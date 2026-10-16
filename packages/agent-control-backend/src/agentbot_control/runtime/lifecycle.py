@@ -21,6 +21,7 @@ async def startup(self: Runtime):
         return
     self.lock.acquire()
     try:
+        await self.macos.refresh()
         with self.store.transaction() as db:
             owners = [r[0] for r in db.execute("SELECT id FROM users")]
         for owner in owners:
@@ -140,6 +141,7 @@ async def shutdown(self: Runtime):
             raise RuntimeError(
                 "Shutdown could not confirm sandbox termination; pending runs remain quarantined."
             ) from exc
+    await self.macos.shutdown()
     await self.cloud.shutdown()
     await self.computers.shutdown()
     self.lock.release()

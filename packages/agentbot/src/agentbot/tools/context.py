@@ -124,8 +124,18 @@ class ToolAccess:
                 "connector.github": "github_issues",
             }.get(
                 operation,
-                "windows_desktop" if operation.startswith("windows.") else operation,
+                operation,
             )
+            bundles = {
+                spec.tool_id
+                for spec in self.registry.values()
+                if any(
+                    pattern.endswith(".*") and operation.startswith(pattern[:-1])
+                    for pattern in spec.operations
+                )
+            }
+            if len(bundles) == 1:
+                name = next(iter(bundles))
             if name not in {b["tool_id"] for b in self.bindings}:
                 # Anthropic's native computer members are exposed as one bundle.
                 from agentbot.sandbox.desktop_plan import COMPUTER_ACTIONS
@@ -141,7 +151,10 @@ class ToolAccess:
         ].get("resource_id"):
             raise ToolUnavailable("The action does not use this tool's selected connection.")
         allowed = operation in spec.operations or (
-            "windows.*" in spec.operations and operation.startswith("windows.")
+            any(
+                pattern.endswith(".*") and operation.startswith(pattern[:-1])
+                for pattern in spec.operations
+            )
         )
         if "computer.*" in spec.operations:
             from agentbot.sandbox.desktop_plan import COMPUTER_ACTIONS

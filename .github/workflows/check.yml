@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         python: ['3.11', '3.13']
     runs-on: ${{ matrix.os }}
     steps:
@@ -31,7 +31,7 @@ jobs:
       - run: uv run --no-sync python scripts/check_python_size.py
       - run: uv run --no-sync pyright
       - run: uv run --no-sync pyright --project pyrightconfig.foundation.json
-      - run: uv run --no-sync pytest -m 'not docker and not windows_desktop'
+      - run: uv run --no-sync pytest -m 'not docker and not windows_desktop and not macos_desktop'
       - run: uv run --no-sync python scripts/docs_check.py
       - run: npm ci --prefix packages/agent-control-frontend
       - run: uv run --no-sync python scripts/check_wire.py

@@ -56,6 +56,7 @@ async def start(
             return previous
         if run_mode == "computer":
             self.windows.require_run(bot, user.id)
+            await self.macos.require_run(bot, user.id)
             self.cloud.require_run(bot, user.id)
             from agentbot_control.shared_computers.resolution import ensure_runnable
 
@@ -100,18 +101,31 @@ async def start(
             {"role": m["role"], "content": m["content"]}
             for m in self.store.messages(bot.id)["messages"]
         ]
-        response, created = self.store.admit(
-            bot,
-            user.id,
-            request_id,
-            prompt,
-            trigger,
-            (model.api_key,),
-            attachments,
-            run_mode=run_mode,
-            channel_delivery_id=channel_delivery_id,
-            allowed_policy_id=allowed_policy_id,
-        )
+
+        def admit():
+            return self.store.admit(
+                bot,
+                user.id,
+                request_id,
+                prompt,
+                trigger,
+                (model.api_key,),
+                attachments,
+                run_mode=run_mode,
+                channel_delivery_id=channel_delivery_id,
+                allowed_policy_id=allowed_policy_id,
+            )
+
+        cancelled = False
+        admission_task = asyncio.create_task(self.store.offload(admit))
+        while True:
+            try:
+                response, created = await asyncio.shield(admission_task)
+                break
+            except asyncio.CancelledError:
+                cancelled = True
+                if admission_task.cancelled():
+                    raise
         if created:
             if attachments:
                 context.append(
@@ -143,6 +157,8 @@ async def start(
                 self.started.discard(rid)
 
             task.add_done_callback(settled)
+        if cancelled:
+            raise asyncio.CancelledError()
         return response
 
 
@@ -155,7 +171,10 @@ async def _execute(self: Runtime, bot, response, prompt, context, model, streame
     artifacts = set()
     persistence_ms, persisted_frames = 0.0, 0
     try:
-        async with asyncio.timeout(self.run_timeout):
+        from agentbot_control.repositories.macos_tasks import deadline
+
+        task_budget = await self.store.database.read(lambda db: deadline(db, rid))
+        async with asyncio.timeout(min(self.run_timeout, task_budget or self.run_timeout)):
             if sid:
                 self.bind(self.store.computer(bot.id))
                 creation = asyncio.create_task(self.kernel.sandboxes.get_or_create(sid))
@@ -280,7 +299,10 @@ async def _execute(self: Runtime, bot, response, prompt, context, model, streame
             logger.exception("Termination is unverified for run %s", rid)
             self.store.request_stop(bot.id, rid, identifier("unverified"))
             self.store.set_computer(bot.id, sid, "failed")
-            if guard and getattr(guard.sandbox, "provider", None) == "windows_local":
+            if guard and getattr(guard.sandbox, "provider", None) in {
+                "windows_local",
+                "macos_local",
+            }:
                 self.store.finish(bot.id, rid, "interrupted", sanitized(str(exc), (model.api_key,)))
         finally:
             self.streamers.pop(rid, None)

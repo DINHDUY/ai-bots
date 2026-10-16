@@ -59,7 +59,7 @@ function BotContent({ bot }: { bot: BotDetail }) {
               onSettings={() => setSettings(true)}
               onComputer={() => setParams({ view: "computer", tab: "screen" })}
             />
-            {session.status === "unknown" && !(bot.framework === "ufo" && session.computerStatus === "failed") ? (
+            {session.status === "unknown" && !(["ufo", "open_interface"].includes(bot.framework) && session.computerStatus === "failed") ? (
               <p className={styles.notice} role="status">
                 {session.protocol === 2
                   ? "The previous run was interrupted. Its outcome could not be confirmed."
@@ -67,7 +67,7 @@ function BotContent({ bot }: { bot: BotDetail }) {
               </p>
             ) : null}
             {session.computerStatus === "failed" ? (
-              bot.framework === "ufo" ? <WindowsRecoveryNotice botId={bot.id} session={session} /> :
+              ["ufo", "open_interface"].includes(bot.framework) ? <WindowsRecoveryNotice macos={bot.framework === "open_interface"} botId={bot.id} session={session} /> :
               <p className={styles.notice} role="status">
                 Sandbox recovery or termination is unverified. Close this sandbox before starting another task. Closing removes its workspace files.
               </p>

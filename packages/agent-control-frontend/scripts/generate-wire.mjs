@@ -21,3 +21,10 @@ await writeFile(new URL("../src/api/deletions.generated.ts", import.meta.url),
     additionalProperties: false,
     ignoreMinAndMaxItems: true,
   }));
+
+const macos = new URL("../src/api/macos.schema.json", import.meta.url);
+await writeFile(new URL("../src/api/macos.generated.ts", import.meta.url),
+  await compileFromFile(macos.pathname.replace(/^\/(\w:)/, "$1"), {
+    bannerComment: "/* Generated from macos.schema.json; run npm run generate:wire. */",
+    additionalProperties: false, ignoreMinAndMaxItems: true,
+  }));

@@ -134,6 +134,12 @@ def create_app(
     app.state.cors_origins = set(origins)
     app.state.approval_timeout = approval_timeout
     coordinator.windows.register(app)
+    from agentbot_control.macos.http import register_routes as register_macos
+
+    register_macos(app)
+    from agentbot_control.macos.tasks import register_routes as register_mac_tasks
+
+    register_mac_tasks(app)
     coordinator.cloud.routes(app)
 
     http.register_http(app, coordinator, persistence_probe)

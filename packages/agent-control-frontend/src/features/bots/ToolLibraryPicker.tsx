@@ -26,7 +26,7 @@ export function ToolLibraryPicker({ framework, value, onChange, state, disabled 
       <button type="button" disabled={disabled || !catalog.data} onClick={() => onChange([...value, ...specs.filter(t => t.compatible && /^(sandbox|windows)\./.test(t.library_id) && !value.some(v => key(v) === key(t))).map(selection)])}>Computer basics</button>
       <button type="button" disabled={disabled || !value.length} onClick={() => onChange([])}>Clear</button>
     </div>
-    {!value.length ? <p>{framework === "ufo" ? "Select Windows desktop control to run a Windows task." : "No tools selected. This bot can respond in chat."}</p> : null}
+    {!value.length ? <p>{framework === "open_interface" ? "Select macOS desktop control to run a Mac task." : framework === "ufo" ? "Select Windows desktop control to run a Windows task." : "No tools selected. This bot can respond in chat."}</p> : null}
     {catalog.isPending ? <p role="status">Loading tool libraries…</p> : null}
     {catalog.isError ? <p role="alert">Could not load tool libraries. <button type="button" onClick={() => void catalog.refetch()}>Retry</button></p> : null}
     {libraries.map(id => {

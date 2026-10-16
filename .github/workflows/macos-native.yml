@@ -1,0 +1,20 @@
+name: macOS interactive qualification
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    # Manually dispatched on a dedicated signed-in test Mac with TCC configured.
+    runs-on: [self-hosted, macOS, ARM64, agentbot-desktop]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.11.14'
+          python-version: '3.11'
+      - run: uv sync --locked
+      - run: make BIN=.venv/bin macos-setup
+      - run: make BIN=.venv/bin macos-bridge-test
+      - run: make BIN=.venv/bin macos-test

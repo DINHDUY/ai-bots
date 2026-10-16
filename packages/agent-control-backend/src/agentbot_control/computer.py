@@ -70,7 +70,7 @@ class Computers:
                     )
                     report = {**report, "observed_at": stamp()}
                     # Local Windows control/consent is live; do not cache its status.
-                    if report.get("provider") != "windows_local":
+                    if report.get("provider") not in {"windows_local", "macos_local"}:
                         self._inspections[key] = (time.monotonic(), deepcopy(report))
                         while len(self._inspections) > 256:
                             self._inspections.popitem(last=False)
@@ -135,7 +135,7 @@ class Computers:
                             report["services"].get(k)
                             for k in (
                                 ("desktop",)
-                                if report.get("provider") == "windows_local"
+                                if report.get("provider") in {"windows_local", "macos_local"}
                                 else ("browser", "desktop")
                             )
                         )
@@ -272,7 +272,9 @@ class Computers:
                     try:
                         await self.capture(
                             bot_id,
-                            "desktop" if report.get("provider") == "windows_local" else "browser",
+                            "desktop"
+                            if report.get("provider") in {"windows_local", "macos_local"}
+                            else "browser",
                         )
                     except Exception:
                         pass
@@ -309,8 +311,10 @@ def register_computer_routes(app):
                     return present(report["computer"], db)
 
             report["computer"] = shown()
-        if bot.framework == "ufo":
-            report["provider"] = "windows_local"
+        if bot.framework in {"ufo", "open_interface"}:
+            report["provider"] = (
+                "macos_local" if bot.framework == "open_interface" else "windows_local"
+            )
             report["capabilities"].update(
                 remote_control=False,
                 desktop_takeover=writable,

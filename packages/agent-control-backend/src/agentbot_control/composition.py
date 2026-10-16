@@ -10,9 +10,12 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from agentbot.interfaces import SandboxManager
+from agentbot_tools.open_interface import OiAgentAdapter
 from agentbot_tools.ufo import UfoAgentAdapter
 
 from agentbot_control.cloud import CloudProviderRouter
+from agentbot_control.macos import MacComputers
+from agentbot_control.macos.provider import MacProviderRouter
 from agentbot_control.windows import ProviderRouter
 
 if TYPE_CHECKING:
@@ -44,9 +47,12 @@ if TYPE_CHECKING:
 class SandboxRouter:
     """Docker, then Windows, then cloud. One object on the kernel."""
 
-    def __init__(self, docker, windows, cloud):
+    def __init__(self, docker, windows, cloud, macos=None):
         self.docker = docker
-        self.inner = CloudProviderRouter(ProviderRouter(docker, windows), cloud)
+        native = ProviderRouter(docker, windows)
+        self.inner = CloudProviderRouter(
+            MacProviderRouter(native, macos) if macos else native, cloud
+        )
 
     def __getattr__(self, name):
         return getattr(self.inner, name)
@@ -93,16 +99,17 @@ class SandboxRouter:
         return self.inner.is_windows(session_id)
 
 
-def attach_sandbox_router(kernel, windows, cloud) -> SandboxRouter:
+def attach_sandbox_router(kernel, windows, cloud, macos=None) -> SandboxRouter:
     if isinstance(kernel.sandboxes, SandboxRouter):
         return kernel.sandboxes
-    router = SandboxRouter(kernel.sandboxes, windows, cloud)
+    router = SandboxRouter(kernel.sandboxes, windows, cloud, macos)
     kernel.sandboxes = router
     return router
 
 
 def ensure_control_frameworks(kernel) -> None:
     kernel.registry.register_framework("ufo", UfoAgentAdapter)
+    kernel.registry.register_framework("open_interface", OiAgentAdapter)
 
 
 @dataclass(frozen=True)
@@ -129,6 +136,7 @@ class Services:
     workspace_deletions: WorkspaceDeletions
     routines: Routines
     windows: WindowsComputers
+    macos: MacComputers
     cloud: CloudComputers
     sandboxes: SandboxManager
     runs: Runtime
@@ -170,6 +178,7 @@ def compose_runtime(coordinator: Runtime) -> None:
     coordinator.workspaces = Workspaces(coordinator.store, catalog)
     catalog.configure_authorization(coordinator.workspaces.bot)
     coordinator.windows = WindowsComputers(coordinator.store, coordinator.tasks)
+    coordinator.macos = MacComputers(coordinator.store, coordinator.tasks)
     coordinator.toolkit = Toolkit(coordinator.store, catalog, coordinator.workspaces)
     coordinator.control = Control(
         coordinator.store,
@@ -177,6 +186,7 @@ def compose_runtime(coordinator: Runtime) -> None:
         workspaces=coordinator.workspaces,
         kernel=kernel,
         windows=coordinator.windows,
+        macos=coordinator.macos,
         toolkit=coordinator.toolkit,
         action_locks=coordinator.action_locks,
         bind=coordinator.bind,
@@ -198,6 +208,7 @@ def compose_runtime(coordinator: Runtime) -> None:
         stop=coordinator.stop,
         tasks=coordinator.tasks,
         windows=coordinator.windows,
+        macos=coordinator.macos,
     )
     coordinator.shared_computers = None
     coordinator.cloud = CloudComputers(
@@ -223,10 +234,13 @@ def compose_runtime(coordinator: Runtime) -> None:
         cloud=coordinator.cloud,
     )
     ensure_control_frameworks(kernel)
-    coordinator.sandboxes = attach_sandbox_router(kernel, coordinator.windows, coordinator.cloud)
+    coordinator.sandboxes = attach_sandbox_router(
+        kernel, coordinator.windows, coordinator.cloud, coordinator.macos
+    )
     coordinator.capabilities["cloud_computers"] = bool(coordinator.cloud.profiles)
     coordinator.capabilities["windows_computers"] = True
-    coordinator.capabilities["frameworks"] = ["anthropic", "microsoft", "ufo"]
+    coordinator.capabilities["macos_computers"] = True
+    coordinator.capabilities["frameworks"] = ["anthropic", "microsoft", "ufo", "open_interface"]
     coordinator.tools = ToolLibraries(
         coordinator.store,
         approvals=coordinator.approvals,
@@ -363,6 +377,7 @@ def compose_runtime(coordinator: Runtime) -> None:
         workflow_imports=coordinator.workflow_imports,
         workspace_deletions=coordinator.workspace_deletions,
         windows=coordinator.windows,
+        macos=coordinator.macos,
         cloud=coordinator.cloud,
         sandboxes=coordinator.sandboxes,
         runs=coordinator,

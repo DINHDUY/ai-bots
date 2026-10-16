@@ -31,7 +31,8 @@ export function Workspace({
   onSettings: () => void;
 }) {
   const [params, setParams] = useSearchParams();
-  const windows = bot.framework === "ufo";
+  const macos = bot.framework === "open_interface";
+  const windows = bot.framework === "ufo" || macos;
   const tabs = windows ? TABS.filter(t => t.id === "screen" || t.id === "activity") : TABS;
   const patchView = useWorkspaceUi((state) => state.patch);
   const tab =
@@ -52,7 +53,7 @@ export function Workspace({
   return (
     <section
       className={`${styles.workspace} ${expanded ? styles.expanded : styles.compact}`}
-      aria-label={windows ? "Local Windows PC" : "Live Cloud Computer"}
+      aria-label={macos ? "Local Mac" : windows ? "Local Windows PC" : "Live Cloud Computer"}
     >
       <WorkspaceHeader
         bot={bot}
@@ -60,7 +61,7 @@ export function Workspace({
         expanded={expanded}
         onSettings={onSettings}
       />
-      {expanded && windows && session.computerStatus === "failed" ? <WindowsRecoveryNotice botId={bot.id} session={session} /> : null}
+      {expanded && windows && session.computerStatus === "failed" ? <WindowsRecoveryNotice macos={macos} botId={bot.id} session={session} /> : null}
       <div className={styles.computerBody}>
         <div className={styles.stage}>
           <div className={styles.toolbar}>
@@ -130,7 +131,7 @@ export function Workspace({
           >
             {session.status === "closed" ? (
               <p className={styles.notice}>
-                {windows ? "Windows PC disconnected. Captures below are historical." : "Sandbox closed. Captures and previews below are historical; the workspace was removed."}
+                {macos ? "Mac disconnected. Captures below are historical." : windows ? "Windows PC disconnected. Captures below are historical." : "Sandbox closed. Captures and previews below are historical; the workspace was removed."}
               </p>
             ) : stale && session.sessionId ? (
               <p className={styles.notice}>
@@ -141,7 +142,7 @@ export function Workspace({
             {tab === "screen" ? (
               <>
                 <LiveScreen
-                  windows={windows}
+                  windows={windows} macos={macos}
                   botId={bot.id}
                   shots={session.shots}
                   dropped={session.droppedShots}
@@ -206,7 +207,7 @@ export function Workspace({
           <footer className={styles.workspaceFooter}>
             <span>
               <Icon name="cloud" />
-              Powered by <code>{windows ? "Microsoft UFO" : "agentbot_sandbox"}</code>
+              Powered by <code>{macos ? "Open-Interface" : windows ? "Microsoft UFO" : "agentbot_sandbox"}</code>
             </span>
             {expanded ? <span>Observations from this page session</span> : null}
           </footer>

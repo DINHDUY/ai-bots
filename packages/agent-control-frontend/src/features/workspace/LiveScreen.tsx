@@ -17,12 +17,14 @@ export function LiveScreen({
   dropped,
   historical,
   windows = false,
+  macos = false,
 }: {
   botId: string;
   shots: Shot[];
   dropped: number;
   historical: boolean;
   windows?: boolean;
+  macos?: boolean;
 }) {
   const view = useWorkspaceUi((state) => state.bots[botId] ?? emptyView);
   const patch = useWorkspaceUi((state) => state.patch);
@@ -182,12 +184,12 @@ export function LiveScreen({
           icon="computer"
           title={
             windows
-              ? "Your Windows screen appears here"
+              ? (macos ? "Your Mac screen appears here" : "Your Windows screen appears here")
               : "Your bot’s computer appears here"
           }
         >
           {windows
-            ? "In Bot settings, select your paired PC and click Use this PC. In the Windows companion, select a window and enable Share screen. Then choose Connect Windows PC here to view captures. Enable Allow agent control locally before sending a task."
+            ? macos ? "In Bot settings, pair and select your Mac. In the macOS companion, select a window, enable Share screen, and grant Screen Recording and Accessibility permissions. Choose Connect Mac here; enable Allow agent control locally before running a task." : "In Bot settings, select your paired PC and click Use this PC. In the Windows companion, select a window and enable Share screen. Then choose Connect Windows PC here to view captures. Enable Allow agent control locally before sending a task."
             : "Screen captures arrive as your bot uses its sandbox. Send a task to get started."}
         </EmptyState>
         {session?.health?.compatible ? (
@@ -199,7 +201,7 @@ export function LiveScreen({
   return (
     <section
       className={styles.screenView}
-      aria-label={windows ? "Windows captures" : "Sandbox captures"}
+      aria-label={macos ? "Mac captures" : windows ? "Windows captures" : "Sandbox captures"}
     >
       <div className={styles.screenToolbar}>
         <div className={styles.screenToolbarInfo}>
@@ -290,7 +292,7 @@ export function LiveScreen({
                 dy: Math.max(-2000, Math.min(2000, event.deltaY)),
               });
           }}
-          alt={`${windows ? "Windows" : "Sandbox"} capture${shown.at ? ` received at ${clockLabel(shown.at)}` : ""}`}
+          alt={`${macos ? "Mac" : windows ? "Windows" : "Sandbox"} capture${shown.at ? ` received at ${clockLabel(shown.at)}` : ""}`}
         />
         {imageValid &&
         !historical &&

@@ -23,7 +23,8 @@ export function WorkspaceHeader({
 }) {
   const [params, setParams] = useSearchParams();
   const waiting = pendingApprovals(session).length;
-  const windows = bot.framework === "ufo";
+  const macos = bot.framework === "open_interface";
+  const windows = bot.framework === "ufo" || macos;
   const { report } = useComputerControl(bot.id, session.protocol === 2);
   const cloud = report.data?.provider?.startsWith("azure_");
   const shared = report.data?.workspace_computer === true;
@@ -56,7 +57,7 @@ export function WorkspaceHeader({
         <div className={styles.computerIdentity}>
           <div className={styles.computerTitle}>
             <Icon name="computer" />
-            <h2>{shared ? "Shared workspace computer" : windows ? "Local Windows PC" : report.data?.display_name ?? "Live Cloud Computer"}</h2>
+            <h2>{shared ? "Shared workspace computer" : macos ? "Local Mac" : windows ? "Local Windows PC" : report.data?.display_name ?? "Live Cloud Computer"}</h2>
           </div>
           <p className={styles.sessionIdentity} title={session.sessionId}>
             {shared
@@ -103,7 +104,7 @@ export function WorkspaceHeader({
           ) : (
             <button
               className="icon-button ghost"
-              aria-label={windows ? "Expand Windows desktop" : "Expand cloud computer"}
+              aria-label={macos ? "Expand macOS desktop" : windows ? "Expand Windows desktop" : "Expand cloud computer"}
               onClick={() => {
                 const next = new URLSearchParams(params);
                 next.set("view", "computer");
@@ -113,7 +114,7 @@ export function WorkspaceHeader({
               <Icon name="expand" />
             </button>
           )}
-          {!cloud && !shared ? <ComputerDisconnect botId={bot.id} session={session} windows={windows} /> : null}
+          {!cloud && !shared ? <ComputerDisconnect botId={bot.id} session={session} windows={windows} macos={macos} /> : null}
         </div>
       </div>
       {session.protocol === 2 ? <ComputerControls botId={bot.id} /> : null}

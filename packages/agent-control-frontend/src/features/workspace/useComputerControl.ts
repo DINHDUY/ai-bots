@@ -63,6 +63,6 @@ export function useComputerControl(botId: string, enabled = true) {
   const paused = computer?.status === "running" && control.data?.paused === true;
   return {
     report, computer, control, writable, paused, resume, resuming,
-    canResume: paused && (writable || report.data?.capabilities?.remote_control === true) && !control.data?.lease && !control.isError && !resuming && (report.data?.provider !== "windows_local" || report.data.local_control === true) && (!report.data?.provider?.startsWith("azure_") || report.data.compatible === true),
+    canResume: paused && (writable || report.data?.capabilities?.remote_control === true) && !control.data?.lease && !control.isError && !resuming && (!["windows_local", "macos_local"].includes(report.data?.provider ?? "") || report.data?.local_control === true) && (!report.data?.provider?.startsWith("azure_") || report.data.compatible === true),
   };
 }

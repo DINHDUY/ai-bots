@@ -40,6 +40,7 @@ CONTENT = (
     ("groups", "workspace_id=?"),
     ("search_index", f"bot_id IN ({BOTS})"),
     ("windows_bindings", f"bot_id IN ({BOTS})"),
+    ("macos_bindings", f"bot_id IN ({BOTS})"),
     ("workspace_computer_settings", "workspace_id=?"),
     ("workspace_capture_retention", "workspace_id=?"),
     ("workspace_members", "workspace_id=?"),

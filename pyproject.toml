@@ -8,7 +8,7 @@ dependencies = ["agent-control-backend[dev]", "agentbot-computer-agent"]
 package = false
 
 [tool.uv.workspace]
-members = ["packages/agentbot-product-tools", "packages/agentbot", "packages/agent-control-backend", "packages/agentbot-computer-agent", "packages/agentbot-windows-companion"]
+members = ["packages/agentbot-product-tools", "packages/agentbot", "packages/agent-control-backend", "packages/agentbot-computer-agent", "packages/agentbot-windows-companion", "packages/agentbot-macOS-companion"]
 
 [tool.uv.sources]
 agentbot = { workspace = true }
@@ -16,9 +16,10 @@ agentbot-product-tools = { workspace = true }
 agent-control-backend = { workspace = true }
 agentbot-computer-agent = { workspace = true }
 agentbot-windows-companion = { workspace = true }
+agentbot-macos-companion = { workspace = true }
 
 [tool.pytest.ini_options]
-testpaths = ["tests", "packages/agentbot/tests", "packages/agent-control-backend/tests", "packages/agentbot-windows-companion/tests", "packages/agentbot-computer-agent/tests", "docs/usecases/tests"]
+testpaths = ["tests", "packages/agentbot/tests", "packages/agent-control-backend/tests", "packages/agentbot-windows-companion/tests", "packages/agentbot-macOS-companion/tests", "packages/agentbot-computer-agent/tests", "docs/usecases/tests"]
 pythonpath = [
     ".",
     "packages/agentbot/src",
@@ -27,12 +28,14 @@ pythonpath = [
     "packages/agent-control-backend/src",
     "packages/agent-control-backend/tests",
     "packages/agentbot-windows-companion/src",
+    "packages/agentbot-macOS-companion/src",
     "packages/agentbot-computer-agent/src",
 ]
 asyncio_mode = "auto"
 markers = [
     "docker: requires Docker and the agentbot-sandbox image",
     "windows_desktop: requires an explicitly enabled interactive Windows test desktop",
+    "macos_desktop: requires an explicitly enabled interactive macOS test desktop",
 ]
 
 [tool.ruff]
@@ -48,6 +51,8 @@ select = ["E", "F", "W", "I", "B", "UP"]
 ignore = ["E501", "B904", "E701", "B012", "B023", "E402"]
 
 [tool.pyright]
+venvPath = "."
+venv = ".venv"
 pythonVersion = "3.11"
 typeCheckingMode = "basic"
 # Baseline diagnostics are warnings so `pyright` exits 0. The counts are tracked
@@ -69,6 +74,7 @@ include = [
     "packages/agentbot-computer-agent/src",
     "packages/agent-control-backend/src",
     "packages/agentbot-windows-companion/src",
+    "packages/agentbot-macOS-companion/src",
 ]
 exclude = ["**/build", "data", ".venv"]
 
@@ -86,8 +92,15 @@ reportMissingTypeStubs = false
 # is recorded in docs/adr/0015-local-quality-gates.md.
 [[tool.pyright.executionEnvironments]]
 root = "packages/agent-control-backend/src"
-extraPaths = ["packages/agentbot-product-tools/src", "packages/agent-control-backend/src", "packages/agentbot/src", "packages/agentbot-windows-companion/src"]
+extraPaths = ["packages/agentbot-product-tools/src", "packages/agent-control-backend/src", "packages/agentbot/src", "packages/agentbot-windows-companion/src", "packages/agentbot-macOS-companion/src"]
 
 [[tool.pyright.executionEnvironments]]
 root = "packages/agentbot-windows-companion/src"
-extraPaths = ["packages/agentbot-product-tools/src", "packages/agentbot-windows-companion/src"]
+extraPaths = ["packages/agentbot-product-tools/src", "packages/agentbot-windows-companion/src", "packages/agentbot-macOS-companion/src"]
+
+[[tool.pyright.executionEnvironments]]
+root = "packages/agentbot-macOS-companion/src"
+extraPaths = ["packages/agentbot-macOS-companion/src", "packages/agentbot-macOS-companion/typings"]
+
+# Optional native dependencies have checked stubs, but no portable runtime sources.
+reportMissingModuleSource = false

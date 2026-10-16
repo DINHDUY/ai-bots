@@ -15,7 +15,7 @@ def providers_for_framework(framework: str) -> frozenset[str] | None:
 
     if framework == "anthropic":
         return frozenset({"anthropic"})
-    if framework in {"microsoft", "ufo"}:
+    if framework in {"microsoft", "ufo", "open_interface"}:
         return frozenset({"openai", "azure_foundry"})
     return None
 

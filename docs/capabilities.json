@@ -78,5 +78,10 @@
     "name": "Capture retention",
     "status": "Implemented; provider limits apply",
     "source": "packages/agent-control-backend/src/agentbot_control/capture_retention/__init__.py"
+  },
+  {
+    "name": "Open-Interface macOS companion and TaskStar bridge",
+    "status": "Implemented; native qualification pending",
+    "source": "packages/agentbot-macOS-companion/src/agentbot_macos/controller.py"
   }
 ]

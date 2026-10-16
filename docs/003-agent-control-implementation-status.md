@@ -259,6 +259,27 @@ default collapse, expansion, and recovery after reload. Existing warning baselin
 remain. Docker, native companion, and standalone Behave checks were not rerun for
 this UI-only follow-up.
 
+## macOS companion: implementation and qualification
+
+The user approved implementation of the [Open-Interface/macOS plan](029-agent-control-macos-companion-plan.md)
+on 2026-10-16. The new package supplies the native runtime, portable TaskStar
+bridge/controller, hash-pinned OI/UFO source adaptations, and isolated native
+setup. Backend `open_interface`/`macos_local` integration, owner pairing, durable
+task/action receipts, approvals, single-device bindings, recovery, and frontend
+Mac settings/workspace are implemented. [030](030-agent-control-macos-runtime.md)
+documents setup, limits, task submission and retained state.
+
+Portable and scripted results are separate from native qualification in the
+[validation record](metrics/macos-companion-validation.md). `make check` passed
+568 Python and 88 frontend tests; `make check-docker` passed 13 Docker and
+42 browser tests. A separate Python 3.13 run and the real pinned TaskStar bridge
+probe also passed with the coverage limits recorded there. The local required
+native gate fails because Screen Recording, Accessibility, and an unlocked console
+session are unavailable to this process. Native operation/Stop measurements,
+lock/session transitions, live-model scenarios, and native Windows regression
+remain open. This is not completion of all M0–M6 exit criteria or a supported
+native release. CI definitions are present but hosted runs are not claimed.
+
 ## Prior feature baseline
 
 B1 and B2 remain the execution foundation. B3–B11 are implemented across the backend, sandbox image, and frontend with the initial release scope below. See [runtime contracts and deployment instructions](016-agent-control-backend-runtime.md) and the [frontend guide](009-agent-control-frontend.md).

@@ -13,7 +13,7 @@ beforeAll(() => {
   HTMLDialogElement.prototype.close = function () {
     this.removeAttribute("open");
   };
-  server.listen({ onUnhandledRequest: "error" });
+  server.listen({ onUnhandledFrame: "error" });
   vi.stubGlobal("WebSocket", FakeWebSocket);
 });
 

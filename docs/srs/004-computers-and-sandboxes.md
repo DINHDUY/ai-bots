@@ -69,7 +69,7 @@ The companion requires an unlocked interactive Windows desktop. Its venv MUST be
 
 ## Azure computers
 
-Providers MUST be `docker` (default), `windows_local`, `azure_ml_compute_instance`, and `azure_vm`. Azure computers MUST run the same Linux sandbox image. `CONTROL_COMPUTE_PROFILES` MUST be an absolute path. A bad profile MUST fail startup. Cloud selection MUST NOT fall back to Docker.
+Providers MUST be `docker` (default), `windows_local`, `macos_local`, `azure_ml_compute_instance`, and `azure_vm`. Azure computers MUST run the same Linux sandbox image. `CONTROL_COMPUTE_PROFILES` MUST be an absolute path. A bad profile MUST fail startup. Cloud selection MUST NOT fall back to Docker.
 
 | ID | Requirement |
 | --- | --- |
@@ -82,6 +82,20 @@ Providers MUST be `docker` (default), `windows_local`, `azure_ml_compute_instanc
 | CMP-048 | The host MUST sign each bounded request over binding, boot id, writer epoch, session, generation, action id, arguments, and deadline. Local receipts MUST commit before mutations. An unresolved receipt MUST NOT be replayed. Lease loss and `ExecStopPost` MUST fence only that binding's containers. Routines MUST report `computer_not_ready` instead of starting paid compute. `get_or_create` MUST NOT create an Azure resource or start a stopped host. |
 | CMP-049 | Inventory and reconcile routes MUST be administrator-only. Reconcile MUST verify absence of the host and every recorded disk and NIC before resolving. Per-bot cloud configuration MUST be rejected while a workspace compute profile is active. |
 
+## macOS companion
+
+These are development requirements from the approved plan. Native qualification
+is tracked separately in [the evidence ledger](../metrics/macos-companion-validation.md).
+
+| ID | Requirement |
+| --- | --- |
+| CMP-050 | `open_interface` MUST select an owner-paired `macos_local` provider without cloud fallback. One active bot binding and one local companion process MUST control a device. Mac bots/captures/history MUST remain owner-only and outside shared-computer mode. |
+| CMP-051 | Pairing MUST use one-time expiring codes, backend token hashes and local Keychain storage. Sharing and input MUST start off, require local consent, and be fenced on session/permission/connection loss. Status/Stop IPC MUST require the same UID and a private credential. |
+| CMP-052 | Selected-window capture MUST use ScreenCaptureKit without activation or desktop cropping. Whole-primary-display OI capture MUST require explicit local scope. AX identities and OCR candidates MUST remain distinct; secure and ambiguous targets MUST be refused. |
+| CMP-053 | Native actions MUST require current signed permits and durable pre-dispatch receipts. Duplicate identities MUST NOT replay effects. Unknown results MUST quarantine the binding; stopping a process MUST NOT be treated as rollback. |
+| CMP-054 | Input MUST be limited to the maintained action schema, fresh target geometry/focus and single-line literal Unicode. Model output MUST NOT execute shell, Python, AppleScript, clipboard or arbitrary native functions. Model credentials MUST stay in the backend. |
+| CMP-055 | TaskStar submission MUST preserve producer/task identity across reconnects. Task linkage and run admission MUST commit atomically; changed input MUST conflict. Producer timeout MUST NOT replay native input. Native and live-model acceptance MUST be reported separately from portable tests. |
+
 ## Traceability
 
 | IDs | Sources |
@@ -91,3 +105,4 @@ Providers MUST be `docker` (default), `windows_local`, `azure_ml_compute_instanc
 | CMP-029–CMP-033 | ADR-0018; [023](../023-shared-workspace-computer.md) |
 | CMP-034–CMP-041 | [007](../007-agent-control-ufo-runtime.md) |
 | CMP-042–CMP-049 | [010](../010-agent-control-azure-runtime.md); [008](../008-agent-control-azure-compute-plan.md) |
+| CMP-050–CMP-055 | [029](../029-agent-control-macos-companion-plan.md); [030](../030-agent-control-macos-runtime.md) |

@@ -1,0 +1,242 @@
+--- a/galaxy/constellation/task_star.py
++++ b/galaxy/constellation/task_star.py
+@@ -8,6 +8,8 @@
+ with comprehensive metadata, execution tracking, and device targeting.
+ Optimized for type safety, maintainability, and follows SOLID principles.
+ """
++
++from __future__ import annotations
+ 
+ import asyncio
+ import logging
+@@ -15,7 +17,8 @@
+ from datetime import datetime, timezone
+ from typing import TYPE_CHECKING, Any, Dict, List, Optional
+ 
+-from galaxy.client.device_manager import ConstellationDeviceManager
++if TYPE_CHECKING:
++    from galaxy.client.device_manager import ConstellationDeviceManager
+ 
+ from ..core.interfaces import ITask
+ from ..core.types import ExecutionResult, TaskConfiguration, TaskId
+--- a/galaxy/core/__init__.py
++++ b/galaxy/core/__init__.py
+@@ -1,114 +1,2 @@
+-# Copyright (c) Microsoft Corporation.
+-# Licensed under the MIT License.
+-
+-"""
+-Galaxy Framework Core Package
+-
+-This package contains the core types, interfaces, and utilities for the Galaxy framework.
+-"""
+-
+-from .types import (
+-    # Type aliases
+-    TaskId,
+-    ConstellationId,
+-    DeviceId,
+-    SessionId,
+-    AgentId,
+-    ProgressCallback,
+-    AsyncProgressCallback,
+-    ErrorCallback,
+-    AsyncErrorCallback,
+-    # Result types
+-    ExecutionResult,
+-    ConstellationResult,
+-    # Configuration types
+-    TaskConfiguration,
+-    ConstellationConfiguration,
+-    DeviceConfiguration,
+-    # Context types
+-    ProcessingContext,
+-    # Exception hierarchy
+-    GalaxyFrameworkError,
+-    TaskExecutionError,
+-    ConstellationError,
+-    DeviceError,
+-    ConfigurationError,
+-    ValidationError,
+-    # Utility types
+-    Statistics,
+-)
+-
+-from .interfaces import (
+-    # Task interfaces
+-    ITask,
+-    ITaskFactory,
+-    # Dependency interfaces
+-    IDependency,
+-    IDependencyResolver,
+-    # Constellation interfaces
+-    IConstellation,
+-    IConstellationBuilder,
+-    # Execution interfaces
+-    ITaskExecutor,
+-    IConstellationExecutor,
+-    # Device interfaces
+-    IDevice,
+-    IDeviceRegistry,
+-    IDeviceSelector,
+-    # Agent interfaces
+-    IRequestProcessor,
+-    IResultProcessor,
+-    IConstellationUpdater,
+-    # Session interfaces
+-    ISessionManager,
+-    ISession,
+-    # Monitoring interfaces
+-    IMetricsCollector,
+-    IEventLogger,
+-)
+-
+-__all__ = [
+-    # Types
+-    "TaskId",
+-    "ConstellationId",
+-    "DeviceId",
+-    "SessionId",
+-    "AgentId",
+-    "ProgressCallback",
+-    "AsyncProgressCallback",
+-    "ErrorCallback",
+-    "AsyncErrorCallback",
+-    "ExecutionResult",
+-    "ConstellationResult",
+-    "TaskConfiguration",
+-    "ConstellationConfiguration",
+-    "DeviceConfiguration",
+-    "ProcessingContext",
+-    "Statistics",
+-    # Exceptions
+-    "GalaxyFrameworkError",
+-    "TaskExecutionError",
+-    "ConstellationError",
+-    "DeviceError",
+-    "ConfigurationError",
+-    "ValidationError",
+-    # Interfaces
+-    "ITask",
+-    "ITaskFactory",
+-    "IDependency",
+-    "IDependencyResolver",
+-    "IConstellation",
+-    "IConstellationBuilder",
+-    "ITaskExecutor",
+-    "IConstellationExecutor",
+-    "IDevice",
+-    "IDeviceRegistry",
+-    "IDeviceSelector",
+-    "IRequestProcessor",
+-    "IResultProcessor",
+-    "IConstellationUpdater",
+-    "ISessionManager",
+-    "ISession",
+-    "IMetricsCollector",
+-    "IEventLogger",
+-]
++# Copyright (c) Microsoft Corporation. Licensed under the MIT License.
++# Agent Control imports only TaskStar contracts, without Galaxy service startup.
+--- a/galaxy/__init__.py
++++ b/galaxy/__init__.py
+@@ -1,57 +1,2 @@
+-# Copyright (c) Microsoft Corporation.
+-# Licensed under the MIT License.
+-
+-"""
+-UFO Galaxy Framework
+-
+-A comprehensive framework for DAG-based task orchestration and device management.
+-
+-This package provides:
+-- Constellation: DAG management and execution
+-- Agents: Task orchestration agents (GalaxyWeaverAgent)
+-- Session: Galaxy session management
+-- Client: Device management and coordination
+-"""
+-
+-# Core constellation components
+-from .constellation import (
+-    TaskConstellationOrchestrator,
+-    TaskConstellation,
+-    TaskStar,
+-    TaskStarLine,
+-    TaskStatus,
+-    DependencyType,
+-    ConstellationState,
+-    DeviceType,
+-    TaskPriority,
+-    ConstellationManager,
+-)
+-
+-# Agent components
+-from .agents import ConstellationAgent
+-
+-# Session components
+-from .session import GalaxySession
+-
+-# Client entry points
+-from .galaxy_client import GalaxyClient
+-
+-__all__ = [
+-    # Constellation
+-    "TaskConstellationOrchestrator",
+-    "TaskConstellation",
+-    "TaskStar",
+-    "TaskStarLine",
+-    "TaskStatus",
+-    "DependencyType",
+-    "ConstellationState",
+-    "DeviceType",
+-    "TaskPriority",
+-    "ConstellationManager",
+-    # Agents
+-    "ConstellationAgent",
+-    # Session
+-    "GalaxySession",
+-    # Client
+-    "GalaxyClient",
+-]
++# Copyright (c) Microsoft Corporation. Licensed under the MIT License.
++# Agent Control imports only TaskStar contracts, without Galaxy service startup.
+--- a/galaxy/constellation/__init__.py
++++ b/galaxy/constellation/__init__.py
+@@ -1,35 +1,2 @@
+-# Copyright (c) Microsoft Corporation.
+-# Licensed under the MIT License.
+-
+-"""
+-Task System for Constellation V2 - Modular task orchestration system.
+-
+-This module provides a comprehensive task management system for multi-device
+-orchestration with LLM integration, dynamic task creation, and async execution.
+-"""
+-
+-from .enums import (
+-    TaskStatus,
+-    DependencyType,
+-    ConstellationState,
+-    TaskPriority,
+-    DeviceType,
+-)
+-from .task_star import TaskStar
+-from .task_star_line import TaskStarLine
+-from .task_constellation import TaskConstellation
+-from .orchestrator.orchestrator import TaskConstellationOrchestrator
+-from .orchestrator.constellation_manager import ConstellationManager
+-
+-__all__ = [
+-    "TaskStatus",
+-    "DependencyType",
+-    "ConstellationState",
+-    "TaskPriority",
+-    "DeviceType",
+-    "TaskStar",
+-    "TaskStarLine",
+-    "TaskConstellation",
+-    "TaskConstellationOrchestrator",
+-    "ConstellationManager",
+-]
++# Copyright (c) Microsoft Corporation. Licensed under the MIT License.
++# Agent Control imports only TaskStar contracts, without Galaxy service startup.

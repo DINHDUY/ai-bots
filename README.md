@@ -12,6 +12,8 @@ Start with [docs/architecture-blueprint.md](docs/architecture-blueprint.md). The
 | [010](docs/010-agent-control-azure-runtime.md)–[019](docs/019-agent-control-capture-retention-runtime.md) | Cloud, Autopilot, tool libraries, channels, capture retention |
 | [024](docs/024-markdown-workflow-import-plan.md)–[025](docs/025-markdown-workflow-import.md) | Import agent Markdown workflows into a new workspace |
 | [026](docs/026-workspace-deletion-plan.md)–[028](docs/028-workspace-deletion-audit.md) | [Delete a workspace](docs/027-workspace-deletion.md), cleanup, and recovery |
+| [029](docs/029-agent-control-macos-companion-plan.md) | Approved macOS companion plan using Open-Interface and UFO³ TaskStars |
+| [030](docs/030-agent-control-macos-runtime.md) | macOS runtime setup, TaskStars, consent and recovery |
 | [code review](docs/code-reviews/v0.3.0-reviews.md) | Architecture review for tag `v0.3.0` |
 | [ADRs](docs/adr/0001-async-generator-adapter-boundary.md) | Decisions 0001–0016 |
 

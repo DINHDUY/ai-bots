@@ -1,0 +1,592 @@
+{
+  "$defs": {
+    "CompleteEnrollment": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "maxLength": 128,
+          "minLength": 20,
+          "title": "Code",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "name"
+      ],
+      "title": "CompleteEnrollment",
+      "type": "object"
+    },
+    "Hello": {
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": 1,
+          "default": 1,
+          "title": "Protocol",
+          "type": "integer"
+        },
+        "device_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Device Id",
+          "type": "string"
+        },
+        "epoch": {
+          "maxLength": 128,
+          "minLength": 8,
+          "title": "Epoch",
+          "type": "string"
+        },
+        "console_session": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Console Session",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "revision": {
+          "minimum": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "sharing": {
+          "default": false,
+          "title": "Sharing",
+          "type": "boolean"
+        },
+        "armed": {
+          "default": false,
+          "title": "Armed",
+          "type": "boolean"
+        },
+        "ready": {
+          "default": false,
+          "title": "Ready",
+          "type": "boolean"
+        },
+        "screen_recording": {
+          "default": false,
+          "title": "Screen Recording",
+          "type": "boolean"
+        },
+        "accessibility": {
+          "default": false,
+          "title": "Accessibility",
+          "type": "boolean"
+        },
+        "reason": {
+          "default": "",
+          "maxLength": 300,
+          "title": "Reason",
+          "type": "string"
+        },
+        "oi_revision": {
+          "const": "5a4f706223507fc9d9eb2239cced85385fcb1308",
+          "default": "5a4f706223507fc9d9eb2239cced85385fcb1308",
+          "title": "Oi Revision",
+          "type": "string"
+        },
+        "patch_version": {
+          "const": 1,
+          "default": 1,
+          "title": "Patch Version",
+          "type": "integer"
+        },
+        "scope": {
+          "default": "window",
+          "enum": [
+            "window",
+            "display"
+          ],
+          "title": "Scope",
+          "type": "string"
+        }
+      },
+      "required": [
+        "device_id",
+        "epoch",
+        "console_session",
+        "name",
+        "revision"
+      ],
+      "title": "Hello",
+      "type": "object"
+    },
+    "MacAction": {
+      "additionalProperties": false,
+      "properties": {
+        "function": {
+          "enum": [
+            "focus_window",
+            "launch_app",
+            "click",
+            "move",
+            "scroll",
+            "drag",
+            "set_text",
+            "type_text",
+            "key_input",
+            "wait"
+          ],
+          "title": "Function",
+          "type": "string"
+        },
+        "observation_id": {
+          "maxLength": 128,
+          "minLength": 8,
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "window_id": {
+          "maxLength": 128,
+          "title": "Window Id",
+          "type": "string"
+        },
+        "control_id": {
+          "default": "",
+          "maxLength": 128,
+          "title": "Control Id",
+          "type": "string"
+        },
+        "arguments": {
+          "additionalProperties": true,
+          "title": "Arguments",
+          "type": "object"
+        }
+      },
+      "required": [
+        "function",
+        "observation_id",
+        "window_id"
+      ],
+      "title": "MacAction",
+      "type": "object"
+    },
+    "MacDevice": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "provider": {
+          "const": "macos_local",
+          "title": "Provider",
+          "type": "string"
+        },
+        "revoked": {
+          "title": "Revoked",
+          "type": "boolean"
+        },
+        "online": {
+          "title": "Online",
+          "type": "boolean"
+        },
+        "state": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PublicMacState"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "provider",
+        "revoked",
+        "online",
+        "state"
+      ],
+      "title": "MacDevice",
+      "type": "object"
+    },
+    "MacDeviceList": {
+      "additionalProperties": false,
+      "properties": {
+        "computers": {
+          "items": {
+            "$ref": "#/$defs/MacDevice"
+          },
+          "title": "Computers",
+          "type": "array"
+        }
+      },
+      "required": [
+        "computers"
+      ],
+      "title": "MacDeviceList",
+      "type": "object"
+    },
+    "Permit": {
+      "additionalProperties": false,
+      "properties": {
+        "action_id": {
+          "maxLength": 128,
+          "minLength": 8,
+          "title": "Action Id",
+          "type": "string"
+        },
+        "run_id": {
+          "maxLength": 128,
+          "minLength": 8,
+          "title": "Run Id",
+          "type": "string"
+        },
+        "session_id": {
+          "maxLength": 128,
+          "minLength": 8,
+          "title": "Session Id",
+          "type": "string"
+        },
+        "device_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Device Id",
+          "type": "string"
+        },
+        "console_session": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Console Session",
+          "type": "string"
+        },
+        "generation": {
+          "minimum": 1,
+          "title": "Generation",
+          "type": "integer"
+        },
+        "epoch": {
+          "maxLength": 128,
+          "minLength": 8,
+          "title": "Epoch",
+          "type": "string"
+        },
+        "local_revision": {
+          "minimum": 0,
+          "title": "Local Revision",
+          "type": "integer"
+        },
+        "expires_at": {
+          "title": "Expires At",
+          "type": "number"
+        },
+        "signature": {
+          "default": "",
+          "maxLength": 64,
+          "title": "Signature",
+          "type": "string"
+        },
+        "action": {
+          "$ref": "#/$defs/MacAction"
+        }
+      },
+      "required": [
+        "action_id",
+        "run_id",
+        "session_id",
+        "device_id",
+        "console_session",
+        "generation",
+        "epoch",
+        "local_revision",
+        "expires_at",
+        "action"
+      ],
+      "title": "Permit",
+      "type": "object"
+    },
+    "PublicMacState": {
+      "additionalProperties": false,
+      "properties": {
+        "protocol": {
+          "const": 1,
+          "title": "Protocol",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "revision": {
+          "title": "Revision",
+          "type": "integer"
+        },
+        "sharing": {
+          "title": "Sharing",
+          "type": "boolean"
+        },
+        "armed": {
+          "title": "Armed",
+          "type": "boolean"
+        },
+        "ready": {
+          "title": "Ready",
+          "type": "boolean"
+        },
+        "screen_recording": {
+          "title": "Screen Recording",
+          "type": "boolean"
+        },
+        "accessibility": {
+          "title": "Accessibility",
+          "type": "boolean"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "oi_revision": {
+          "title": "Oi Revision",
+          "type": "string"
+        },
+        "patch_version": {
+          "title": "Patch Version",
+          "type": "integer"
+        },
+        "scope": {
+          "enum": [
+            "window",
+            "display"
+          ],
+          "title": "Scope",
+          "type": "string"
+        }
+      },
+      "required": [
+        "protocol",
+        "name",
+        "revision",
+        "sharing",
+        "armed",
+        "ready",
+        "screen_recording",
+        "accessibility",
+        "reason",
+        "oi_revision",
+        "patch_version",
+        "scope"
+      ],
+      "title": "PublicMacState",
+      "type": "object"
+    },
+    "SelectComputer": {
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "maxLength": 128,
+          "minLength": 8,
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "device_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Device Id",
+          "type": "string"
+        },
+        "expected_revision": {
+          "minimum": 0,
+          "title": "Expected Revision",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "request_id",
+        "device_id",
+        "expected_revision"
+      ],
+      "title": "SelectComputer",
+      "type": "object"
+    },
+    "Takeover": {
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "maxLength": 128,
+          "minLength": 8,
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "generation": {
+          "minimum": 1,
+          "title": "Generation",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "request_id",
+        "generation"
+      ],
+      "title": "Takeover",
+      "type": "object"
+    },
+    "TaskAssignment": {
+      "additionalProperties": false,
+      "properties": {
+        "producer": {
+          "default": "galaxy",
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.-]+$",
+          "title": "Producer",
+          "type": "string"
+        },
+        "task_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Task Id",
+          "type": "string"
+        },
+        "device_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Device Id",
+          "type": "string"
+        },
+        "task_description": {
+          "maxLength": 20000,
+          "minLength": 1,
+          "title": "Task Description",
+          "type": "string"
+        },
+        "task_data": {
+          "additionalProperties": true,
+          "title": "Task Data",
+          "type": "object"
+        },
+        "timeout": {
+          "default": 900.0,
+          "exclusiveMinimum": 0,
+          "maximum": 900,
+          "title": "Timeout",
+          "type": "number"
+        }
+      },
+      "required": [
+        "task_id",
+        "device_id",
+        "task_description"
+      ],
+      "title": "TaskAssignment",
+      "type": "object"
+    },
+    "TaskReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "task_id": {
+          "title": "Task Id",
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "running",
+            "completed",
+            "failed",
+            "cancelled",
+            "outcome_unknown"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "maxLength": 4000,
+          "title": "Text",
+          "type": "string"
+        },
+        "effect_observed": {
+          "default": false,
+          "title": "Effect Observed",
+          "type": "boolean"
+        },
+        "retryable": {
+          "const": false,
+          "default": false,
+          "title": "Retryable",
+          "type": "boolean"
+        },
+        "request_id": {
+          "title": "Request Id",
+          "type": "string"
+        },
+        "run_id": {
+          "title": "Run Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "task_id",
+        "state",
+        "request_id",
+        "run_id"
+      ],
+      "title": "TaskReceipt",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "assignment": {
+      "$ref": "#/$defs/TaskAssignment"
+    },
+    "action": {
+      "$ref": "#/$defs/MacAction"
+    },
+    "permit": {
+      "$ref": "#/$defs/Permit"
+    },
+    "hello": {
+      "$ref": "#/$defs/Hello"
+    },
+    "enrollment": {
+      "$ref": "#/$defs/CompleteEnrollment"
+    },
+    "selection": {
+      "$ref": "#/$defs/SelectComputer"
+    },
+    "takeover": {
+      "$ref": "#/$defs/Takeover"
+    },
+    "devices": {
+      "$ref": "#/$defs/MacDeviceList"
+    },
+    "receipt": {
+      "$ref": "#/$defs/TaskReceipt"
+    }
+  },
+  "required": [
+    "assignment",
+    "action",
+    "permit",
+    "hello",
+    "enrollment",
+    "selection",
+    "takeover",
+    "devices",
+    "receipt"
+  ],
+  "title": "MacContracts",
+  "type": "object"
+}

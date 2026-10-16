@@ -55,6 +55,7 @@ Core capabilities:
 | Azure computers | Implemented; provider limits apply | [cloud/__init__.py](../packages/agent-control-backend/src/agentbot_control/cloud/__init__.py) |
 | Windows companion | Implemented; provider limits apply | [service.py](../packages/agentbot-windows-companion/src/agentbot_windows/service.py) |
 | Capture retention | Implemented; provider limits apply | [capture_retention/__init__.py](../packages/agent-control-backend/src/agentbot_control/capture_retention/__init__.py) |
+| Open-Interface macOS companion and TaskStar bridge | Implemented; native qualification pending | [controller.py](../packages/agentbot-macOS-companion/src/agentbot_macos/controller.py) |
 <!-- capabilities:end -->
 
 Non-goals of the current design: multi-process horizontal scaling of the runtime, hardware-VM isolation, egress allowlisting, and arbitrary third-party plugin execution.

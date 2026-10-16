@@ -111,7 +111,7 @@ export function DeletionPanel({ workspace, onDeleted }: {
         <ul>{preview.data.bots.map(bot => <li key={bot.id}>{bot.name}</li>)}</ul>
         <dl className="deletion-counts">{Object.entries(preview.data.counts).filter(([label, value]) => countLabels[label] && value > 0).map(([label, value]) =>
           <div key={label}><dt>{countLabels[label]}</dt><dd>{value.toLocaleString()}</dd></div>)}</dl>
-        <p>Account API keys, other workspaces, and external Windows/Azure machines are retained. This action has no undo.</p>
+        <p>Account API keys, other workspaces, and external Windows/Mac/Azure machines are retained. This action has no undo.</p>
         {preview.data.retained.length ? <p>{preview.data.retained.length} external computer record(s) will remain available in deletion history.</p> : null}
         {preview.data.blockers.map((blocker, index) => <p role="alert" key={`${blocker.code}-${index}`}>{blocker.message} <Link to={blocker.url} onClick={() => setOpen(false)}>Open controls</Link></p>)}
         <form onSubmit={event => { event.preventDefault(); if (!pending && name === preview.data?.workspace_name && !preview.data.blockers.length) void run(() => submit()); }}>

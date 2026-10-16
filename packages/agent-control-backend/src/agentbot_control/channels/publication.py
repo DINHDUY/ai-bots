@@ -227,7 +227,7 @@ def post(self: Channels, uid, wid, command):
 def _artifact(self: Channels, db, wid, uid, aid):
     self._role(db, uid, wid)
     row = db.execute(
-        "SELECT f.* FROM file_blobs f JOIN bots b ON b.id=f.bot_id JOIN bot_streams s ON s.bot_id=b.id WHERE f.id=? AND b.owner_id=? AND s.workspace_id=? AND b.framework!='ufo'",
+        "SELECT f.* FROM file_blobs f JOIN bots b ON b.id=f.bot_id JOIN bot_streams s ON s.bot_id=b.id WHERE f.id=? AND b.owner_id=? AND s.workspace_id=? AND b.framework NOT IN ('ufo','open_interface')",
         (aid, uid, wid),
     ).fetchone()
     if (

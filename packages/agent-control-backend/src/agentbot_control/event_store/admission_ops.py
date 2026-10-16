@@ -124,6 +124,9 @@ def admit(
                 now,
             ),
         )
+        from agentbot_control.repositories.macos_tasks import attach
+
+        attach(db, user_id, bot.id, rid)
         if self.hooks.admission:
             self.hooks.admission.pin(db, bot, rid)
         if self.hooks.channels:
