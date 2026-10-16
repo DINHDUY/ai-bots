@@ -9,11 +9,14 @@ BIN := $(VENV)/bin
 endif
 PIP := $(BIN)/python -m pip
 PY := $(BIN)/python
+IMAGE_REGISTRY ?= ghcr.io/dinhduy
+IMAGE_TAG ?= latest
+SANDBOX_IMAGE_NAME := $(IMAGE_REGISTRY)/agentbot-sandbox
 
-.PHONY: help venv install env sandbox dev-setup control gateway dev test test-docker behave frontend-install frontend-dev frontend-build check check-docker hooks
+.PHONY: help venv install env sandbox docker-build docker-push dev-setup control gateway dev test test-docker behave frontend-install frontend-dev frontend-build check check-docker hooks
 
 help:
-	@echo Targets: venv install env sandbox control gateway dev-setup dev test test-docker behave frontend-install frontend-dev frontend-build check check-docker hooks
+	@echo Targets: venv install env sandbox docker-build docker-push control gateway dev-setup dev test test-docker behave frontend-install frontend-dev frontend-build check check-docker hooks
 
 venv:
 	$(PYTHON) -m venv $(VENV)
@@ -29,8 +32,15 @@ env:
 .env:
 	$(MAKE) env
 
-sandbox:
-	docker build -f docker/sandbox/Dockerfile -t agentbot-sandbox .
+# Also tags the unprefixed local name, which SANDBOX_IMAGE defaults to.
+docker-build:
+	docker build -f docker/sandbox/Dockerfile -t $(SANDBOX_IMAGE_NAME):$(IMAGE_TAG) -t agentbot-sandbox .
+
+# Requires prior login: docker login ghcr.io
+docker-push: docker-build
+	docker push $(SANDBOX_IMAGE_NAME):$(IMAGE_TAG)
+
+sandbox: docker-build
 
 control:
 	$(BIN)/agentbot-control
