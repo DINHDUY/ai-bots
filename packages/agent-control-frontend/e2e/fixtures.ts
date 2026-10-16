@@ -130,16 +130,30 @@ export async function fixture(page: Page, initial = "/#/bots/orders") {
     socket.send(JSON.stringify({ type: "snapshot", data: snapshot(bid) }));
     socket.send(JSON.stringify({ type: "ready", seq: eventLists[bid].length }));
   });
-  const imagePage = await page.context().newPage();
-  await imagePage.setViewportSize({ width: 1024, height: 768 });
-  await imagePage.setContent(
-    await readFile(
-      new URL("./fixtures/orders-preview.html", import.meta.url),
-      "utf8",
-    ),
+  const preview = await readFile(
+    new URL("./fixtures/orders-preview.html", import.meta.url),
+    "utf8",
   );
-  const screenshot = (await imagePage.screenshot()).toString("base64");
-  await imagePage.close();
+  const capturePreview = async () => {
+    const imagePage = await page.context().newPage();
+    try {
+      await imagePage.setViewportSize({ width: 1024, height: 768 });
+      await imagePage.setContent(preview);
+      return await imagePage.screenshot();
+    } finally {
+      await imagePage.close();
+    }
+  };
+  let screenshot: Buffer;
+  try {
+    screenshot = await capturePreview();
+  } catch (error) {
+    if (!(error instanceof Error) || !error.message.includes("Unable to capture screenshot")) {
+      throw error;
+    }
+    screenshot = await capturePreview();
+  }
+  const screenshotBase64 = screenshot.toString("base64");
   await page.goto(initial);
   await expect.poll(() => sockets.length).toBe(4);
   await expect(
@@ -161,7 +175,7 @@ export async function fixture(page: Page, initial = "/#/bots/orders") {
     type: "TOOL_CALL",
     payload: "browser_open: file:///workspace/preview.html",
   });
-  send({ event: "log", type: "SCREENSHOT_CAPTURE", payload: screenshot });
+  send({ event: "log", type: "SCREENSHOT_CAPTURE", payload: screenshotBase64 });
   send({
     event: "log",
     type: "TOOL_CALL",
