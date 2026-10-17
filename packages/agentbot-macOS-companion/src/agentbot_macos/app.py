@@ -12,6 +12,21 @@ import threading
 from pathlib import Path
 
 
+def companion_running(root: Path) -> bool:
+    """The control socket survives crashes; only the held session lock proves a live companion."""
+    import fcntl
+
+    path = root / "session.lock"
+    if not path.exists():
+        return False
+    with path.open("a") as probe:
+        try:
+            fcntl.flock(probe, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            return True
+    return False
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("command", choices=["pair", "run", "status", "doctor", "stop", "forget"])
@@ -37,7 +52,7 @@ def main():
         print(json.dumps(request(root, args.command), indent=2))
         return
     if args.command == "forget":
-        if (root / "control.sock").exists():
+        if companion_running(root):
             raise SystemExit(
                 "Quit the companion and revoke pairing in Agent Control before forgetting it"
             )
@@ -45,7 +60,7 @@ def main():
         print("Pairing credential removed; receipts retained.")
         return
     if args.command == "pair":
-        if (root / "control.sock").exists():
+        if companion_running(root):
             raise SystemExit("Quit the companion before changing its pairing")
         import httpx
 

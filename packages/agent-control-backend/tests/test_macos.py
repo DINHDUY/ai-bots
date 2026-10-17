@@ -219,6 +219,11 @@ def test_mac_taskstar_approval_receipts_and_disconnect(tmp_path, decision):
                 json={"request_id": "second-connect", "generation": 0},
             )
             assert conflict.json()["status"] == "failed", conflict.text
+            assert conflict.json()["computer"]["status"] == "closed"
+            assert (
+                conflict.json()["detail"]
+                == "Another bot is connected to this Mac; disconnect it first"
+            )
             closed = client.post(
                 f"/api/bots/{bot}/computer/close", json={"request_id": "close-mac"}
             )

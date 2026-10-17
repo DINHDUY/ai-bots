@@ -124,3 +124,44 @@ def test_planner_requires_current_observed_postcondition():
         planner.response(
             json.dumps({"action": {"function": "exec", "arguments": {"code": "anything"}}})
         )
+
+
+def test_display_inspects_each_window_once_under_one_deadline(runtime, monkeypatch):
+    value, window = runtime
+    other = {**window, "id": "2", "foreground": False}
+    monkeypatch.setattr(native, "windows", lambda: [window, other])
+    calls = []
+
+    def inspect(target, **kwargs):
+        calls.append((target["id"], kwargs))
+        return ([{"id": "owned"}], {"owned": "handle"}) if kwargs["include_controls"] else ([], {})
+
+    monkeypatch.setattr(native.ax, "inspect", inspect)
+    monkeypatch.setattr(native, "screenshot", lambda *a: {"image": "fixture"})
+    observed = value.observe("display", "1", 2)
+    assert [target for target, _ in calls] == ["1", "2"]
+    assert [options["include_controls"] for _, options in calls] == [True, False]
+    assert calls[0][1]["deadline"] == calls[1][1]["deadline"]
+    assert observed["controls"] == [{"id": "owned"}]
+    assert value.handles == {"owned": "handle"}
+
+
+def test_failed_display_scan_cannot_capture_or_retain_previous_observation(runtime, monkeypatch):
+    value, window = runtime
+    other = {**window, "id": "2", "foreground": False}
+    monkeypatch.setattr(native, "windows", lambda: [window, other])
+    value.handles = {"previous": object()}
+
+    def inspect(target, **kwargs):
+        if target["id"] == "2":
+            raise NotDispatched("Secure input", "secure_surface")
+        return [{"id": "owned"}], {"owned": "handle"}
+
+    def unexpected(*args):
+        pytest.fail("Incomplete AX inspection must not capture")
+
+    monkeypatch.setattr(native.ax, "inspect", inspect)
+    monkeypatch.setattr(native, "screenshot", unexpected)
+    with pytest.raises(NotDispatched, match="Secure input"):
+        value.observe("display", "1", 2)
+    assert value.observation is None and value.handles == {}

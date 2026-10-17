@@ -2,6 +2,9 @@
 
 from typing import Any
 
+kCGSessionOnConsoleKey: str
+kCGSessionLoginDoneKey: str
+kCGSessionUserIDKey: str
 kCGWindowListOptionOnScreenOnly: int
 kCGWindowListExcludeDesktopElements: int
 kCGEventSourceUnixProcessID: int

@@ -2,6 +2,7 @@
 
 import time
 
+from agentbot_control.macos.connection import MacConnectionRejected
 from agentbot_control.macos.sandbox import MacSandbox
 from agentbot_control.repositories import macos_devices as rows
 from agentbot_control.schemas import Conflict
@@ -44,10 +45,15 @@ class MacProviderRouter:
             return await self.inner.get_or_create(sid)
         bot_id, generation = self.bound[sid]
         cfg = self.computers.config(bot_id)
-        self.computers.connection(cfg["device_id"]).check()
-        binding = await self.computers.store.database.run(
-            lambda db: rows.claim_binding(db, bot_id, sid, generation)
-        )
+        try:
+            self.computers.connection(cfg["device_id"]).check()
+            binding = await self.computers.store.database.run(
+                lambda db: rows.claim_binding(db, bot_id, sid, generation)
+            )
+        except Conflict as exc:
+            # These checks run before any RPC. A rejected claim rolls back on the
+            # database worker, so lifecycle can retire this unused session safely.
+            raise MacConnectionRejected(str(exc), code=exc.code) from exc
         self.computers.bindings[sid] = binding
         return await self.existing(sid)
 
@@ -65,22 +71,36 @@ class MacProviderRouter:
         if not self.is_macos(sid):
             return await self.inner.inspect(sid)
         binding = self.computers.binding(sid)
-        conn = self.computers.connections.get(binding["device_id"]) if binding else None
-        online = bool(
+        config = self.computers.config(self.bound[sid][0]) if sid in self.bound else None
+        device = binding or config
+        conn = self.computers.connections.get(device["device_id"]) if device else None
+        online = bool(conn and not conn.closed and time.monotonic() - conn.last_seen < 12)
+        ready = bool(
             binding
             and binding["active"]
+            and online
             and conn
-            and not conn.closed
-            and time.monotonic() - conn.last_seen < 12
+            and conn.hello.ready
+            and conn.hello.sharing
         )
-        ready = bool(online and conn and conn.hello.ready and conn.hello.sharing)
+        reason = "Mac companion is offline"
+        if online and conn:
+            try:
+                conn.check(write=True)
+                reason = (
+                    ""
+                    if binding and binding["active"]
+                    else "Select Connect Mac to connect this bot"
+                )
+            except Conflict as exc:
+                reason = str(exc)
         return {
             "lifecycle": "running" if binding and binding["active"] else "missing",
             "provider": "macos_local",
             "compatible": ready,
             "services": {"desktop": ready},
             "local_control": bool(ready and conn and conn.hello.armed),
-            "reason": conn.hello.reason if conn else "Mac companion offline",
+            "reason": reason,
             "name": conn.hello.name if conn else "Mac",
         }
 

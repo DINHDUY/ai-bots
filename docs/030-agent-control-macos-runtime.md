@@ -46,6 +46,76 @@ support directory. They cannot execute input or enable sharing. The menu supplie
 physical takeover detection and local Stop. The companion runs as the regular
 user, with an exclusive process lock; it is not a root service or launch daemon.
 
+### Troubleshooting Connect Mac
+
+Pairing saves the credential; a running companion and local permissions are still
+required. Check both connection and macOS permissions with:
+
+```sh
+data/oi/venv/bin/agentbot-macos status
+data/oi/venv/bin/agentbot-macos doctor
+```
+
+`Connected` with `accessibility: false` means the backend connection works, but
+macOS has not granted Accessibility. Enable it for the companion's actual
+interpreter/launcher in **System Settings → Privacy & Security → Accessibility**,
+then quit and restart the companion. Enable Screen Recording there when reported
+missing. Select a window and enable **Share screen** in the local menu before
+**Connect Mac**; **Allow agent control** is required before sending a task.
+
+Offline, permission, sharing, and device-in-use rejections return their specific
+reason and close the unused session. Correct the reported condition and select
+**Connect Mac** again; no disconnect is required for that rejected attempt. The
+original request ID retains its failed receipt, including across backend restarts.
+No task or input is retried automatically.
+
+Older versions could show **Mac companion offline** and **Recovery required**
+after a connection rejection, even for a connected companion with missing
+permissions. After updating and restarting the backend, use **Review and
+disconnect** once to retire that old failed session, then connect again. A ready
+companion never clears an actual interrupted task; follow the recovery procedure
+below if an action may have run. Do not delete the receipt journal or re-pair to
+work around a missing permission.
+
+### Troubleshooting capture inspection
+
+Whole-primary-display capture checks every eligible visible window for secure
+fields. A complex Finder or browser window can therefore block a display capture
+even when another application is the target. Older builds stopped inspection at
+300 control records and reported **AX inspection exceeded its bound; choose a
+simpler window** for ordinary windows with larger Accessibility trees.
+
+The companion now scans up to 4,096 distinct Accessibility elements per window,
+then returns at most 300 control records, prioritizing text fields over layout
+containers. Every scanned window must pass the secure-field check, including
+elements beyond the returned control list. Display capture inspects each window
+once under a shared three-second inspection deadline. Secure fields, unreadable
+required tree attributes, excessive trees, and timeouts still prevent capture.
+
+Quit and restart the companion after updating, select the sharing scope again,
+enable **Share screen**, and retry **Capture now**. If the new timeout or element
+limit is reached, close complex/busy windows or select one application window
+instead of the whole display. Accessibility permission changes and re-pairing do
+not resolve an inspection limit.
+
+### A run stays on Stopping
+
+**Stopping** means the backend is waiting for outstanding operations to settle.
+The shared UI calls these “sandbox operations” even for a local Mac. A local
+physical-input pause or a disabled control switch can request Stop automatically.
+Neither a healthy companion nor successful captures prove that the run has finished.
+
+An older backend could lose its final run update if Stop arrived during cleanup,
+leaving **Stopping** indefinitely even with no desktop action in progress. The
+backend now protects cleanup from repeated cancellation and publishes the final
+run state after operations settle. Restart the backend to load this correction.
+
+For a run already stranded by that race, review any possible desktop effects and
+use **Disconnect** (or **Review and disconnect** when recovery is shown). This
+retains the run/action history and does not close Mac applications or delete their
+files. Reconnect and submit a new task only after the prior outcome is reconciled;
+the backend never replays the abandoned task automatically.
+
 ## Execution and interfaces
 
 `open_interface` selects the `macos_local` provider. It requires one owner-paired

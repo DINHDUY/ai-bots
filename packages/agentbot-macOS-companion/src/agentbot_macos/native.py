@@ -22,6 +22,7 @@ class NativeRuntime:
         self.handles = {}
 
     def observe(self, scope: str, selected: str, revision: int) -> dict:
+        self.observation, self.handles = None, {}
         session = require_session()
         available = windows()
         window = next((w for w in available if w["id"] == selected), None)
@@ -31,17 +32,19 @@ class NativeRuntime:
             )
         if scope == "display" and window is None:
             window = next((w for w in available if w["foreground"]), None)
-        if scope == "display":
-            deadline = time.monotonic() + 3
-            for visible in available:
-                if time.monotonic() > deadline:
-                    raise NotDispatched(
-                        "Display inspection exceeded its limit; share one window",
-                        "unsupported_surface",
-                    )
-                ax.inspect(visible)
-        controls, self.handles = ax.inspect(window) if window else ([], {})
+        controls, handles = [], {}
+        deadline = time.monotonic() + ax.INSPECTION_SECONDS
+        for visible in available if scope == "display" else [window]:
+            if visible is None:
+                continue
+            selected_window = window is not None and visible["id"] == window["id"]
+            records, references = ax.inspect(
+                visible, include_controls=selected_window, deadline=deadline
+            )
+            if selected_window:
+                controls, handles = records, references
         capture = screenshot(scope, window, self.oi)
+        self.handles = handles
         self.observation = {
             "observation_id": uuid.uuid4().hex,
             "created_at": time.time(),

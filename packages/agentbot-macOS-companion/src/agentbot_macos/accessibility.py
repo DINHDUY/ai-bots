@@ -3,8 +3,15 @@
 from __future__ import annotations
 
 import time
+from collections import deque
 
 from agentbot_macos.results import NotDispatched
+
+MAX_ELEMENTS = 4096
+MAX_CONTROLS = 300
+INSPECTION_SECONDS = 3
+TEXT_ROLES = {"AXTextField", "AXTextArea", "AXComboBox"}
+LAYOUT_ROLES = {"AXWindow", "AXGroup", "AXSplitGroup", "AXScrollArea", "AXSplitter"}
 
 
 def attribute(element, name, default=None):
@@ -40,24 +47,86 @@ def window_element(window: dict):
     return matches[0]
 
 
-def inspect(window: dict) -> tuple[list[dict], dict]:
+def _checked_attribute(element, name, default=None):
+    """Missing optional attributes are normal; failed tree reads are not leaves."""
     import ApplicationServices as AX
 
-    root = window_element(window)
-    pending = [root]
-    controls, handles = [], {}
-    deadline = time.monotonic() + 3
-    while pending and len(controls) < 300 and time.monotonic() < deadline:
-        element = pending.pop(0)
-        role = str(attribute(element, "AXRole", ""))
-        subrole = str(attribute(element, "AXSubrole", ""))
-        if subrole == "AXSecureTextField":
+    error, value = AX.AXUIElementCopyAttributeValue(element, name, None)
+    if error == 0 and (name != "AXRole" or isinstance(value, str) and value):
+        return value
+    if name != "AXRole" and error in (-25205, -25212):  # Unsupported / no value.
+        return default
+    raise NotDispatched(
+        "Accessibility tree could not be read completely; retry or choose another window",
+        "unsupported_surface",
+    )
+
+
+def _check_deadline(deadline: float) -> None:
+    if time.monotonic() >= deadline:
+        raise NotDispatched(
+            "AX inspection timed out; close busy windows or share one window",
+            "unsupported_surface",
+        )
+
+
+def _scan(root, deadline: float) -> list[tuple]:
+    pending = deque([root])
+    seen = {root}
+    elements = []
+    while pending:
+        _check_deadline(deadline)
+        element = pending.popleft()
+        role = str(_checked_attribute(element, "AXRole"))
+        subrole = str(
+            _checked_attribute(element, "AXSubrole", "")
+            if role in TEXT_ROLES
+            else attribute(element, "AXSubrole", "")
+        )
+        if role == "AXSecureTextField" or subrole == "AXSecureTextField":
             raise NotDispatched("Secure input is present; choose another window", "secure_surface")
+        elements.append((element, role))
+        for child in _checked_attribute(element, "AXChildren", []) or []:
+            _check_deadline(deadline)
+            if child in seen:
+                continue
+            if len(seen) >= MAX_ELEMENTS:
+                raise NotDispatched(
+                    f"AX inspection exceeded {MAX_ELEMENTS} elements; share a simpler window",
+                    "unsupported_surface",
+                )
+            seen.add(child)
+            pending.append(child)
+    _check_deadline(deadline)
+    return elements
+
+
+def inspect(
+    window: dict, *, include_controls: bool = True, deadline: float | None = None
+) -> tuple[list[dict], dict]:
+    import ApplicationServices as AX
+
+    if deadline is None:
+        deadline = time.monotonic() + INSPECTION_SECONDS
+    _check_deadline(deadline)
+    elements = _scan(window_element(window), deadline)
+    controls, handles = [], {}
+    if not include_controls:
+        return controls, handles
+    # Keep text targets and useful controls ahead of layout containers. The full
+    # tree has already passed the secure-field scan, even beyond the output cap.
+    elements.sort(key=lambda item: (item[1] not in TEXT_ROLES, item[1] in LAYOUT_ROLES))
+    for element, role in elements:
+        _check_deadline(deadline)
         rect = bounds(element)
         if rect:
             cid = str(len(controls) + 1)
-            err, writable = AX.AXUIElementIsAttributeSettable(element, "AXValue", None)
-            text_role = role in {"AXTextField", "AXTextArea", "AXComboBox"}
+            text_role = role in TEXT_ROLES
+            err, writable = (
+                AX.AXUIElementIsAttributeSettable(element, "AXValue", None)
+                if text_role
+                else (0, False)
+            )
             record = {
                 "id": cid,
                 "role": role,
@@ -76,11 +145,9 @@ def inspect(window: dict) -> tuple[list[dict], dict]:
                 record["value"] = str(observed_value)[:16000]
             controls.append(record)
             handles[cid] = element
-        pending.extend(list(attribute(element, "AXChildren", []))[: 300 - len(controls)])
-    if pending:
-        raise NotDispatched(
-            "AX inspection exceeded its bound; choose a simpler window", "unsupported_surface"
-        )
+            if len(controls) >= MAX_CONTROLS:
+                break
+    _check_deadline(deadline)
     return controls, handles
 
 

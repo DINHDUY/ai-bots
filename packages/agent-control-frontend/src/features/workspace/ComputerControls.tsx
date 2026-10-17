@@ -42,9 +42,9 @@ export function ComputerControls({ botId }: { botId: string }) {
           }),
         },
       );
+      await report.refetch();
       if (result.status !== "completed" && result.status !== "accepted")
         throw new Error(result.detail ?? result.status);
-      await report.refetch();
       await control.refetch();
     } catch (e) {
       setError(String(e));

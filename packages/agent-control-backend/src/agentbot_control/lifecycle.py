@@ -25,6 +25,7 @@ from pydantic import Field
 
 from agentbot_control.authorization import request_bot
 from agentbot_control.event_store import fingerprint, identifier, packed, stamp
+from agentbot_control.macos.connection import MacConnectionRejected
 from agentbot_control.repositories import admission
 from agentbot_control.schemas import Command, Conflict
 from agentbot_control.transport import body
@@ -236,16 +237,25 @@ class Lifecycle:
                     "operation": operation,
                     "computer": self.store.computer(bot_id),
                 }
-            except Exception:
+            except Exception as exc:
                 current = self.store.computer(bot_id)
+                rejected = (
+                    isinstance(exc, MacConnectionRejected)
+                    and operation == "create"
+                    and step == "provision_new_instance"
+                )
                 if current and current["status"] == "provisioning":
-                    self.store.set_computer(bot_id, current["id"], "failed")
+                    self.store.set_computer(
+                        bot_id, current["id"], "closed" if rejected else "failed"
+                    )
                 result = {
                     "operation_id": oid,
                     "status": "failed",
                     "operation": operation,
                     "failed_step": step,
-                    "detail": "Lifecycle operation failed; inspect the computer before retrying with a new request ID.",
+                    "detail": str(exc)
+                    if rejected
+                    else "Lifecycle operation failed; inspect the computer before retrying with a new request ID.",
                     "computer": self.store.computer(bot_id),
                 }
             with self.store.transaction() as db:

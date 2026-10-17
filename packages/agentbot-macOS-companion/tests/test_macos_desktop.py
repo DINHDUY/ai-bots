@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 
 @pytest.fixture
-def desktop():
+def desktop(request):
     if sys.platform != "darwin" or os.environ.get("AGENTBOT_MACOS_DESKTOP_TEST") != "1":
         pytest.skip("Requires explicitly enabled interactive macOS session")
     from agentbot_macos.session import permissions
@@ -22,13 +22,19 @@ def desktop():
     if not health["ready"]:
         pytest.skip(health["reason"])
     import AppKit
+    from agentbot_macos.accessibility import window_element
     from agentbot_macos.capture import windows
     from agentbot_macos.native import NativeRuntime
     from agentbot_macos.oi_bridge import OpenInterface
+    from agentbot_macos.results import NotDispatched
 
     previous = AppKit.NSWorkspace.sharedWorkspace().frontmostApplication()
     process = subprocess.Popen(
-        [sys.executable, str(Path(__file__).with_name("owned_app.py"))],
+        [
+            sys.executable,
+            str(Path(__file__).with_name("owned_app.py")),
+            str(getattr(request, "param", 0)),
+        ],
         stdout=subprocess.PIPE,
         text=True,
     )
@@ -43,7 +49,11 @@ def desktop():
         while time.monotonic() < deadline:
             target = next((w for w in windows() if w["pid"] == process.pid), None)
             if target:
-                break
+                try:
+                    window_element(target)
+                    break
+                except NotDispatched:
+                    target = None  # WindowServer can publish before the AX event loop starts.
             time.sleep(0.05)
         assert target, "Owned fixture window did not appear"
         yield runtime, target
@@ -86,7 +96,8 @@ def test_owned_window_capture_ax_ocr_and_literal_unicode(desktop):
     assert result["dispatched"] and not result["effect_observed"]
     time.sleep(0.2)
     after = runtime.observe("window", target["id"], 1)
-    assert any(c.get("value") == "Tiếng Việt café 日本語 🧪" for c in after["controls"])
+    values = [c.get("value") for c in after["controls"] if c["editable"]]
+    assert "Tiếng Việt café 日本語 🧪" in values, values
 
 
 def test_owned_window_mouse_and_stale_observation(desktop):
@@ -101,7 +112,8 @@ def test_owned_window_mouse_and_stale_observation(desktop):
         ("scroll", {"amount": 1}),
         ("wait", {"seconds": 0.1}),
     ]:
-        assert perform(runtime, target, function, args)["ok"], function
+        result = perform(runtime, target, function, args)
+        assert result["ok"], (function, result)
     observation = runtime.observe("window", target["id"], 1)
     action = MacAction(
         function="click",
@@ -112,3 +124,15 @@ def test_owned_window_mouse_and_stale_observation(desktop):
     runtime.observation["created_at"] -= 31
     result = runtime.execute(action, "window", target["id"], 1, time.time() + 8)
     assert not result["dispatched"] and result["code"] == "stale_target"
+
+
+@pytest.mark.parametrize("desktop", [350], indirect=True)
+@pytest.mark.parametrize("scope", ["window", "display"])
+def test_owned_large_ax_window_can_be_captured(desktop, scope):
+    runtime, target = desktop
+    observation = runtime.observe(scope, target["id"], 1)
+    assert len(observation["controls"]) == 300
+    assert any(
+        c["editable"] and c["value"] == "Agent Control fixture" for c in observation["controls"]
+    )
+    assert observation["capture"]["width"] >= target["bounds"][2]

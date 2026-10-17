@@ -23,10 +23,13 @@ def permissions() -> dict:
     screen = bool(Quartz.CGPreflightScreenCaptureAccess())
     accessibility = bool(AX.AXIsProcessTrusted())
     info = Quartz.CGSessionCopyCurrentDictionary() or {}
-    active = bool(info.get("kCGSessionOnConsoleKey")) and bool(info.get("kCGSessionLoginDoneKey"))
+    active = bool(info.get(Quartz.kCGSessionOnConsoleKey)) and bool(
+        info.get(Quartz.kCGSessionLoginDoneKey)
+    )
     active = active and not info.get("CGSSessionScreenIsLocked", False)
-    own = int(info.get("kCGSessionUserIDKey", -1)) == os.getuid()
-    session = f"{os.getuid()}:{info.get('kCGSessionAuditIDKey', 'unknown')}"
+    own = int(info.get(Quartz.kCGSessionUserIDKey, -1)) == os.getuid()
+    # Quartz does not export the audit-ID constant; the real key has a doubled S.
+    session = f"{os.getuid()}:{info.get('kCGSSessionAuditIDKey', 'unknown')}"
     carbon = ctypes.CDLL("/System/Library/Frameworks/Carbon.framework/Carbon")
     carbon.IsSecureEventInputEnabled.restype = ctypes.c_bool
     secure = bool(carbon.IsSecureEventInputEnabled())

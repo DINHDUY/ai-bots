@@ -10,6 +10,10 @@ from agentbot_macos.protocol import Envelope, Hello
 from agentbot_control.schemas import Conflict
 
 
+class MacConnectionRejected(Conflict):
+    """Connection rejected before claiming a binding or sending any desktop RPC."""
+
+
 class Connection:
     def __init__(self, ws, token: str, hello: Hello):
         self.ws, self.token, self.hello = ws, token, hello
@@ -21,8 +25,12 @@ class Connection:
     def check(self, write=False):
         if self.closed or time.monotonic() - self.last_seen > 12:
             raise Conflict("Mac companion is offline", code="computer_unavailable")
-        if not self.hello.ready or not self.hello.sharing or (write and not self.hello.armed):
-            raise Conflict(self.hello.reason or "Enable local Mac sharing/control")
+        if not self.hello.ready:
+            raise Conflict(self.hello.reason or "Check macOS companion permissions locally")
+        if not self.hello.sharing:
+            raise Conflict("Select a window and enable Share screen in the macOS companion")
+        if write and not self.hello.armed:
+            raise Conflict("Enable Allow agent control in the macOS companion")
 
     async def rpc(self, method, arguments=None, timeout=30):
         if self.closed:
