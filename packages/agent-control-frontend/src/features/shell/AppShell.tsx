@@ -65,7 +65,7 @@ export function AppShell({
   );
   const match = useMatch("/bots/:id");
   const [params, setParams] = useSearchParams();
-  const createFramework = params.get("newBot") === "ufo" ? "ufo" : undefined;
+  const createFramework = ["ufo", "open_interface"].includes(params.get("newBot") ?? "") ? params.get("newBot")! : undefined;
   function closeCreate() {
     setCreating(false);
     if (createFramework) {

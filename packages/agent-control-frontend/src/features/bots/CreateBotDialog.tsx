@@ -211,7 +211,7 @@ export function CreateBotDialog({
                   ) : null}
                   {frameworks.map((name) => (
                     <option key={name} value={name}>
-                      {name === "ufo"
+                      {name === "open_interface" ? "Open Interface · macOS" : name === "ufo"
                         ? "Microsoft UFO · Windows desktop"
                         : name}
                     </option>

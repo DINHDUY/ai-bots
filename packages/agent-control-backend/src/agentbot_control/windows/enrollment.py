@@ -113,6 +113,12 @@ class WindowsComputers:
         @app.post("/api/bots/{bot_id}/computer/takeover")
         async def takeover(bot_id: str, request: Request):
             user, bot = request_bot(request, bot_id)
+            if bot.framework == "open_interface":
+                from agentbot_control.macos.schemas import Takeover as MacTakeover
+
+                return await runtime.macos.takeover(
+                    bot_id, await body(request, MacTakeover), runtime.mutex
+                )
             command = await body(request, Takeover)
             async with runtime.mutex(bot_id):
                 fingerprint = {"operation": "windows.takeover", **command.model_dump()}
@@ -214,6 +220,8 @@ class WindowsComputers:
         @app.get("/api/bots/{bot_id}/compute-config")
         async def configuration(bot_id: str, request: Request):
             user, bot = request_bot(request, bot_id)
+            if bot.framework == "open_interface":
+                return await runtime.macos.configuration(user, bot)
             if bot.framework != "ufo":
                 return runtime.cloud.configuration(user, bot)
             if user.id != bot.owner_id:
@@ -228,6 +236,12 @@ class WindowsComputers:
         @app.post("/api/bots/{bot_id}/compute-config")
         async def select(bot_id: str, request: Request):
             user, bot = runtime.cloud.actor(request, bot_id)
+            if bot.framework == "open_interface":
+                from agentbot_control.macos.schemas import SelectComputer as MacSelect
+
+                return await runtime.macos.select(
+                    user, bot, await body(request, MacSelect), runtime.mutex
+                )
             if bot.framework != "ufo":
                 return await runtime.cloud.select(user, bot, await body(request, SelectCloud))
             command = await body(request, SelectComputer)

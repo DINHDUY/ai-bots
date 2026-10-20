@@ -16,6 +16,7 @@ import { useSessionStore } from "../../session/store";
 import styles from "./dialog.module.css";
 import { ApprovalPolicies } from "./ApprovalPolicies";
 import { AutopilotToggle } from "./AutopilotToggle";
+import { MacComputerSettings } from "./MacComputerSettings";
 import { WindowsComputerSettings } from "./WindowsComputerSettings";
 import { CloudComputerSettings } from "./CloudComputerSettings";
 import { applyCloudSelection, type CloudSelection, type ComputeConfig } from "./cloudSelection";
@@ -70,13 +71,13 @@ export function BotSettings({ bot, onSaved }: { bot: Bot; onSaved?: () => void }
       expected_tools_revision?: number;
       collaboration?: CollaborationDraft;
     }) => {
-      if (deviceId && bot.framework !== "ufo") {
+      if (deviceId && !["ufo", "open_interface"].includes(bot.framework)) {
         throw new Error("This bot cannot use a Windows PC. Choose Create Windows bot to create a Microsoft UFO · Windows desktop bot.");
       }
       const configKey = ["compute-config", bot.id];
       const config = queryClient.getQueryData<{ device_id: string | null; revision: number }>(configKey);
       if (deviceId && !config) {
-        throw new Error("Windows PC settings are not loaded. Retry loading them before saving.");
+        throw new Error("Computer settings are not loaded. Retry loading them before saving.");
       }
       const updated = await api<Bot>(`/api/bots/${bot.id}`, {
         method: "PATCH",
@@ -104,10 +105,10 @@ export function BotSettings({ bot, onSaved }: { bot: Bot; onSaved?: () => void }
         } catch (caught) {
           void queryClient.invalidateQueries({ queryKey: configKey });
           void queryClient.invalidateQueries({ queryKey: ["bots"] });
-          throw new Error(`Bot details saved, but the Windows PC was not assigned: ${caught instanceof Error ? caught.message : "Request failed"}`);
+          throw new Error(`Bot details saved, but the ${bot.framework === "open_interface" ? "Mac" : "Windows PC"} was not assigned: ${caught instanceof Error ? caught.message : "Request failed"}`);
         }
       }
-      if (cloudSelection && bot.framework !== "ufo") {
+      if (cloudSelection && !["ufo", "open_interface"].includes(bot.framework)) {
         try {
           const selected = await applyCloudSelection(bot.id, cloudSelection, queryClient.getQueryData<ComputeConfig>(configKey));
           queryClient.setQueryData(configKey, selected);
@@ -165,7 +166,7 @@ export function BotSettings({ bot, onSaved }: { bot: Bot; onSaved?: () => void }
         default_prompt: String(data.get("default_prompt") ?? "").trim(),
         credential_id: String(data.get("credential_id") ?? ""),
         model: String(data.get("model") ?? ""),
-        deviceId: String(data.get("windows_device_id") ?? ""),
+        deviceId: String(data.get(bot.framework === "open_interface" ? "macos_device_id" : "windows_device_id") ?? ""),
         ...(toolsEnabled && toolsQuery.data?.editable ? { tool_selection: toolValue, expected_tools_revision: toolDraft?.revision ?? toolsQuery.data.tools_revision } : {}),
         ...(collaborationDraft ? { collaboration: collaborationDraft } : {}),
       });
@@ -265,13 +266,13 @@ export function BotSettings({ bot, onSaved }: { bot: Bot; onSaved?: () => void }
             </> : <p role="status">{toolsQuery.isError ? "Could not load selected tools." : "Loading selected tools?"} <button type="button" onClick={() => void toolsQuery.refetch()}>Retry</button></p> : null}
             <h3>Computer and approvals</h3>
             <AutopilotToggle botId={bot.id} showUnavailable />
-            {bot.framework !== "ufo" ? <CloudComputerSettings botId={bot.id} disabled={save.isPending} onSelection={setCloudSelection} onBusyChange={setCloudBusy} /> : null}
-            <WindowsComputerSettings
+            {!["ufo", "open_interface"].includes(bot.framework) ? <CloudComputerSettings botId={bot.id} disabled={save.isPending} onSelection={setCloudSelection} onBusyChange={setCloudBusy} /> : null}
+            {bot.framework === "open_interface" ? <MacComputerSettings botId={bot.id} framework={bot.framework} disabled={save.isPending} onBusyChange={setWindowsBusy} /> : <WindowsComputerSettings
               botId={bot.id}
               framework={bot.framework}
               disabled={save.isPending}
               onBusyChange={setWindowsBusy}
-            />
+            />}
             {session?.protocol === 2 ? <ApprovalPolicies botId={bot.id} /> : null}
           </section>
         </div>

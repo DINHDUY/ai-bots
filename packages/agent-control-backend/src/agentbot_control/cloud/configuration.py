@@ -153,7 +153,7 @@ async def select(self: CloudComputers, user, bot, command):
             code="workspace_computer",
         )
     self.require_manage(user, bot.id)
-    if bot.framework == "ufo":
+    if bot.framework in {"ufo", "open_interface"}:
         raise Conflict("UFO bots use a paired Windows desktop.")
     async with self.mutex(bot.id):
         digest = {"operation": "cloud.select", **command.model_dump()}

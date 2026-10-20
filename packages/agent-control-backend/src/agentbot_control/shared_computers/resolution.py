@@ -34,7 +34,7 @@ def workspace_of(db, bot_id):
 
 def eligible(db, bot_id) -> bool:
     bot = db.execute("SELECT framework FROM bots WHERE id=?", (bot_id,)).fetchone()
-    if not bot or bot[0] == "ufo":
+    if not bot or bot[0] in {"ufo", "open_interface"}:
         return False
     return not db.execute("SELECT 1 FROM bot_compute_config WHERE bot_id=?", (bot_id,)).fetchone()
 
@@ -83,7 +83,7 @@ def attached_bot_ids(db, workspace_id):
         row[0]
         for row in db.execute(
             "SELECT b.id FROM bots b JOIN bot_streams s ON s.bot_id=b.id "
-            "WHERE s.workspace_id=? AND b.framework!='ufo' "
+            "WHERE s.workspace_id=? AND b.framework NOT IN ('ufo','open_interface') "
             "AND NOT EXISTS (SELECT 1 FROM bot_compute_config c WHERE c.bot_id=b.id)",
             (workspace_id,),
         ).fetchall()
@@ -111,7 +111,7 @@ def blocking(db, workspace_id) -> bool:
             "SELECT 1 FROM computer_sessions c WHERE c.status!='closed' AND ("
             "c.workspace_id=? OR c.bot_id IN ("
             "SELECT b.id FROM bots b JOIN bot_streams s ON s.bot_id=b.id "
-            "WHERE s.workspace_id=? AND b.framework!='ufo' "
+            "WHERE s.workspace_id=? AND b.framework NOT IN ('ufo','open_interface') "
             "AND NOT EXISTS (SELECT 1 FROM bot_compute_config cfg WHERE cfg.bot_id=b.id)"
             ")) LIMIT 1",
             (workspace_id, workspace_id),

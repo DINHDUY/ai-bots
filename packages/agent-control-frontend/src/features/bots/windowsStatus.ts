@@ -9,9 +9,9 @@ export type WindowsDevice = {
     reason: string;
   } | null;
 };
-export function windowsStatus(pc: WindowsDevice) {
+export function windowsStatus(pc: WindowsDevice, unavailable = "Windows unavailable") {
   if (!pc.online) return "Offline";
-  if (!pc.state?.ready) return pc.state?.reason || "Windows unavailable";
+  if (!pc.state?.ready) return pc.state?.reason || unavailable;
   if (!pc.state.sharing) return "Sharing off";
   if (!pc.state.armed) return "Control off";
   return "Ready";

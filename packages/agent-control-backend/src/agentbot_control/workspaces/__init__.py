@@ -105,7 +105,7 @@ class Workspaces:
             ).fetchone()
         if not row:
             raise HTTPException(404, "Bot not found.")
-        if row["framework"] == "ufo" and row["owner_id"] != user_id:
+        if row["framework"] in {"ufo", "open_interface"} and row["owner_id"] != user_id:
             raise HTTPException(
                 403, "This Windows desktop and its history are private to its owner."
             )
@@ -147,7 +147,7 @@ class Workspaces:
             ids = [
                 r[0]
                 for r in db.execute(
-                    "SELECT s.bot_id FROM bot_streams s JOIN bots b ON b.id=s.bot_id JOIN workspace_members m ON m.workspace_id=s.workspace_id WHERE m.user_id=? AND (b.framework!='ufo' OR b.owner_id=?) AND (? IS NULL OR s.workspace_id=?)",
+                    "SELECT s.bot_id FROM bot_streams s JOIN bots b ON b.id=s.bot_id JOIN workspace_members m ON m.workspace_id=s.workspace_id WHERE m.user_id=? AND (b.framework NOT IN ('ufo','open_interface') OR b.owner_id=?) AND (? IS NULL OR s.workspace_id=?)",
                     (user_id, user_id, wid, wid),
                 )
             ]

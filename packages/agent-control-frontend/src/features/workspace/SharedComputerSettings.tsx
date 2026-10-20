@@ -77,7 +77,7 @@ export function SharedComputerSettings({ wid, owner }: { wid: string; owner: boo
       <p className="muted">{settings.limitation}</p>
       <p>
         Eligible bots in this workspace {shared ? "share one computer" : "each keep their own computer"}.
-        Windows and UFO bots always keep their own computer.
+        Windows and macOS desktop bots always keep their own computer.
       </p>
       <label>
         Computer mode

@@ -32,7 +32,7 @@ export type Credential = {
 
 export function providersFor(framework: string): string[] | null {
   if (framework === "anthropic") return ["anthropic"];
-  if (framework === "microsoft" || framework === "ufo") return ["openai", "azure_foundry"];
+  if (framework === "microsoft" || framework === "ufo" || framework === "open_interface") return ["openai", "azure_foundry"];
   return null;
 }
 

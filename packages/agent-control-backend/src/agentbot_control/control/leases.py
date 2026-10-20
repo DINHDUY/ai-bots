@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 
 async def acquire(self: Control, bot_id, sid, user, token, command):
-    if self.windows.config(bot_id):
+    if self.windows.config(bot_id) or (self.macos and self.macos.config(bot_id)):
         raise Conflict(
             "Use Take control on this PC; remote browser input is unavailable for Windows."
         )

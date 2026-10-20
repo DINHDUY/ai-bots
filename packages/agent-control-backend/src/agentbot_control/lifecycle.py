@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 
     from agentbot_control.control import Control
     from agentbot_control.event_store import EventStore
+    from agentbot_control.macos import MacComputers
     from agentbot_control.ports import StopRun
     from agentbot_control.windows import WindowsComputers
 
@@ -24,6 +25,7 @@ from pydantic import Field
 
 from agentbot_control.authorization import request_bot
 from agentbot_control.event_store import fingerprint, identifier, packed, stamp
+from agentbot_control.macos.connection import MacConnectionRejected
 from agentbot_control.repositories import admission
 from agentbot_control.schemas import Command, Conflict
 from agentbot_control.transport import body
@@ -47,6 +49,7 @@ class Lifecycle:
         stop: StopRun,
         tasks: dict[str, asyncio.Task],
         windows: WindowsComputers,
+        macos: MacComputers | None = None,
     ) -> None:
         self.store = store
         self.action_locks = action_locks
@@ -57,6 +60,7 @@ class Lifecycle:
         self.stop = stop
         self.tasks = tasks
         self.windows = windows
+        self.macos = macos
 
     def retention(self, sid):
         with self.store.transaction() as db:
@@ -75,6 +79,13 @@ class Lifecycle:
             )
         with self.store.transaction() as db:
             native = db.execute("SELECT framework FROM bots WHERE id=?", (bot_id,)).fetchone()
+        if native and native[0] == "open_interface":
+            if self.macos:
+                await self.macos.refresh()
+            if not self.macos or not self.macos.config(bot_id):
+                raise Conflict("Select a paired Mac in bot settings first.")
+            if operation not in {"create", "close"}:
+                raise Conflict("Personal Macs support connect/disconnect only.")
         if native and native[0] == "ufo" and not self.windows.config(bot_id):
             raise Conflict("Select a paired Windows computer in bot settings first.")
         if self.windows.config(bot_id) and operation not in {"create", "close"}:
@@ -226,16 +237,25 @@ class Lifecycle:
                     "operation": operation,
                     "computer": self.store.computer(bot_id),
                 }
-            except Exception:
+            except Exception as exc:
                 current = self.store.computer(bot_id)
+                rejected = (
+                    isinstance(exc, MacConnectionRejected)
+                    and operation == "create"
+                    and step == "provision_new_instance"
+                )
                 if current and current["status"] == "provisioning":
-                    self.store.set_computer(bot_id, current["id"], "failed")
+                    self.store.set_computer(
+                        bot_id, current["id"], "closed" if rejected else "failed"
+                    )
                 result = {
                     "operation_id": oid,
                     "status": "failed",
                     "operation": operation,
                     "failed_step": step,
-                    "detail": "Lifecycle operation failed; inspect the computer before retrying with a new request ID.",
+                    "detail": str(exc)
+                    if rejected
+                    else "Lifecycle operation failed; inspect the computer before retrying with a new request ID.",
                     "computer": self.store.computer(bot_id),
                 }
             with self.store.transaction() as db:

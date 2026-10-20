@@ -44,7 +44,9 @@ def _authorize(self: Channels, db, uid, bid, wid):
         cloud = db.execute(
             "SELECT provider FROM cloud_compute_config WHERE bot_id=?", (bid,)
         ).fetchone()
-        if bot["framework"] == "ufo" or (cloud and cloud[0] == "azure_ml_compute_instance"):
+        if bot["framework"] in {"ufo", "open_interface"} or (
+            cloud and cloud[0] == "azure_ml_compute_instance"
+        ):
             raise Conflict("execution_access_required")
         role = self._role(db, uid, wid)
         grant = db.execute(

@@ -259,6 +259,84 @@ default collapse, expansion, and recovery after reload. Existing warning baselin
 remain. Docker, native companion, and standalone Behave checks were not rerun for
 this UI-only follow-up.
 
+## macOS companion: implementation and qualification
+
+The user approved implementation of the [Open-Interface/macOS plan](029-agent-control-macos-companion-plan.md)
+on 2026-10-16. The new package supplies the native runtime, portable TaskStar
+bridge/controller, hash-pinned OI/UFO source adaptations, and isolated native
+setup. Backend `open_interface`/`macos_local` integration, owner pairing, durable
+task/action receipts, approvals, single-device bindings, recovery, and frontend
+Mac settings/workspace are implemented. [030](030-agent-control-macos-runtime.md)
+documents setup, limits, task submission and retained state.
+
+Portable and scripted results are separate from native qualification in the
+[validation record](metrics/macos-companion-validation.md). `make check` passed
+568 Python and 88 frontend tests; `make check-docker` passed 13 Docker and
+42 browser tests. A separate Python 3.13 run and the real pinned TaskStar bridge
+probe also passed with the coverage limits recorded there. The local required
+native gate fails because Screen Recording, Accessibility, and an unlocked console
+session are unavailable to this process. Native operation/Stop measurements,
+lock/session transitions, live-model scenarios, and native Windows regression
+remain open. This is not completion of all M0–M6 exit criteria or a supported
+native release. CI definitions are present but hosted runs are not claimed.
+
+### Mac connection rejection follow-up
+
+Expected connection rejections (offline companion, missing permissions/sharing,
+or another bot's binding) now return the specific reason and close the unused
+session, leaving **Connect Mac** available. The rejected request keeps its durable
+receipt; a new click uses the current generation and a new request ID. Failures
+after claiming a binding and unknown action outcomes retain conservative recovery.
+Inspection uses the selected device before a binding exists, so a connected Mac
+with missing Accessibility no longer appears offline. Native Quartz stubs now
+cover the session constants used by the existing session-detection correction.
+
+Local follow-up diagnostics show a connected companion, Screen Recording enabled,
+and an unlocked console session, but Accessibility is still missing. The required
+native gate still fails; local consent and native/live-model acceptance remain
+open. Updated [troubleshooting](030-agent-control-macos-runtime.md#troubleshooting-connect-mac)
+and [validation evidence](metrics/macos-companion-validation.md) describe recovery
+of old unused failed sessions and the executed regression checks.
+
+### Mac Accessibility capture limit follow-up
+
+Whole-primary-display capture hit the old 300-control inspection limit in a
+Finder window with 816 Accessibility elements. Inspection now scans the complete
+tree within a separate 4,096-element bound, deduplicates handles, and only then
+collects up to 300 control records, prioritizing text targets. Secure fields beyond
+that output limit still reject capture. Display inspection shares a three-second
+deadline and scans each window once; failed observations clear old native handles.
+
+The ordinary gate passed 591 Python and 88 frontend tests. Native tests now verify
+selected-window and whole-display capture with a disposable window containing
+350 labels, plus the existing mouse/stale-observation case. The full native gate
+still fails its keyboard/Unicode scenario: Command-A inserts a literal `a`, leaving
+the old text before the new Unicode input. This also reproduces with the original
+Accessibility/native modules and remains separate follow-up work. Exact checks,
+fixture readiness corrections and remaining qualification are recorded in the
+[validation ledger](metrics/macos-companion-validation.md#accessibility-capture-limit-follow-up).
+
+### Mac run stopping during cleanup
+
+A live Steve run received a physical-input pause after execution entered cleanup.
+The resulting Stop cancelled the cleanup await, removed the in-memory run task,
+and left durable state at `stopping`. The run had no action records; the local
+companion journal also contained no claims. The existing authenticated Disconnect
+operation settled it as cancelled and closed only its Mac binding.
+
+Run finalization is now retained and awaited through repeated cancellation.
+Cancellation during successful cleanup ends as cancelled; earlier errors and
+unknown native outcomes retain their failure/recovery behavior. Nine regression
+cases cover Mac, Windows and generic providers, including repeated cancellation,
+blocked admission before settlement and exactly one final event. The
+[validation record](metrics/macos-companion-validation.md#stop-during-run-cleanup)
+tracks the live recovery, backend restart and required checks.
+
+The fix is loaded in the local backend after a protected 914-file backup.
+`/ready` and database integrity checks pass. Validation passed 600 Python,
+88 frontend unit, 13 Docker and 44 browser tests. Native Windows validation could
+not run on this Mac; local companion control must be re-enabled after reconnect.
+
 ## Prior feature baseline
 
 B1 and B2 remain the execution foundation. B3–B11 are implemented across the backend, sandbox image, and frontend with the initial release scope below. See [runtime contracts and deployment instructions](016-agent-control-backend-runtime.md) and the [frontend guide](009-agent-control-frontend.md).

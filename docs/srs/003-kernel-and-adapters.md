@@ -81,6 +81,16 @@ Implement only if needed. If implemented, all of the following are MUST.
 | KRN-036 | Scratch directory MUST default to `data/cursor-scratch` and MUST start empty. One fresh agent MUST be used per turn. `MAX_TOOL_TURNS` MUST cap the turn. `CursorAgentError` with `is_retryable=True` MUST be logged and MUST NOT be retried automatically. |
 | KRN-037 | Host tools MUST be `run_terminal_command` and browser actions (approval required) plus `read_file`, `list_dir`, and `screenshot` (no approval). `write_file` MUST still hit the sandbox write approval. Sandbox errors MUST return as `"<tool> error: …"` strings. Durable `Agent.resume` and Cursor-hosted cloud agents are out of scope. |
 
+## Open-Interface product adapter
+
+`OiAgentAdapter` registers `open_interface` in product composition. Its portable
+controller uses the companion planning API, then routes each `macos.*` action
+through the existing server-owned dispatcher. It MUST NOT give model output direct
+access to the native executor. Workspace messaging retains normal channel/tool
+authorization, including communication-only runs. The core registry matches
+explicitly declared operation prefixes without importing platform adapters.
+See [030](../030-agent-control-macos-runtime.md).
+
 ## Traceability
 
 | IDs | Sources |

@@ -38,9 +38,9 @@ class GuardedSandbox:
                 "browser_open": ("browser_open_scoped", "origin"),
             }.get(name)
             target = method
-            if name == "execute_windows":
+            if name in {"execute_windows", "execute_macos"}:
                 if not action_id:
-                    raise RuntimeError("Windows mutations require the action dispatcher")
+                    raise RuntimeError("Native mutations require the action dispatcher")
                 kwargs["action_id"] = action_id
             if (
                 checked
@@ -85,5 +85,3 @@ class GuardedSandbox:
                 self.sandbox.uncertain_reason
                 or "Windows action outcome unknown; inspect and disconnect before continuing"
             )
-
-

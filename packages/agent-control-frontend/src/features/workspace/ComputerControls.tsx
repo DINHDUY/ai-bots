@@ -19,7 +19,8 @@ export function ComputerControls({ botId }: { botId: string }) {
   const [surface, setSurface] = useState<"browser" | "desktop">("browser");
   const local = useHumanControl((s) => s.bots[botId]);
   const { report, computer, control, writable, paused, resume, resuming, canResume } = useComputerControl(botId);
-  const windows = report.data?.provider === "windows_local";
+  const macos = report.data?.provider === "macos_local";
+  const windows = report.data?.provider === "windows_local" || macos;
   const cloud = report.data?.provider?.startsWith("azure_");
   const cloudActions = report.data?.capabilities?.lifecycle_actions ?? [];
   const shared = report.data?.workspace_computer === true;
@@ -41,9 +42,9 @@ export function ComputerControls({ botId }: { botId: string }) {
           }),
         },
       );
+      await report.refetch();
       if (result.status !== "completed" && result.status !== "accepted")
         throw new Error(result.detail ?? result.status);
-      await report.refetch();
       await control.refetch();
     } catch (e) {
       setError(String(e));
@@ -60,7 +61,7 @@ export function ComputerControls({ botId }: { botId: string }) {
         {operation ? <p role={operation.status === "failed" || operation.status === "outcome_unknown" ? "alert" : "status"}>{operation.operation}: {operation.phase.replaceAll("_", " ")}. {operation.detail}</p> : null}
         {report.data?.cloud_details ? <details><summary>Computer details</summary><p>{report.data.cloud_details.region} · {report.data.cloud_details.size} · {report.data.cloud_details.ownership} · {report.data.cloud_details.storage_policy.replaceAll("_", " ")}</p><p>Cleanup: {report.data.cloud_details.cleanup_state}. Retained disks may continue to incur charges after stopping.</p></details> : null}
       </div> : null}
-      {windows ? <p className={styles.controlMessage} role="status">{report.data?.reason || "Pair and enable the Windows companion in Bot settings."}{paused ? " Restore Allow agent control locally, then Resume agent." : ""}</p> : null}
+      {windows ? <p className={styles.controlMessage} role="status">{report.data?.reason || (macos ? "Pair and enable the macOS companion in Bot settings." : "Pair and enable the Windows companion in Bot settings.")}{paused ? " Restore Allow agent control locally, then Resume agent." : ""}</p> : null}
       <div className={styles.controlDetails}>
         {control.data?.recording ? (
           <span role="status">
@@ -91,11 +92,11 @@ export function ComputerControls({ botId }: { botId: string }) {
         ) : null}
       </div>
       <div className={styles.controlActions} role="group" aria-label="Computer actions" tabIndex={0}>
-        {windows && computer?.status === "running" && report.data?.capabilities?.desktop_takeover ? <button type="button" aria-label="Take control on this PC" title="Take control on this PC" disabled={busy} onClick={async () => {
+        {windows && computer?.status === "running" && report.data?.capabilities?.desktop_takeover ? <button type="button" aria-label={macos ? "Take control on this Mac" : "Take control on this PC"} title={macos ? "Take control on this Mac" : "Take control on this PC"} disabled={busy} onClick={async () => {
           setBusy(true); setError("");
           try { await api(`/api/bots/${botId}/computer/takeover`, { method: "POST", body: JSON.stringify({ request_id: crypto.randomUUID(), generation: computer.generation }) }); await control.refetch(); await report.refetch(); }
           catch (e) { setError(String(e)); } finally { setBusy(false); }
-        }}>Control PC</button> : null}
+        }}>{macos ? "Control Mac" : "Control PC"}</button> : null}
         {paused ? (
           <button
             type="button"
@@ -162,8 +163,8 @@ export function ComputerControls({ botId }: { botId: string }) {
             Wake
           </button>
         ) : !shared && !cloud && writable && (!computer || computer.status === "closed") ? (
-          <button aria-label={windows ? "Connect Windows PC" : "Create computer"} title={windows ? "Connect Windows PC" : "Create computer"} disabled={busy} onClick={() => void action("create")}>
-            {windows ? "Connect PC" : "Create"}
+          <button aria-label={macos ? "Connect Mac" : windows ? "Connect Windows PC" : "Create computer"} title={macos ? "Connect Mac" : windows ? "Connect Windows PC" : "Create computer"} disabled={busy} onClick={() => void action("create")}>
+            {macos ? "Connect Mac" : windows ? "Connect PC" : "Create"}
           </button>
         ) : null}
         {!shared && cloud ? cloudActions.map(item => <button key={item} type="button" aria-label={cloudLabels[item] ?? item} title={cloudLabels[item] ?? item} disabled={busy || operation?.status === "accepted"} onClick={() => ["stop", "reset", "close", "delete-managed", "create"].includes(item) ? setConfirm(item) : void action(item)}>{cloudButtonLabels[item] ?? item}</button>) : null}

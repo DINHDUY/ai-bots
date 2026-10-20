@@ -134,6 +134,8 @@ export async function fixture(page: Page, initial = "/#/bots/orders") {
     new URL("./fixtures/orders-preview.html", import.meta.url),
     "utf8",
   );
+  const imagePage = await page.context().newPage();
+  await imagePage.setContent(preview);
   let screenshot = "";
   await expect(async () => {
     await imagePage.bringToFront();
@@ -161,7 +163,7 @@ export async function fixture(page: Page, initial = "/#/bots/orders") {
     type: "TOOL_CALL",
     payload: "browser_open: file:///workspace/preview.html",
   });
-  send({ event: "log", type: "SCREENSHOT_CAPTURE", payload: screenshotBase64 });
+  send({ event: "log", type: "SCREENSHOT_CAPTURE", payload: screenshot });
   send({
     event: "log",
     type: "TOOL_CALL",

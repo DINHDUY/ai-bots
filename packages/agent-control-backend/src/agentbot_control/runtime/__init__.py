@@ -22,6 +22,7 @@ if TYPE_CHECKING:
     from agentbot_control.files import Files
     from agentbot_control.groups import Groups
     from agentbot_control.lifecycle import Lifecycle
+    from agentbot_control.macos import MacComputers
     from agentbot_control.policies import Policies
     from agentbot_control.routines import Routines
     from agentbot_control.terminals import Terminals
@@ -71,6 +72,7 @@ class Runtime:
     workflow_imports: WorkflowImports
     workspace_deletions: WorkspaceDeletions
     routines: Routines
+    macos: MacComputers
     windows: WindowsComputers
     cloud: CloudComputers
     sandboxes: SandboxManager

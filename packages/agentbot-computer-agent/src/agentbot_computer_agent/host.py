@@ -6,6 +6,7 @@ import os
 import re
 import sqlite3
 import subprocess
+import sys
 from pathlib import Path
 
 from agentbot.interfaces import SandboxError, TerminationUnverified
@@ -34,9 +35,7 @@ class OwnedDocker(DockerSessionManager):
         self.bind(p["session_id"], p["bot_id"], p["generation"])
 
     def _labels(self, sid):
-        return super()._labels(sid) | {
-            "agentbot.cloud_binding": self.config["binding_id"]
-        }
+        return super()._labels(sid) | {"agentbot.cloud_binding": self.config["binding_id"]}
 
     def _start(self, sid):
         p = self.config["profile"]
@@ -48,9 +47,7 @@ class OwnedDocker(DockerSessionManager):
                 capture_output=True,
                 timeout=10,
             )
-        if sid != p["session_id"] or not re.fullmatch(
-            r"[a-zA-Z0-9_-]+", self.config["binding_id"]
-        ):
+        if sid != p["session_id"] or not re.fullmatch(r"[a-zA-Z0-9_-]+", self.config["binding_id"]):
             raise SandboxError("Unregistered sandbox identity")
         found = self._find(sid)
         if len(found) > 1:
@@ -58,9 +55,7 @@ class OwnedDocker(DockerSessionManager):
         if found:
             container = found[0]
             if container.attrs.get("Config", {}).get("Image") != self._image:
-                raise SandboxError(
-                    "Existing container image differs from approved digest"
-                )
+                raise SandboxError("Existing container image differs from approved digest")
             if container.status != "running":
                 container.start()
             return DockerSandbox(container, sid)
@@ -129,6 +124,8 @@ class OwnedDocker(DockerSessionManager):
 class Host:
     def __init__(self, config, path, manager=None):
         self.config, self.path = config, Path(path)
+        if not sys.platform.startswith("linux") and manager is None:
+            raise SandboxError("The Docker host agent requires Linux")
         self.manager = manager or OwnedDocker(config)
         journal = self.path.with_suffix(".receipts.sqlite")
         self.db = sqlite3.connect(journal)
@@ -146,7 +143,7 @@ class Host:
         self.epoch = 0
         self.boot = (
             Path("/proc/sys/kernel/random/boot_id").read_text().strip()
-            if os.name != "nt"
+            if sys.platform.startswith("linux")
             else "test-host-boot"
         )
 
@@ -169,9 +166,7 @@ class Host:
 
     async def health(self):
         try:
-            self.capabilities(
-                await self.manager.inspect(self.config["profile"]["session_id"])
-            )
+            self.capabilities(await self.manager.inspect(self.config["profile"]["session_id"]))
         except Exception:
             self.services = {}
 
@@ -186,8 +181,7 @@ class Host:
         )
         p = self.config["profile"]
         transition = (
-            request.method == "sandbox.ensure"
-            and request.generation == p["generation"] + 1
+            request.method == "sandbox.ensure" and request.generation == p["generation"] + 1
         )
         if not transition and (request.session_id, request.generation) != (
             p["session_id"],
@@ -207,8 +201,7 @@ class Host:
         writing = mutating(request.method, request.arguments)
         if (
             writing
-            and request.method
-            not in {"sandbox.stop", "sandbox.retire", "cancel_commands"}
+            and request.method not in {"sandbox.stop", "sandbox.retire", "cancel_commands"}
             and not self.leased
         ):
             raise SandboxError("Host lease expired; request was not dispatched")
@@ -266,20 +259,14 @@ class Host:
                     "generation": request.generation,
                 }
                 if supplied != expected:
-                    raise SandboxError(
-                        "Ensure does not match the registered host profile"
-                    )
+                    raise SandboxError("Ensure does not match the registered host profile")
                 if transition:
                     old = await self.manager.inspect(p["session_id"])
                     if old["lifecycle"] != "missing":
                         raise SandboxError("Previous generation has not been retired")
-                    p.update(
-                        session_id=request.session_id, generation=request.generation
-                    )
+                    p.update(session_id=request.session_id, generation=request.generation)
                     save_private(self.path, self.config)
-                    self.manager.bind(
-                        request.session_id, p["bot_id"], request.generation
-                    )
+                    self.manager.bind(request.session_id, p["bot_id"], request.generation)
                 await self.manager.get_or_create(request.session_id)
                 result = await self.manager.inspect(request.session_id)
                 self.capabilities(result)

@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from agentbot.kernel import EngineRuntimeManager
 
     from agentbot_control.event_store import EventStore
+    from agentbot_control.macos import MacComputers
     from agentbot_control.ports import StartRun, StopRun
     from agentbot_control.store import Catalog
     from agentbot_control.toolkit import Toolkit
@@ -71,12 +72,14 @@ class Control:
         computer_existing: Callable[..., Awaitable[tuple[dict, ISandboxClient]]],
         computer_history: Callable[..., list[dict]],
         close_lease: Callable[[str], Awaitable[None]],
+        macos: MacComputers | None = None,
     ) -> None:
         self.store = store
         self.catalog = catalog
         self.workspaces = workspaces
         self.kernel = kernel
         self.windows = windows
+        self.macos = macos
         self.toolkit = toolkit
         self.action_locks = action_locks
         self.bind = bind

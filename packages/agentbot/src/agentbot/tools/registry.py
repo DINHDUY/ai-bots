@@ -27,6 +27,8 @@ class ToolSpec:
     requires_computer: bool = True
     implementation_modules: tuple[str, ...] = ()
     adapter_modules: tuple[str, ...] = ()
+    providers: tuple[str, ...] = ("docker", "azure_vm", "azure_ml_compute_instance")
+    default_selected: bool = False
 
     @property
     def key(self):
@@ -63,11 +65,7 @@ class ToolSpec:
     def public(self, framework=None, provider=None):
         compatible = framework is None or framework in self.frameworks
         reason = "" if compatible else "Unavailable for this framework"
-        if (
-            self.requires_computer
-            and provider
-            and ((provider == "windows_local") != (self.library_id == "windows.desktop"))
-        ):
+        if self.requires_computer and provider and provider not in self.providers:
             compatible, reason = False, "Requires a different computer type"
         return {
             **asdict(self),
@@ -241,5 +239,6 @@ def legacy_selection(framework, registry=None):
             "configuration": {},
         }
         for s in (registry or REGISTRY).values()
-        if framework in s.frameworks and s.library_id.startswith(("sandbox.", "windows."))
+        if framework in s.frameworks
+        and (s.default_selected or s.library_id.startswith(("sandbox.", "windows.")))
     ]

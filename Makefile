@@ -81,7 +81,7 @@ check:
 	$(PY) scripts/check_python_size.py
 	$(PY) -m pyright
 	$(PY) -m pyright --project pyrightconfig.foundation.json
-	$(PY) -m pytest -m "not docker and not windows_desktop"
+	$(PY) -m pytest -m "not docker and not windows_desktop and not macos_desktop"
 	$(PY) scripts/docs_check.py
 	$(PY) scripts/verify_core.py
 	$(PY) scripts/check_wire.py
@@ -122,3 +122,17 @@ docs-check:
 
 metrics:
 	$(PY) scripts/arch_metrics.py
+
+.PHONY: macos-setup macos-companion macos-test macos-bridge-test
+macos-setup:
+	$(PY) scripts/macos_setup.py
+
+macos-companion:
+	data/oi/venv/bin/agentbot-macos run
+
+macos-test:
+	$(UV) pip install --python data/oi/venv/bin/python --require-hashes -r packages/agentbot-macOS-companion/requirements-test.lock
+	AGENTBOT_MACOS_DESKTOP_TEST=1 data/oi/venv/bin/python -m pytest packages/agentbot-macOS-companion/tests -m macos_desktop --require-macos-desktop
+
+macos-bridge-test:
+	data/oi/venv/bin/python scripts/macos_taskstar_probe.py

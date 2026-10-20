@@ -22,7 +22,7 @@ export function BotHeader({
       <div className={styles.botIdentity}>
         <div className="row">
           <h1>{bot.name}</h1>
-          <StatusBadge status={session.status} label={bot.framework === "ufo" && session.computerStatus === "failed" ? "Recovery required" : undefined} />
+          <StatusBadge status={session.status} label={["ufo", "open_interface"].includes(bot.framework) && session.computerStatus === "failed" ? "Recovery required" : undefined} />
         </div>
         <p><AutopilotBadge enabled={session.autopilot?.enabled} /> {bot.model || bot.framework} · Your persistent agent workspace</p>
       </div>
