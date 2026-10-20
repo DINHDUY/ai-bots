@@ -14,6 +14,7 @@ Start with [docs/architecture-blueprint.md](docs/architecture-blueprint.md). The
 | [026](docs/026-workspace-deletion-plan.md)–[028](docs/028-workspace-deletion-audit.md) | [Delete a workspace](docs/027-workspace-deletion.md), cleanup, and recovery |
 | [029](docs/029-agent-control-macos-companion-plan.md) | Approved macOS companion plan using Open-Interface and UFO³ TaskStars |
 | [030](docs/030-agent-control-macos-runtime.md) | macOS runtime setup, TaskStars, consent and recovery |
+| [031](docs/031-agentbot-macos-app-plan.md) | Proposed standalone, signed and notarized `AgentBot.app` for the macOS companion |
 | [code review](docs/code-reviews/v0.3.0-reviews.md) | Architecture review for tag `v0.3.0` |
 | [ADRs](docs/adr/0001-async-generator-adapter-boundary.md) | Decisions 0001–0016 |
 
