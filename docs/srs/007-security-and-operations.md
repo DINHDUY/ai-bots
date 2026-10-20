@@ -69,7 +69,7 @@ Trust zones are the public internet and model output (untrusted), the browser (u
 | `ALLOW_REGISTER` | `1` | `0` closes registration. |
 | `COOKIE_SECURE` | empty | Required when `SameSite=none`. |
 | `COOKIE_SAMESITE` | `lax` | `none` requires `COOKIE_SECURE=1`. |
-| `CORS_ORIGINS` | `http://127.0.0.1:5173` | Credentialed allowlist. No `*`. |
+| `CORS_ORIGINS` | `http://127.0.0.1:5174` | Credentialed allowlist. No `*`. |
 | `SANDBOX_IMAGE` | `agentbot-sandbox` | Container image. |
 | `HOST`, `PORT` | `127.0.0.1`, `8000` | Bind address. |
 | `VITE_API_BASE` | `http://127.0.0.1:8000` | Frontend API origin. WebSocket URL is the scheme swap. |

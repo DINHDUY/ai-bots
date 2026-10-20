@@ -8,7 +8,7 @@ The SPA contract. It observes server state and sends durable commands. It does n
 | --- | --- |
 | FE-001 | The UI MUST be a React 19, TypeScript, and Vite SPA. Styling MUST use CSS Modules and design tokens. REST data MUST use TanStack Query. Live session state MUST use Zustand. Routing MUST be a hash router. Markdown MUST use `react-markdown` and `remark-gfm` with raw HTML disabled and remote images omitted. |
 | FE-002 | Unit tests MUST use Vitest, Testing Library, and MSW. End-to-end tests MUST use Playwright. Tests MUST NOT live under `src/`. |
-| FE-003 | The dev server MUST be `http://127.0.0.1:5173`. `VITE_API_BASE` MUST default to `http://127.0.0.1:8000`. Every `fetch` MUST send `credentials: "include"`. The WebSocket URL MUST be that base with `http` replaced by `ws`. |
+| FE-003 | The dev server MUST be `http://127.0.0.1:5174`. `VITE_API_BASE` MUST default to `http://127.0.0.1:8000`. Every `fetch` MUST send `credentials: "include"`. The WebSocket URL MUST be that base with `http` replaced by `ws`. |
 | FE-004 | There MUST be no legacy transport fallback and no browser-owned automatic approval. A backend that is not v2 MUST surface a compatibility error. |
 | FE-005 | `sessionConnection.ts` MUST validate snapshots and events against the generated JSON schema. Malformed or unsupported frames MUST cause a controlled resync or a compatibility error. |
 | FE-006 | Commands MUST be HTTP calls with stable request ids. Reconnect MUST NOT queue commands and MUST NOT approve actions. Command controls MUST stay disabled until snapshot and replay catch-up. Ambiguous command ids MUST be preserved for an explicit retry. |

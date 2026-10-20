@@ -60,6 +60,11 @@
     "source": "packages/agent-control-backend/src/agentbot_control/toolkit/__init__.py"
   },
   {
+    "name": "Operator tool plugins",
+    "status": "Implemented; CLI manifests and allowlisted packages",
+    "source": "packages/agentbot-product-tools/src/agentbot_tools/catalog.py"
+  },
+  {
     "name": "Routines",
     "status": "Implemented; provider limits apply",
     "source": "packages/agent-control-backend/src/agentbot_control/routines/__init__.py"

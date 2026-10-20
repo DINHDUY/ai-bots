@@ -5,7 +5,6 @@ import sqlite3
 from collections.abc import Callable
 
 from agentbot.tools import legacy_selection
-from agentbot_tools.registry import REGISTRY
 from anyio.to_thread import run_sync
 from fastapi import HTTPException
 
@@ -82,8 +81,9 @@ class WorkflowImports:
                 choice.model = _model_name(choice.model)
             except CatalogError as exc:
                 file.errors.append(issue("model", "model", str(exc)))
+            specs = self.tools.tool_catalog.specs
             selection = (
-                legacy_selection(choice.framework, REGISTRY)
+                legacy_selection(choice.framework, specs)
                 if choice.tool_selection is None
                 else [tool.model_dump() for tool in choice.tool_selection]
             )
@@ -93,7 +93,7 @@ class WorkflowImports:
             try:
                 selected = self.tools.validate(db, None, choice.framework, selection)
                 for item in selected:
-                    spec = REGISTRY[f"{item['library_id']}/{item['tool_id']}"]
+                    spec = specs[f"{item['library_id']}/{item['tool_id']}"]
                     if spec.resource or not spec.public(provider="docker")["compatible"]:
                         raise HTTPException(
                             422,

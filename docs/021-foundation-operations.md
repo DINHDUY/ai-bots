@@ -8,6 +8,8 @@ Use `uv sync --locked` with Python 3.11 or 3.13 and `npm ci --prefix packages/ag
 
 `agentbot` installs without web, Docker, model SDK or product dependencies. Its `gateway`, `docker`, `anthropic`, and `microsoft` extras enable those integrations. The control backend installs its required extras and `agentbot-product-tools[ufo]`. Workspace messaging and the UFO adapter live in `agentbot_tools`. ETL is a standalone documentation demo under `docs/usecases`; it has no installed handler, tool registration or frontend preset. Framework adapters still contain some connector/skill conventions pending the remainder of F1.
 
+`AGENTBOT_TOOL_MANIFESTS` and `AGENTBOT_TOOL_ALLOWLIST` optionally add CLI tools and allowlisted Python tools to the catalog at startup. Leave both unset when the deployment uses only maintained tools. See [030](030-tool-plugins.md).
+
 The sandbox pins Playwright 1.63.0. Build and record the image digest used by a deployment. In a corporate CA environment, a build may use `--secret id=build_ca,src=<trusted-public-CA-bundle.pem>`; the Dockerfile supplies that trust bundle to the browser downloader for that build step. Do not disable TLS verification. The build secret is not copied into the image.
 
 CI is defined in `.github/workflows/check.yml`; this checkout has no configured remote, so hosted results, branch protection and live-provider jobs remain unverified. `--require-docker` fails the integration gate if Docker tests are missing or unexpectedly skipped.

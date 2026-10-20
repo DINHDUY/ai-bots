@@ -1,0 +1,20 @@
+FROM python:3.11-slim
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
+
+WORKDIR /app
+
+COPY pyproject.toml uv.lock ./
+COPY packages/ packages/
+
+# Install agentbot with gateway extra (FastAPI + Uvicorn WebSocket server)
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --package agentbot --extra gateway --no-dev
+
+ENV PATH="/app/.venv/bin:$PATH" \
+    PYTHONUNBUFFERED=1 \
+    HOST=0.0.0.0 \
+    PORT=8000
+
+EXPOSE 8000
+CMD ["agentbot"]

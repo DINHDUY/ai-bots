@@ -1,6 +1,6 @@
 # Azure Blob ETL setup playbook
 
-Operator path for [azure-blob-etl.feature](tests/behavior/azure-blob-etl.feature) through the agent-control UI at `http://127.0.0.1:5173`. The Behave feature drives the raw gateway with `framework` and `session_id`. Here you sign in, create a bot, and approve the same file writes and bash command.
+Operator path for [azure-blob-etl.feature](tests/behavior/azure-blob-etl.feature) through the agent-control UI at `http://127.0.0.1:5174`. The Behave feature drives the raw gateway with `framework` and `session_id`. Here you sign in, create a bot, and approve the same file writes and bash command.
 
 This is an optional demo, not a backend tool or frontend preset. Use the generic bot editor to enter your own instructions and optionally save a **Default Prompt**. The standalone [blob_orders.py](blob_orders.py) sample uses only the Python standard library and is not imported by either application.
 
@@ -23,7 +23,7 @@ npm install
 npm run dev
 ```
 
-`agentbot-control` listens on `http://127.0.0.1:8000`. The dev server is `http://127.0.0.1:5173`. `CORS_ORIGINS` must include that origin. Run `agentbot-control`, not `agentbot`. Both bind port 8000.
+`agentbot-control` listens on `http://127.0.0.1:8000`. The dev server is `http://127.0.0.1:5174`. `CORS_ORIGINS` must include that origin. Run `agentbot-control`, not `agentbot`. Both bind port 8000.
 
 ## 2. Blob storage the sandbox can reach
 
@@ -81,7 +81,7 @@ Hold the two SAS tokens outside the bot. For a real storage account, use that ac
 
 ## 3. Account and key
 
-Open `http://127.0.0.1:5173`. **Create account** or **Sign in**, then **API keys**.
+Open `http://127.0.0.1:5174`. **Create account** or **Sign in**, then **API keys**.
 
 - An `anthropic` bot needs an Anthropic key.
 - A `microsoft` bot needs an OpenAI key or an Azure Foundry key.

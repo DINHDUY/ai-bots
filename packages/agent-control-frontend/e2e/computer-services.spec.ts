@@ -8,6 +8,7 @@ async function fixture(page: Page, options: { paused?: boolean; remoteControl?: 
   const event = { schema_version: 2, event_id: "capture_event", seq: 1, bot_id: bot.id, session_id: "computer_services", run_id: null, occurred_at: stamp, type: "capture.available", data: { capture_id: "capture_1", url: "/api/bots/services/captures/capture_1", capture } };
   const snapshot = { schema_version: 2, bot_id: bot.id, snapshot_seq: 1, computer: { id: "computer_services", generation: 1, status: "running" }, run: null, messages: [], messages_before: null, events: [event], pending_approvals: [], observations_truncated: false, health };
   const requests: { path: string; body: any }[] = [];
+  const listings: string[] = [];
   const inputs: any[] = [];
   let lease: any = null;
   let paused = options.paused ?? false;
@@ -41,7 +42,13 @@ async function fixture(page: Page, options: { paused?: boolean; remoteControl?: 
     else if (path.endsWith("/control")) data = { paused, lease };
     else if (path.endsWith("/captures/latest")) data = event.data;
     else if (path.endsWith("/captures/capture_1")) return route.fulfill({ contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=", "base64") });
-    else if (path.endsWith("/files")) data = { entries: [{ path: "/workspace/report.csv", name: "report.csv", kind: "file", size: 100000, protected: false }], cursor: null };
+    else if (path.endsWith("/files")) {
+      const dir = new URL(request.url()).searchParams.get("path") || "/workspace";
+      listings.push(dir);
+      data = dir === "/workspace/outputs"
+        ? { entries: [{ path: "/workspace/outputs/notes.txt", name: "notes.txt", kind: "file", size: 12, protected: false }], cursor: null }
+        : { entries: [{ path: "/workspace/outputs", name: "outputs", kind: "directory", size: 0, protected: false }, { path: "/workspace/report.csv", name: "report.csv", kind: "file", size: 100000, protected: false }], cursor: null };
+    }
     else if (path.endsWith("/file-preview")) data = { path: "/workspace/report.csv", text: "date,total\n2026-10-07,42", returned_bytes: 65536, size: 100000, truncated: true, revision: "content_sha", protected: false };
     else if (path === "/api/credentials") data = [];
     else return route.fulfill({ status: 404, json: { detail: "Missing fixture route" } });
@@ -49,7 +56,7 @@ async function fixture(page: Page, options: { paused?: boolean; remoteControl?: 
   });
   await page.routeWebSocket("**/events/ws**", socket => { socket.send(JSON.stringify({ type: "snapshot", data: snapshot })); socket.send(JSON.stringify({ type: "ready", seq: 1 })); });
   await page.routeWebSocket("**/control/ws**", socket => { socket.onMessage(raw => { const message = JSON.parse(String(raw)); inputs.push(message); socket.send(JSON.stringify({ status: "applied", sequence: message.sequence })); }); });
-  return { requests, inputs };
+  return { requests, inputs, listings };
 }
 
 test("human input carries surface and lease fences and release stays paused", async ({ page }) => {
@@ -121,8 +128,14 @@ test("resume errors stay visible and viewers cannot resume a paused agent", asyn
 });
 
 test("file preview stays partial while download binds the complete revision", async ({ page }) => {
-  await fixture(page);
+  const state = await fixture(page);
   await page.goto("/#/bots/services?view=computer&tab=files");
+  await expect(page.getByRole("button", { name: "report.csv", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "notes.txt", exact: true })).toHaveCount(0);
+  expect(state.listings).not.toContain("/workspace/outputs");
+  await page.getByText("outputs", { exact: true }).click();
+  await expect(page.getByRole("button", { name: "notes.txt", exact: true })).toBeVisible();
+  expect(state.listings).toContain("/workspace/outputs");
   await page.getByRole("button", { name: "report.csv", exact: true }).click();
   await expect(page.getByText(/Partial preview/)).toBeVisible();
   await expect(page.getByRole("link", { name: "Download complete file" })).toHaveAttribute("href", /file-content\?path=.*report.csv&revision=content_sha/);

@@ -57,7 +57,7 @@ flowchart LR
 | --- | --- | --- |
 | `agentbot-control` on port 8000 | `agentbot_control` | Accounts, catalog, vault, REST, authenticated sockets, run coordination. Embeds the kernel. |
 | `agentbot` on port 8000 | `agentbot.gateway` | Unauthenticated dev gateway. Caller names framework and session. MUST NOT run beside the control plane. MUST bind `127.0.0.1` by default. |
-| Web UI, Vite dev on 5173 | `agent-control-frontend` | SPA on its own origin. Credentialed CORS. Depends only on the HTTP and WebSocket contract. |
+| Web UI, Vite dev on 5174 | `agent-control-frontend` | SPA on its own origin. Credentialed CORS. Depends only on the HTTP and WebSocket contract. |
 | Sandbox containers | image `agentbot-sandbox` | One Linux desktop per computer session unless the workspace opts into a shared computer. |
 | Windows companion | `agentbot_windows` | Local desktop control. Backend imports only the portable protocol, never native UI Automation. |
 

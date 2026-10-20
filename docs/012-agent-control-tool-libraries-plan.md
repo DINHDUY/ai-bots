@@ -69,7 +69,7 @@ Each handler receives a typed, run-scoped `ToolExecutionContext`: bot/run/sessio
 
 When one tool has multiple selected connection or skill bindings, expose one canonical wrapper rather than duplicate SDK function names. Resolve its resource selector only against that run's pinned bindings and validate the selected resource again at dispatch. Unknown or foreign resource IDs are rejected before any action; a model-supplied ID cannot expand the installed set.
 
-The registry must reject duplicate IDs/names, unresolved dependencies, cycles, and conflicting framework bindings. Start with repository-maintained Python packages loaded from an explicit registry. Installing a tool on a bot binds an already available package; it does not execute `pip`, `npm`, arbitrary imports, or uploaded code. Remote MCP servers and third-party package uploads can be separate later extensions.
+The registry must reject duplicate IDs/names, unresolved dependencies, cycles, and conflicting framework bindings. Start with repository-maintained Python packages loaded from an explicit registry. Installing a tool on a bot binds an already available package; it does not execute `pip`, `npm`, arbitrary imports, or uploaded code. Operator CLI manifests and allowlisted entry points are specified in [029](029-tool-plugins-plan.md). Remote MCP servers and unreviewed package uploads remain out of scope.
 
 ## Persistence and API contracts
 

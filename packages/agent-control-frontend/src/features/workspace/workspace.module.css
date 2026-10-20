@@ -267,7 +267,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 60px;
+  height: 36px;
   flex-shrink: 0;
   gap: 8px;
 }
@@ -279,7 +279,10 @@
 }
 .tabs button {
   display: flex;
+  align-items: center;
   gap: 7px;
+  height: 100%;
+  min-height: 0;
   padding: 0;
   border: 0;
   border-bottom: 2px solid transparent;
@@ -288,6 +291,7 @@
   color: var(--muted);
   font-size: 12px;
   font-weight: 400;
+  line-height: 1;
 }
 .tabs button:hover {
   background: none;
@@ -875,6 +879,22 @@
   margin-bottom: 18px;
   font-size: 9px;
 }
+.treeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 8px;
+  margin-bottom: 12px;
+}
+.treeHeader p {
+  margin: 0;
+  font-size: 9px;
+}
+.treeMore {
+  margin: 4px 5px;
+}
 .treeFolder summary {
   display: flex;
   align-items: center;
@@ -983,6 +1003,8 @@
   font: 12px/2 var(--mono);
   color: var(--ink);
   min-height: 160px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 .filePreview > footer {
   display: flex;
@@ -1171,7 +1193,7 @@
     width: 13px;
   }
   .toolbar {
-    height: 53px;
+    height: 40px;
   }
   .fileWorkbench {
     display: flex;
@@ -1242,7 +1264,7 @@
     min-height: 140px;
   }
   .toolbar {
-    height: 50px;
+    height: 36px;
   }
   .workspaceFooter {
     min-height: 32px;

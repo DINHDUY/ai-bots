@@ -1,0 +1,83 @@
+name: agentbot-prd
+
+# Production stack. Frontend is built into a static nginx image that proxies
+# /api/ to backend and /ws to gateway on the internal compose network.
+#
+# Prerequisites:
+#   1. Copy .env.example -> .env and fill in all required secrets
+#   2. Copy .env.compose.example -> .env.compose and set PODMAN_SOCK
+#   3. podman compose -f compose.prd.yml up --build -d
+
+services:
+
+  backend:
+    build:
+      context: .
+      dockerfile: containers/backend/Containerfile
+    env_file:
+      - .env
+      - path: .env.compose
+        required: false
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "8000"
+      # Frontend is served by nginx on the same host; restrict CORS accordingly
+      CORS_ORIGINS: "${CORS_ORIGINS:-http://localhost}"
+      COOKIE_SECURE: "true"
+      COOKIE_SAMESITE: "strict"
+      DOCKER_HOST: "unix:///run/podman.sock"
+    volumes:
+      - agentbot-data:/app/data
+      - ${PODMAN_SOCK:-/run/user/1000/podman/podman.sock}:/run/podman.sock
+    networks:
+      - agentbot-net
+    restart: always
+    healthcheck:
+      test: ["CMD", "python3", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  gateway:
+    build:
+      context: .
+      dockerfile: containers/gateway/Containerfile
+    env_file:
+      - .env
+      - path: .env.compose
+        required: false
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "8000"
+      DOCKER_HOST: "unix:///run/podman.sock"
+    volumes:
+      - ${PODMAN_SOCK:-/run/user/1000/podman/podman.sock}:/run/podman.sock
+    networks:
+      - agentbot-net
+    restart: always
+
+  frontend:
+    build:
+      context: .
+      dockerfile: containers/frontend/Containerfile
+      args:
+        # Empty = same-origin; nginx proxies /api/ and /ws internally
+        VITE_API_BASE: ""
+    ports:
+      - "${FRONTEND_PORT:-80}:80"
+    networks:
+      - agentbot-net
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: always
+
+volumes:
+  agentbot-data:
+    # Stores control.sqlite, session blobs, and captured artifacts across restarts
+
+networks:
+  agentbot-net:
+    driver: bridge

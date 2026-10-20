@@ -10,7 +10,7 @@ npm ci
 npm run dev
 ```
 
-The dev server is `http://127.0.0.1:5173`. `npm run build` writes a static bundle to `dist/`, which is not committed. `npm run preview` serves that bundle.
+The dev server is `http://127.0.0.1:5174`. `npm run build` writes a static bundle to `dist/`, which is not committed. `npm run preview` serves that bundle.
 
 `VITE_API_BASE` (default `http://127.0.0.1:8000`) is the API origin. Every `fetch` sends cookies (`credentials: "include"`). The WebSocket URL is the same base with `http` replaced by `ws`.
 
@@ -21,7 +21,7 @@ The frontend implements the first release of the [design plan](002-agent-control
 - The global header contains bot search, New bot, pending-approval notifications, and the account menu. API keys and sign-out remain available.
 - The desktop layout has a collapsible bot rail, conversation with an anchored composer, and a 320–400 px **Live Cloud Computer** panel. Bot settings opens from the conversation header.
 - Expand the computer for a screen/terminal split with session context and activity. The Screen tab also supports a screen-only layout, fit/zoom, capture history, and Back to latest.
-- **Filesystem** lists the live sandbox, with paginated directories, bounded previews, complete revision-bound downloads, and subprocess-change refresh. Older servers retain the observed-artifact fallback.
+- **Filesystem** lists the live sandbox as a lazy directory tree, with bounded previews, complete revision-bound downloads, and subprocess-change refresh. Older servers retain the observed-artifact fallback.
 - Below 1024 px, conversation and computer occupy separate views. On phones, bottom navigation provides Bots, Chat, Computer, and More.
 
 Routes retain HashRouter:
@@ -53,7 +53,7 @@ With the B1–B11 backend, the frontend discovers v2 and restores runs, messages
 
 The screen retains 30 captures in its local filmstrip; the backend exposes retained capture history. Looking at an older capture does not jump to a new image when one arrives. Historical/cropped images are view-only. Take control acquires an exclusive tab-specific lease for the selected surface after the agent stops safely. Release and disconnect leave the agent paused; **Resume agent** explicitly starts a new observing turn to continue the previous task. While paused, this button appears above the chat message box (including mobile) and in the computer controls, independently of remote-input support. It stays disabled while human control is active or the user lacks execution access; release control in the tab holding it before resuming.
 
-The live file service includes files created by bash and manual terminals. Preview labels report truncation; Download binds the complete version and cannot substitute changed bytes. Protected configuration files expose metadata only, enforced by the backend. On an older server, the observed-file fallback offers Copy preview and never represents that preview as a full download or proof of cloud publication.
+The live file service includes files created by bash and manual terminals. Each folder loads when it is opened, 200 names at a time. Preview labels report truncation; Download binds the complete version and cannot substitute changed bytes. Protected configuration files expose metadata only, enforced by the backend. On an older server, the observed-file fallback offers Copy preview and never represents that preview as a full download or proof of cloud publication.
 
 The Terminal tab lazily loads xterm for a real lease-bound Bash PTY, with resize, interrupt, explicit close and output-gap display. Command results remain separate. Without PTY support it shows escaped command/output history. Reset, hibernate/resume, create and bounded keep-warm use server lifecycle commands and show retention/deadline information. Hibernate preserves workspace files, not running processes.
 

@@ -4,3 +4,12 @@
 data
 .pytest_cache
 *.egg-info
+# Node
+**/node_modules
+packages/agent-control-frontend/dist
+# Podman/Docker build artifacts
+containers/**/build
+# IDE and local config
+.claude
+.env
+.env.compose

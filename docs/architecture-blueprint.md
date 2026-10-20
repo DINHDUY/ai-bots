@@ -51,6 +51,7 @@ Core capabilities:
 | Markdown workflow import | Implemented; Microsoft/Anthropic, YAML frontmatter | [service.py](../packages/agent-control-backend/src/agentbot_control/workflow_imports/service.py) |
 | Workspace deletion | Implemented; owner-only, idle workspaces, durable cleanup | [service.py](../packages/agent-control-backend/src/agentbot_control/workspace_deletions/service.py) |
 | Tools and skills | Implemented; provider limits apply | [toolkit/__init__.py](../packages/agent-control-backend/src/agentbot_control/toolkit/__init__.py) |
+| Operator tool plugins | Implemented; CLI manifests and allowlisted packages | [catalog.py](../packages/agentbot-product-tools/src/agentbot_tools/catalog.py) |
 | Routines | Implemented; provider limits apply | [routines/__init__.py](../packages/agent-control-backend/src/agentbot_control/routines/__init__.py) |
 | Azure computers | Implemented; provider limits apply | [cloud/__init__.py](../packages/agent-control-backend/src/agentbot_control/cloud/__init__.py) |
 | Windows companion | Implemented; provider limits apply | [service.py](../packages/agentbot-windows-companion/src/agentbot_windows/service.py) |
@@ -58,7 +59,7 @@ Core capabilities:
 | Open-Interface macOS companion and TaskStar bridge | Implemented; native qualification pending | [controller.py](../packages/agentbot-macOS-companion/src/agentbot_macos/controller.py) |
 <!-- capabilities:end -->
 
-Non-goals of the current design: multi-process horizontal scaling of the runtime, hardware-VM isolation, egress allowlisting, and arbitrary third-party plugin execution.
+Non-goals of the current design: multi-process horizontal scaling of the runtime, hardware-VM isolation, egress allowlisting, and unreviewed plugin uploads or remote plugin installation. Operator CLI manifests and allowlisted packages are specified in [029](029-tool-plugins-plan.md).
 
 ---
 
@@ -140,7 +141,7 @@ Processes and responsibilities:
 | --- | --- | --- |
 | Control plane (`agentbot-control`, port 8000) | `packages/agent-control-backend` (`agentbot_control`) | Accounts, catalog, credential vault, REST, authenticated WebSockets, run coordination. Embeds the kernel as a library. |
 | Raw gateway (`agentbot`, port 8000) | `packages/agentbot` (`agentbot.gateway`) | Unauthenticated dev/test WebSocket where the caller names framework and session. Never run alongside the control plane; never expose beyond localhost. |
-| Web UI (Vite dev on 5173, static build in production) | `packages/agent-control-frontend` | SPA served from its own origin; calls the control plane with credentialed CORS. |
+| Web UI (Vite dev on 5174, static build in production) | `packages/agent-control-frontend` | SPA served from its own origin; calls the control plane with credentialed CORS. |
 | Sandbox containers | `docker/sandbox` image `agentbot-sandbox` | One per bot session; runs X display, window manager, browser daemon, and per-call action scripts. |
 
 ---
@@ -684,7 +685,7 @@ Global header (search, New bot, approval notifications, account), collapsible bo
 | `CONTROL_DB` | `data/control.sqlite` | Control plane | Catalog and event store database. |
 | `ALLOW_REGISTER` | `1` | Control plane | `0` closes registration. |
 | `COOKIE_SECURE`, `COOKIE_SAMESITE` | empty, `lax` | Control plane | Cookie attributes; `none` requires secure. |
-| `CORS_ORIGINS` | `http://127.0.0.1:5173` | Control plane | Credentialed origin allowlist (no `*`). |
+| `CORS_ORIGINS` | `http://127.0.0.1:5174` | Control plane | Credentialed origin allowlist (no `*`). |
 | `SANDBOX_IMAGE` | `agentbot-sandbox` | Kernel | Container image. |
 | `SESSION_DATA_DIR` | `data/sessions` | Kernel | JSON memory files. |
 | `SESSION_IDLE_SECONDS` | `900` | Both | Idle close threshold. |

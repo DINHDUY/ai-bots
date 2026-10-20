@@ -259,6 +259,7 @@ default collapse, expansion, and recovery after reload. Existing warning baselin
 remain. Docker, native companion, and standalone Behave checks were not rerun for
 this UI-only follow-up.
 
+<<<<<<< HEAD
 ## macOS companion: implementation and qualification
 
 The user approved implementation of the [Open-Interface/macOS plan](029-agent-control-macos-companion-plan.md)
@@ -336,6 +337,37 @@ The fix is loaded in the local backend after a protected 914-file backup.
 `/ready` and database integrity checks pass. Validation passed 600 Python,
 88 frontend unit, 13 Docker and 44 browser tests. Native Windows validation could
 not run on this Mac; local companion control must be re-enabled after reconnect.
+=======
+### Follow-up: operator tool plugins
+
+The approved [P1-P3 plan](029-tool-plugins-plan.md) is implemented.
+[030](030-tool-plugins.md) and [ADR-0019](adr/0019-operator-installed-tool-plugins.md)
+describe the two install paths. A CLI manifest or an allowlisted `agentbot.tools`
+package is loaded once at startup and then appears in the existing tool picker.
+The product UI does not install code. UFO does not call these factories.
+Allowlisted Python runs in the control process; CLI commands run in the computer
+and still require action approval.
+
+Validation on 2026-10-20, Windows, Python 3.11:
+
+| Command / gate | Result |
+| --- | --- |
+| `ruff check` on the maintained tree | Passed. |
+| `scripts/check_python_size.py` | 332 Python files below 450 active lines. |
+| Global Pyright | 0 errors, 252 warnings. Product tools now resolve `agentbot` on their execution path, which removed missing-import warnings. |
+| Strict foundation Pyright | 0 errors, 0 warnings. |
+| `pytest -m "not docker and not windows_desktop"` | 538 passed, 13 deselected, 1 failed. |
+| Retry of `test_stop_waits_for_inflight_mutation` | Passed twice. The failure was that timing test under the full run; it does not call the new catalog. |
+| `scripts/docs_check.py`, `scripts/verify_core.py`, `scripts/check_wire.py` | Passed. |
+| Frontend lint | 0 errors, 30 existing warnings. |
+| Frontend unit tests and production build | 88 passed. Build succeeded with the existing large-chunk warning. |
+
+`make check-docker`, `make windows-test`, and `make behave` were not rerun.
+The CLI path was tested with the in-memory sandbox, including quoted arguments
+and approval, not against a live container. The tool picker was exercised in
+the frontend unit test, not in a browser session. Public package uploads and
+remote MCP servers remain out of scope.
+>>>>>>> 1840942 (feat: add operator tool plugins and a local Podman stack)
 
 ## Prior feature baseline
 

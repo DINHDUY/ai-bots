@@ -157,7 +157,7 @@ def test_ensure_secret_fills_blank_dotenv(tmp_path, monkeypatch) -> None:
 
 
 def test_cors_preflight_allows_listed_origin_only(tmp_path) -> None:
-    app, _, _, _ = _app(tmp_path, cors_origins=["http://127.0.0.1:5173"])
+    app, _, _, _ = _app(tmp_path, cors_origins=["http://127.0.0.1:5174"])
     headers = {
         "Access-Control-Request-Method": "POST",
         "Access-Control-Request-Headers": "content-type",
@@ -165,16 +165,16 @@ def test_cors_preflight_allows_listed_origin_only(tmp_path) -> None:
     with TestClient(app) as client:
         allowed = client.options(
             "/api/bots",
-            headers={**headers, "Origin": "http://127.0.0.1:5173"},
+            headers={**headers, "Origin": "http://127.0.0.1:5174"},
         )
-        assert allowed.headers["access-control-allow-origin"] == "http://127.0.0.1:5173"
+        assert allowed.headers["access-control-allow-origin"] == "http://127.0.0.1:5174"
         assert allowed.headers["access-control-allow-credentials"] == "true"
         denied = client.options("/api/bots", headers={**headers, "Origin": "http://evil.example"})
         assert "access-control-allow-origin" not in denied.headers
 
 
 def test_foreign_origin_is_rejected(tmp_path) -> None:
-    app, _, _, _ = _app(tmp_path, cors_origins=["http://127.0.0.1:5173"])
+    app, _, _, _ = _app(tmp_path, cors_origins=["http://127.0.0.1:5174"])
     with TestClient(app) as client:
         _register(client)
         response = client.post(
@@ -197,7 +197,7 @@ def test_non_json_body_is_rejected(tmp_path) -> None:
 
 
 def test_websocket_rejects_foreign_origin(tmp_path) -> None:
-    app, _, _, _ = _app(tmp_path, cors_origins=["http://127.0.0.1:5173"])
+    app, _, _, _ = _app(tmp_path, cors_origins=["http://127.0.0.1:5174"])
     with TestClient(app) as client:
         with pytest.raises(WebSocketDisconnect):
             with client.websocket_connect("/ws", headers={"origin": "http://evil.example"}):

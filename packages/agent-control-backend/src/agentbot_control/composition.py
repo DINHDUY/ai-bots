@@ -157,6 +157,8 @@ def compose_runtime(coordinator: Runtime) -> None:
     """Wire the graph; Runtime construction is retained as a compatibility entry point."""
     import os
 
+    from agentbot_tools.catalog import load_catalog
+
     from agentbot_control.autopilot import Autopilot
     from agentbot_control.channels import Channels
     from agentbot_control.cloud import CloudComputers
@@ -247,6 +249,10 @@ def compose_runtime(coordinator: Runtime) -> None:
         catalog=catalog,
         streamers=coordinator.streamers,
         binding_changed=lambda db, bid: coordinator.channels.binding_changed(db, bid),
+        tool_catalog=load_catalog(
+            manifests=os.environ.get("AGENTBOT_TOOL_MANIFESTS", ""),
+            allowlist=os.environ.get("AGENTBOT_TOOL_ALLOWLIST", ""),
+        ),
     )
     coordinator.capabilities["tool_libraries"] = True
     coordinator.capabilities["workspace_bot_channels"] = (

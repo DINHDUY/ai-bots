@@ -1,0 +1,77 @@
+name: agentbot-dev
+
+# Local development stack. All four services rebuild from source on every
+# `podman compose up --build`. The frontend volume-mounts src/ for hot reload.
+#
+# Prerequisites:
+#   1. Copy .env.example -> .env and fill in AGENTBOT_SECRET + API keys
+#   2. Copy .env.compose.example -> .env.compose and set PODMAN_SOCK
+#   3. podman compose -f compose.dev.yml up --build
+
+services:
+
+  backend:
+    build:
+      context: .
+      dockerfile: containers/backend/Containerfile
+    ports:
+      - "8001:8000"
+    env_file:
+      - .env
+      - path: .env.compose
+        required: false
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "8000"
+      CORS_ORIGINS: "http://127.0.0.1:5174,http://localhost:5174"
+      DOCKER_HOST: "unix:///run/podman.sock"
+    volumes:
+      - ./data:/app/data
+      - ${PODMAN_SOCK:-/run/user/1000/podman/podman.sock}:/run/podman.sock
+    networks:
+      - agentbot-net
+    restart: unless-stopped
+
+  gateway:
+    build:
+      context: .
+      dockerfile: containers/gateway/Containerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+      - path: .env.compose
+        required: false
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "8000"
+      DOCKER_HOST: "unix:///run/podman.sock"
+    volumes:
+      - ${PODMAN_SOCK:-/run/user/1000/podman/podman.sock}:/run/podman.sock
+    networks:
+      - agentbot-net
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: containers/frontend/Containerfile.dev
+    ports:
+      - "5174:5174"
+    environment:
+      # Same host as the documented UI origin so credentialed cookies stay same-site.
+      VITE_API_BASE: "http://127.0.0.1:8001"
+    volumes:
+      # Hot-reload: mount source directories; node_modules stays in container
+      - ./packages/agent-control-frontend/src:/app/src:ro
+      - ./packages/agent-control-frontend/public:/app/public:ro
+      - ./packages/agent-control-frontend/index.html:/app/index.html:ro
+    networks:
+      - agentbot-net
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+networks:
+  agentbot-net:
+    driver: bridge

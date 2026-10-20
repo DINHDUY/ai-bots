@@ -14,6 +14,7 @@ from agentbot.adapters.anthropic.constants import (
     HALT_TEXT,
     SYSTEM_PROMPT,
 )
+from agentbot.adapters.anthropic.functions import FunctionResult, bind_selected, run_selected
 from agentbot.adapters.anthropic.models import CompletionClient, ToolOutcome, ToolUse
 from agentbot.adapters.anthropic.results import (
     _detail,
@@ -66,12 +67,14 @@ class ClaudeAgentAdapter(IAgentFrameworkAdapter):
         self.sandbox = sandbox
         self.streamer = state_streamer
         self.tool_access = state_streamer.context.tool_access or ToolAccess.legacy("anthropic")
+        self._functions = bind_selected(self)
         if isinstance(self._client, AnthropicMessagesClient):
             self._client.tool_access = self.tool_access
             self._client.extra_tools = [
                 t for t in state_streamer.context.connector_tools if self.tool_access.has(t["name"])
             ]
             self._client.extra_tools += state_streamer.context.peer_schemas
+            self._client.extra_tools += self.tool_access.function_schemas()
         self.instructions = (instructions.strip() + "\n" + self.tool_access.guidance()).strip()
         self.context = [
             _text_message(item["role"], str(item.get("content", ""))) for item in memory_context
@@ -122,6 +125,22 @@ class ClaudeAgentAdapter(IAgentFrameworkAdapter):
                     except PeerWait:
                         return
                     results.append(_result_from_outcome(block, ToolOutcome(ok=True, content=text)))
+                    continue
+                if block.name in self._functions:
+                    outcome = None
+                    async for item in run_selected(self, block.name, block.input):
+                        if isinstance(item, FunctionResult):
+                            outcome = item
+                        else:
+                            yield item
+                    if outcome is None:
+                        raise RuntimeError("Tool result missing")
+                    results.append(
+                        _result_from_outcome(block, ToolOutcome(ok=True, content=outcome.text))
+                    )
+                    yield self.streamer.emit_log(
+                        ENGINE, "TOOL_CALL", f"{block.name}: {outcome.text[:500]}"
+                    )
                     continue
                 self._require_tool(block)
                 if block.name == "replay_skill":

@@ -43,6 +43,7 @@ export function ToolLibraryPicker({ framework, value, onChange, state, disabled 
               <span>{tool.name}{tool.bundle ? " (bundle)" : ""}</span>
             </label>
             <p>{tool.description}</p>
+            {tool.provenance && tool.provenance !== "Repository maintained" ? <p>{tool.provenance}</p> : null}
             {!tool.compatible ? <p>{tool.reason}</p> : null}
             {state?.bindings.filter(b => key(b) === key(tool) && !b.ready && entries.some(e => e.configuration.resource_id === b.configuration.resource_id)).map((b, i) => <p key={i}>{b.reason}</p>)}
             {tool.resource && entries.map((entry, index) => <div key={index}>

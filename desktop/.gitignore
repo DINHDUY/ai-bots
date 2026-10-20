@@ -1,0 +1,18 @@
+# Tauri
+dist/
+src-tauri/target/
+src-tauri/gen/
+
+# Node
+node_modules/
+.DS_Store
+
+# Rust
+Cargo.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

@@ -3,7 +3,6 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
-from agentbot_tools.registry import REGISTRY
 from fastapi import HTTPException
 
 from agentbot_control.channels import LIBRARY, TOOL, Participation, bounded
@@ -24,12 +23,13 @@ def sync_bot(self: Channels, db, bot):
         return
     wid = stream[0]
     self._channel(db, wid)
+    specs = self.tools.tool_catalog.specs
     capabilities = packed(
         sorted(
             {
-                REGISTRY[f"{b['library_id']}/{b['tool_id']}"].library_name
+                specs[f"{b['library_id']}/{b['tool_id']}"].library_name
                 for b in self.tools.rows(db, bot.id)
-                if f"{b['library_id']}/{b['tool_id']}" in REGISTRY and b["library_id"] != LIBRARY
+                if f"{b['library_id']}/{b['tool_id']}" in specs and b["library_id"] != LIBRARY
             }
         )
     )

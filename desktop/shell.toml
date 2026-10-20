@@ -1,0 +1,43 @@
+# Agent Control Desktop Shell Configuration
+# This file defines how the desktop app launches and manages the container stack.
+
+[app]
+# Product name shown in the title bar
+name = "Agent Control Desktop"
+
+# Tauri window URL (points to the frontend loading screen)
+window_url = "http://127.0.0.1:5174"
+
+[stack]
+# Compose project name
+project_name = "agentbot-desktop"
+
+# Which compose file to use (relative to project root)
+# Options: compose.dev.yml (dev with hot reload) or compose.prd.yml (production)
+compose_file = "compose.dev.yml"
+
+# Health check URL (used to determine when services are ready)
+health_url = "http://localhost:5174/health"
+
+# UI entry point URL (what opens when services are ready)
+ui_url = "http://localhost:5174"
+
+# Maximum wait time for services to become healthy (seconds)
+wait_timeout = 120
+
+[podman]
+# Automatically start Podman Machine on macOS if not running
+auto_start_machine = true
+
+# Socket path (auto-detected on Linux/macOS, can be overridden here)
+# socket_path = "/run/user/1000/podman/podman.sock"
+
+[behavior]
+# Keep volumes when closing the app (do not use -v flag)
+preserve_volumes = true
+
+# Show service logs in a separate window during startup
+show_logs = false
+
+# Allow multiple instances
+allow_multiple_instances = false

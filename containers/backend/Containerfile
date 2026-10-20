@@ -1,0 +1,25 @@
+FROM python:3.11-slim
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
+
+WORKDIR /app
+
+# Copy workspace manifests first for layer-cache efficiency
+COPY pyproject.toml uv.lock ./
+COPY packages/ packages/
+
+# Install only agent-control-backend and its transitive deps (no dev extras)
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --package agent-control-backend --no-dev
+
+ENV PATH="/app/.venv/bin:$PATH" \
+    PYTHONUNBUFFERED=1 \
+    HOST=0.0.0.0 \
+    PORT=8000 \
+    CONTROL_DB=data/control.sqlite \
+    SESSION_DATA_DIR=data/sessions
+
+RUN mkdir -p data/sessions
+
+EXPOSE 8000
+CMD ["agentbot-control"]

@@ -29,6 +29,13 @@ class ToolSpec:
     adapter_modules: tuple[str, ...] = ()
     providers: tuple[str, ...] = ("docker", "azure_vm", "azure_ml_compute_instance")
     default_selected: bool = False
+    parameters: tuple[str, ...] = ()
+    optional_parameters: tuple[str, ...] = ()
+    parameter_enums: tuple[tuple[str, tuple[str, ...]], ...] = ()
+    input_schema_json: str = ""
+    distribution: str = ""
+    manifest_sha256: str = ""
+    provenance: str = "Repository maintained"
 
     @property
     def key(self):
@@ -40,9 +47,12 @@ class ToolSpec:
         # silently execute different code under a pinned run manifest.
         root = Path(__file__).parents[1]
         files = [Path(__file__), root / "tools/context.py"]
-        modules = self.adapter_modules or tuple(
-            f"agentbot.adapters.{name}" for name in self.frameworks
-        )
+        if self.adapter_modules:
+            modules = self.adapter_modules
+        elif not self.implementation_modules:
+            modules = tuple(f"agentbot.adapters.{name}" for name in self.frameworks)
+        else:
+            modules = ()
         for module in (*modules, *self.implementation_modules):
             spec = find_spec(module)
             if spec is None or not spec.origin:
@@ -60,7 +70,54 @@ class ToolSpec:
         digest = sha256(json.dumps(asdict(self), sort_keys=True).encode())
         for path in files:
             digest.update(path.read_bytes())
+        if self.distribution:
+            from importlib.metadata import PackageNotFoundError, distribution
+
+            try:
+                installed = distribution(self.distribution)
+            except PackageNotFoundError as exc:
+                raise RuntimeError(
+                    f"Tool implementation is unavailable: {self.distribution}. Install its integration package."
+                ) from exc
+            record = installed.read_text("RECORD")
+            if not record:
+                raise RuntimeError(
+                    f"Tool implementation is unavailable: {self.distribution} has no RECORD."
+                )
+            digest.update(installed.version.encode())
+            digest.update(record.encode())
         return digest.hexdigest()
+
+    def input_schema(self):
+        """Function schemas are explicit; native bundles keep their SDK schema."""
+        if self.input_schema_json:
+            value = json.loads(self.input_schema_json)
+            if not isinstance(value, dict):
+                raise RuntimeError(f"Invalid input schema for {self.key}")
+            return value
+        if not self.parameters:
+            return {
+                "type": "object",
+                "description": "Uses the pinned native SDK bundle schema",
+                "native_bundle": self.tool_id,
+            }
+        optional = set(self.optional_parameters)
+        enums = dict(self.parameter_enums)
+        properties = {}
+        for field in self.parameters:
+            prop = {
+                "type": "string",
+                "maxLength": 64000 if field in {"content", "old_text", "new_text"} else 8000,
+            }
+            if field in enums:
+                prop["enum"] = list(enums[field])
+            properties[field] = prop
+        return {
+            "type": "object",
+            "properties": properties,
+            "required": [field for field in self.parameters if field not in optional],
+            "additionalProperties": False,
+        }
 
     def public(self, framework=None, provider=None):
         compatible = framework is None or framework in self.frameworks
@@ -72,9 +129,8 @@ class ToolSpec:
             "digest": self.digest,
             "compatible": compatible,
             "reason": reason,
-            "provenance": "Repository maintained",
             "selection_kind": "bundle" if self.bundle else "tool",
-            "input_schema": input_schema(self.tool_id),
+            "input_schema": self.input_schema(),
             "output_schema": {
                 "type": "string",
                 "description": "Bounded result text; captures and action outcomes are emitted separately.",
@@ -89,41 +145,6 @@ class ToolSpec:
         }
 
 
-def input_schema(name):
-    """Function schemas are translated by the SDK; native bundles keep SDK schemas."""
-    fields = {
-        "run_terminal_command": ("command",),
-        "mutate_file": ("path", "content"),
-        "patch_file": ("path", "old_text", "new_text"),
-        "open_browser": ("url",),
-        "browser_click": ("selector",),
-        "github_issues": ("connection_id", "operation", "title", "text"),
-        "replay_skill": ("skill_id", "parameters_json"),
-    }.get(name)
-    if fields is None:
-        return {
-            "type": "object",
-            "description": "Uses the pinned native SDK bundle schema",
-            "native_bundle": name,
-        }
-    optional = {"endpoint", "title", "text", "parameters_json"}
-    properties = {
-        field: {
-            "type": "string",
-            "maxLength": 64000 if field in {"content", "old_text", "new_text"} else 8000,
-        }
-        for field in fields
-    }
-    if name == "github_issues":
-        properties["operation"]["enum"] = ["list_issues", "create_issue"]
-    return {
-        "type": "object",
-        "properties": properties,
-        "required": [field for field in fields if field not in optional],
-        "additionalProperties": False,
-    }
-
-
 SPECS = (
     ToolSpec(
         "sandbox.terminal",
@@ -134,6 +155,7 @@ SPECS = (
         ("microsoft", "anthropic"),
         ("bash",),
         ("run_command",),
+        parameters=("command",),
     ),
     ToolSpec(
         "sandbox.files",
@@ -144,6 +166,7 @@ SPECS = (
         ("microsoft",),
         ("file_write",),
         ("write_workspace_file",),
+        parameters=("path", "content"),
     ),
     ToolSpec(
         "sandbox.files",
@@ -154,6 +177,7 @@ SPECS = (
         ("microsoft",),
         ("file_edit",),
         ("read_workspace_file", "write_workspace_file"),
+        parameters=("path", "old_text", "new_text"),
     ),
     ToolSpec(
         "sandbox.files",
@@ -175,6 +199,7 @@ SPECS = (
         ("microsoft",),
         ("open_browser",),
         ("browser_open",),
+        parameters=("url",),
     ),
     ToolSpec(
         "sandbox.browser",
@@ -185,6 +210,7 @@ SPECS = (
         ("microsoft",),
         ("browser_click",),
         ("browser_click",),
+        parameters=("selector",),
     ),
     ToolSpec(
         "sandbox.desktop",

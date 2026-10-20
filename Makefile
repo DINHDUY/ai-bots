@@ -42,6 +42,24 @@ docker-push: docker-build
 
 sandbox: docker-build
 
+sandbox-podman:
+	podman build -f docker/sandbox/Containerfile -t docker.io/library/agentbot-sandbox .
+
+podman-setup:
+	bash scripts/podman-setup.sh
+
+compose-dev:
+	podman compose -f compose.dev.yml up --build
+
+compose-prd:
+	podman compose -f compose.prd.yml up --build -d
+
+compose-down:
+	podman compose -f compose.dev.yml down 2>/dev/null; podman compose -f compose.prd.yml down 2>/dev/null; true
+
+compose-logs:
+	podman compose -f compose.dev.yml logs -f
+
 control:
 	$(BIN)/agentbot-control
 
@@ -68,13 +86,18 @@ behave:
 	$(BIN)/behave
 
 frontend-install:
-	npm ci --prefix packages/agent-control-frontend
+	$(NPM) ci --prefix packages/agent-control-frontend
 
 frontend-dev:
-	npm run dev --prefix packages/agent-control-frontend
+	$(NPM) run dev --prefix packages/agent-control-frontend
+
+dev:
+	@echo Agent Control http://127.0.0.1:8000
+	@echo Web app http://127.0.0.1:5174
+	$(MAKE) -j2 --no-print-directory control frontend-dev
 
 frontend-build:
-	npm run build --prefix packages/agent-control-frontend
+	$(NPM) run build --prefix packages/agent-control-frontend
 
 check:
 	$(PY) -m ruff check packages deploy docs/usecases scripts tests conftest.py
@@ -85,13 +108,13 @@ check:
 	$(PY) scripts/docs_check.py
 	$(PY) scripts/verify_core.py
 	$(PY) scripts/check_wire.py
-	npm run lint --prefix packages/agent-control-frontend
-	npm run build --prefix packages/agent-control-frontend
-	npm test --prefix packages/agent-control-frontend
+	$(NPM) run lint --prefix packages/agent-control-frontend
+	$(NPM) run build --prefix packages/agent-control-frontend
+	$(NPM) test --prefix packages/agent-control-frontend
 
 check-docker:
 	$(PY) -m pytest -m docker --require-docker
-	npm run test:e2e --prefix packages/agent-control-frontend
+	$(NPM) run test:e2e --prefix packages/agent-control-frontend
 
 hooks:
 	$(BIN)/pre-commit install

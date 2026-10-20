@@ -25,7 +25,7 @@ Tool selection controls model entry points. General shell or desktop control rem
 
 ## Configuration and execution
 
-`GET /api/tool-libraries?framework=microsoft` returns the maintained catalog, compatibility, configuration schemas, and manifest digests. `GET /api/bots/{id}/tools` returns the saved selection, binding readiness, resource choices, and whether the caller can edit.
+`GET /api/tool-libraries?framework=microsoft` returns the composed catalog, compatibility, configuration schemas, and manifest digests. Operator CLI manifests and allowlisted packages are included when configured; see [030](030-tool-plugins.md). `GET /api/bots/{id}/tools` returns the saved selection, binding readiness, resource choices, and whether the caller can edit.
 
 Creation accepts `tool_selection`. Settings accept the same list plus `expected_tools_revision`:
 

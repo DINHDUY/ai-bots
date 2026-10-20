@@ -193,7 +193,6 @@ def register_http(app, coordinator, persistence_probe):
         if not app.state.kernel.registry.known(framework):
             raise HTTPException(status_code=400, detail=f"Unknown framework '{framework}'.")
         from agentbot.tools import legacy_selection
-        from agentbot_tools.registry import REGISTRY
 
         try:
             with coordinator.store.transaction() as db:
@@ -201,7 +200,10 @@ def register_http(app, coordinator, persistence_probe):
                     db,
                     None,
                     framework,
-                    body.get("tool_selection", legacy_selection(framework, REGISTRY)),
+                    body.get(
+                        "tool_selection",
+                        legacy_selection(framework, coordinator.tools.tool_catalog.specs),
+                    ),
                 )
                 bot = app.state.catalog.create_bot(
                     user.id,

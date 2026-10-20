@@ -31,7 +31,15 @@ function makeTree(files: FileEntry[]): Folder {
 }
 export function FilesPane(props: { botId: string; files: FileEntry[]; expanded: boolean }) {
   const session = useSessionStore(state => state.sessions[props.botId]);
-  return session?.health?.services.files && session.sessionId ? <LiveFiles botId={props.botId} sid={session.sessionId} /> : <LegacyFilesPane {...props} />;
+  return session?.health?.services.files && session.sessionId ? (
+    <LiveFiles
+      botId={props.botId}
+      sid={session.sessionId}
+      expanded={props.expanded}
+    />
+  ) : (
+    <LegacyFilesPane {...props} />
+  );
 }
 function LegacyFilesPane({
   botId,

@@ -1,7 +1,7 @@
 export type User = { id: string; username: string };
 
 export type ToolSelection = { library_id: string; tool_id: string; version: string; configuration: { resource_id?: string } };
-export type ToolSpec = ToolSelection & { library_name: string; name: string; description: string; compatible: boolean; reason: string; resource: "connector" | "skill" | null; bundle: boolean };
+export type ToolSpec = ToolSelection & { library_name: string; name: string; description: string; compatible: boolean; reason: string; resource: "connector" | "skill" | null; bundle: boolean; provenance?: string };
 export type ToolState = { tools_revision: number; tool_selection: ToolSelection[]; editable: boolean; bindings: (ToolSelection & { ready: boolean; reason: string })[]; resources: Record<"connector" | "skill", { id: string; name: string }[]> };
 
 export type Bot = {

@@ -15,31 +15,39 @@ if TYPE_CHECKING:
 import json
 
 from agentbot.tools import ToolUnavailable, legacy_selection
-from agentbot_tools.bindings import access as product_access
-from agentbot_tools.registry import REGISTRY
+from agentbot.tools.catalog import ToolCatalog
+from agentbot_tools.catalog import maintained_catalog
 from fastapi import HTTPException, Request
 
 from agentbot_control.event_store import identifier, packed, stamp
 
 
 class ToolLibraries:
-    def __init__(self, store: EventStore, *, approvals: Approvals, catalog: Catalog, streamers: dict[str, RunStreamer], binding_changed: Callable[[sqlite3.Connection, str], None]) -> None:
+    def __init__(
+        self,
+        store: EventStore,
+        *,
+        approvals: Approvals,
+        catalog: Catalog,
+        streamers: dict[str, RunStreamer],
+        binding_changed: Callable[[sqlite3.Connection, str], None],
+        tool_catalog: ToolCatalog | None = None,
+    ) -> None:
         self.store = store
         self.approvals = approvals
         self.catalog = catalog
         self.streamers = streamers
         self.binding_changed = binding_changed
+        self.tool_catalog = tool_catalog or maintained_catalog()
 
     def ensure(self, bot):
         with self.store.transaction() as db:
             self.seed(db, bot)
 
     def seed(self, db, bot):
-        if db.execute(
-            "SELECT 1 FROM bot_tool_config WHERE bot_id=?", (bot.id,)
-        ).fetchone():
+        if db.execute("SELECT 1 FROM bot_tool_config WHERE bot_id=?", (bot.id,)).fetchone():
             return
-        selection = legacy_selection(bot.framework, REGISTRY)
+        selection = legacy_selection(bot.framework, self.tool_catalog.specs)
         for row in db.execute(
             "SELECT kind,resource_id FROM installations WHERE bot_id=?", (bot.id,)
         ):
@@ -80,20 +88,13 @@ class ToolLibraries:
 
     @staticmethod
     def selection(row):
-        return {
-            key: row[key]
-            for key in ("library_id", "tool_id", "version", "configuration")
-        }
+        return {key: row[key] for key in ("library_id", "tool_id", "version", "configuration")}
 
     def validate(self, db, bid, framework, selection):
         if not isinstance(selection, list) or len(selection) > 64:
             raise HTTPException(422, "Select at most 64 tools.")
         normalized, seen = [], set()
-        existing = (
-            {packed(self.selection(row)) for row in self.rows(db, bid)}
-            if bid
-            else set()
-        )
+        existing = {packed(self.selection(row)) for row in self.rows(db, bid)} if bid else set()
         for index, entry in enumerate(selection):
             if not isinstance(entry, dict) or set(entry) - {
                 "library_id",
@@ -103,27 +104,18 @@ class ToolLibraries:
             }:
                 raise HTTPException(422, f"tool_selection[{index}]: invalid fields")
             item = {**entry, "configuration": entry.get("configuration", {})}
-            if not all(
-                isinstance(item.get(k), str)
-                for k in ("library_id", "tool_id", "version")
-            ):
-                raise HTTPException(
-                    422, f"tool_selection[{index}]: IDs and version are required"
-                )
+            if not all(isinstance(item.get(k), str) for k in ("library_id", "tool_id", "version")):
+                raise HTTPException(422, f"tool_selection[{index}]: IDs and version are required")
             config = item["configuration"]
             if not isinstance(config, dict) or len(packed(config)) > 8192:
                 raise HTTPException(422, "Tool configuration must be a bounded object.")
-            spec = REGISTRY.get(f"{item['library_id']}/{item['tool_id']}")
+            spec = self.tool_catalog.specs.get(f"{item['library_id']}/{item['tool_id']}")
             if not spec or spec.version != item["version"]:
                 if packed(item) not in existing:
-                    raise HTTPException(
-                        422, "Unknown tool or unavailable library version."
-                    )
+                    raise HTTPException(422, "Unknown tool or unavailable library version.")
             else:
                 if framework not in spec.frameworks:
-                    raise HTTPException(
-                        422, f"{spec.name} is unavailable for {framework}."
-                    )
+                    raise HTTPException(422, f"{spec.name} is unavailable for {framework}.")
                 if set(config) - ({"resource_id"} if spec.resource else set()):
                     raise HTTPException(
                         422,
@@ -131,15 +123,10 @@ class ToolLibraries:
                     )
                 resource = config.get("resource_id")
                 if resource is not None:
-                    if (
-                        not isinstance(resource, str)
-                        or not resource
-                        or len(resource) > 128
-                    ):
+                    if not isinstance(resource, str) or not resource or len(resource) > 128:
                         raise HTTPException(422, "Invalid tool resource reference.")
                     if (
-                        not bid
-                        or not self.resource_valid(db, bid, spec.resource, resource)
+                        not bid or not self.resource_valid(db, bid, spec.resource, resource)
                     ) and packed(item) not in existing:
                         raise HTTPException(
                             422,
@@ -152,11 +139,9 @@ class ToolLibraries:
             normalized.append(item)
         selected = {f"{row['library_id']}/{row['tool_id']}" for row in normalized}
         for key in selected:
-            spec = REGISTRY.get(key)
+            spec = self.tool_catalog.specs.get(key)
             if spec and any(dep not in selected for dep in spec.dependencies):
-                raise HTTPException(
-                    422, f"Select the declared dependencies for {spec.name}."
-                )
+                raise HTTPException(422, f"Select the declared dependencies for {spec.name}.")
         return normalized
 
     def resource_valid(self, db, bid, kind, rid):
@@ -266,15 +251,13 @@ class ToolLibraries:
         }
 
     def readiness(self, db, bid, binding, sandbox=None):
-        spec = REGISTRY.get(f"{binding['library_id']}/{binding['tool_id']}")
+        spec = self.tool_catalog.specs.get(f"{binding['library_id']}/{binding['tool_id']}")
         reason = ""
         if spec is None or spec.version != binding["version"]:
             reason = "Unavailable library version"
         elif spec.resource:
             resource = binding["configuration"].get("resource_id")
-            if not resource or not self.resource_valid(
-                db, bid, spec.resource, resource
-            ):
+            if not resource or not self.resource_valid(db, bid, spec.resource, resource):
                 reason = "Needs setup: select a connection or taught task"
         if not reason and spec and spec.resource == "connector":
             connection = db.execute(
@@ -286,17 +269,13 @@ class ToolLibraries:
         if (
             not reason
             and sandbox is not None
-            and any(
-                not callable(getattr(sandbox, method, None)) for method in spec.methods
-            )
+            and any(not callable(getattr(sandbox, method, None)) for method in spec.methods)
         ):
             reason = "Required computer service is unavailable"
         if (
             not reason
             and sandbox is not None
-            and not spec.public(provider=getattr(sandbox, "provider", "docker"))[
-                "compatible"
-            ]
+            and not spec.public(provider=getattr(sandbox, "provider", "docker"))["compatible"]
         ):
             reason = "Requires a different computer type"
         binding.update(
@@ -305,22 +284,35 @@ class ToolLibraries:
             name=spec.name if spec else binding["tool_id"],
         )
         if spec and spec.library_id == "workspace.messaging" and not reason:
-            entry = db.execute("SELECT d.state,d.published,d.expires_at,c.enabled FROM workspace_bot_directory d JOIN workspace_channels c ON c.workspace_id=d.workspace_id WHERE d.bot_id=?", (bid,)).fetchone()
-            if not entry or entry["state"] != "enabled" or not entry["published"] or not entry["enabled"] or (entry["expires_at"] and entry["expires_at"] <= stamp()):
-                binding.update(ready=False, reason="Join the workspace channel in Bot settings and enable workspace collaboration.")
-        if sandbox is not None and getattr(sandbox, "communication_only", False) and spec and spec.requires_computer:
+            entry = db.execute(
+                "SELECT d.state,d.published,d.expires_at,c.enabled FROM workspace_bot_directory d JOIN workspace_channels c ON c.workspace_id=d.workspace_id WHERE d.bot_id=?",
+                (bid,),
+            ).fetchone()
+            if (
+                not entry
+                or entry["state"] != "enabled"
+                or not entry["published"]
+                or not entry["enabled"]
+                or (entry["expires_at"] and entry["expires_at"] <= stamp())
+            ):
+                binding.update(
+                    ready=False,
+                    reason="Join the workspace channel in Bot settings and enable workspace collaboration.",
+                )
+        if (
+            sandbox is not None
+            and getattr(sandbox, "communication_only", False)
+            and spec
+            and spec.requires_computer
+        ):
             binding.update(ready=False, reason="Unavailable in a communication-only run")
 
     def pin(self, db, bot, rid):
         self.seed(db, bot)
         for binding in self.rows(db, bot.id):
-            spec = REGISTRY.get(f"{binding['library_id']}/{binding['tool_id']}")
+            spec = self.tool_catalog.specs.get(f"{binding['library_id']}/{binding['tool_id']}")
             self.readiness(db, bot.id, binding)
-            digest = (
-                spec.digest
-                if spec and spec.version == binding["version"]
-                else "unavailable"
-            )
+            digest = spec.digest if spec and spec.version == binding["version"] else "unavailable"
             binding["manifest_digest"] = digest
             db.execute(
                 "INSERT INTO run_tool_bindings VALUES (?,?,?,?,?)",
@@ -354,7 +346,7 @@ class ToolLibraries:
                         "Tool removed or changed; start a new task after reviewing Bot settings."
                     )
 
-        return product_access(bindings, validate=validate)
+        return self.tool_catalog.access(bindings, validate=validate)
 
     def valid(self, db, bid, rid, binding_id, revision, digest):
         row = db.execute(
@@ -364,7 +356,7 @@ class ToolLibraries:
         if not row:
             return False
         binding = self.unpack(row)
-        spec = REGISTRY.get(f"{binding['library_id']}/{binding['tool_id']}")
+        spec = self.tool_catalog.specs.get(f"{binding['library_id']}/{binding['tool_id']}")
         if not spec or spec.version != binding["version"] or spec.digest != digest:
             return False
         if spec.resource and not self.resource_valid(
@@ -392,13 +384,11 @@ def register_tool_library_routes(app):
     service = app.state.runtime.tools
 
     @app.get("/api/tool-libraries")
-    async def catalog(
-        request: Request, framework: str | None = None, provider: str | None = None
-    ):
+    async def catalog(request: Request, framework: str | None = None, provider: str | None = None):
         app.state.runtime.workspaces.user(request)
         return {
             "libraries": [
-                spec.public(framework, provider) for spec in REGISTRY.values()
+                spec.public(framework, provider) for spec in service.tool_catalog.specs.values()
             ]
         }
 

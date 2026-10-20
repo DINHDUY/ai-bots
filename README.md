@@ -11,12 +11,13 @@ Start with [docs/architecture-blueprint.md](docs/architecture-blueprint.md). The
 | [001](docs/001-agent-control-design-system.md)–[009](docs/009-agent-control-frontend.md) | Design system, control plane, sandbox, UFO, frontend |
 | [010](docs/010-agent-control-azure-runtime.md)–[019](docs/019-agent-control-capture-retention-runtime.md) | Cloud, Autopilot, tool libraries, channels, capture retention |
 | [024](docs/024-markdown-workflow-import-plan.md)–[025](docs/025-markdown-workflow-import.md) | Import agent Markdown workflows into a new workspace |
+| [029](docs/029-tool-plugins-plan.md)–[030](docs/030-tool-plugins.md) | Operator CLI manifests and allowlisted tool packages |
 | [026](docs/026-workspace-deletion-plan.md)–[028](docs/028-workspace-deletion-audit.md) | [Delete a workspace](docs/027-workspace-deletion.md), cleanup, and recovery |
 | [029](docs/029-agent-control-macos-companion-plan.md) | Approved macOS companion plan using Open-Interface and UFO³ TaskStars |
 | [030](docs/030-agent-control-macos-runtime.md) | macOS runtime setup, TaskStars, consent and recovery |
 | [031](docs/031-agentbot-macos-app-plan.md) | Proposed standalone, signed and notarized `AgentBot.app` for the macOS companion |
 | [code review](docs/code-reviews/v0.3.0-reviews.md) | Architecture review for tag `v0.3.0` |
-| [ADRs](docs/adr/0001-async-generator-adapter-boundary.md) | Decisions 0001–0016 |
+| [ADRs](docs/adr/0001-async-generator-adapter-boundary.md) | Decisions 0001–0019 |
 
 The control plane registers three frameworks: `microsoft`, `anthropic`, and `ufo` (a local Windows desktop). Computers can be the Docker sandbox, a paired Windows PC, or an Azure cloud computer. Autopilot can approve eligible actions when the owner turns it on.
 
@@ -55,7 +56,7 @@ npm ci
 npm run dev
 ```
 
-Open `http://127.0.0.1:5173`. An optional, manually configured demo lives in [docs/usecases](docs/usecases/azure-blob-etl-playbook.md); it is not bundled as an application preset or tool. `CORS_ORIGINS` must include that origin (`.env.example` already does). If `.env` was created before that line existed, add `CORS_ORIGINS=http://127.0.0.1:5173`. `COOKIE_SAMESITE` defaults to `lax`, which is enough here because both processes use `127.0.0.1`. A fully cross-site deployment needs `COOKIE_SAMESITE=none` and `COOKIE_SECURE=1`. See [docs/009-agent-control-frontend.md](docs/009-agent-control-frontend.md).
+Open `http://127.0.0.1:5174`. An optional, manually configured demo lives in [docs/usecases](docs/usecases/azure-blob-etl-playbook.md); it is not bundled as an application preset or tool. `CORS_ORIGINS` must include that origin (`.env.example` already does). If `.env` was created before that line existed, add `CORS_ORIGINS=http://127.0.0.1:5174`. `COOKIE_SAMESITE` defaults to `lax`, which is enough here because both processes use `127.0.0.1`. A fully cross-site deployment needs `COOKIE_SAMESITE=none` and `COOKIE_SECURE=1`. See [docs/009-agent-control-frontend.md](docs/009-agent-control-frontend.md).
 
 ## Authenticated commands and replay
 

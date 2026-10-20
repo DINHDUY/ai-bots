@@ -19,7 +19,7 @@ agentbot-windows-companion = { workspace = true }
 agentbot-macos-companion = { workspace = true }
 
 [tool.pytest.ini_options]
-testpaths = ["tests", "packages/agentbot/tests", "packages/agent-control-backend/tests", "packages/agentbot-windows-companion/tests", "packages/agentbot-macOS-companion/tests", "packages/agentbot-computer-agent/tests", "docs/usecases/tests"]
+testpaths = ["tests", "packages/agentbot/tests", "packages/agent-control-backend/tests", "packages/agentbot-windows-companion/tests", "packages/agentbot-macOS-companion/tests", "packages/agentbot-product-tools/tests", "packages/agentbot-computer-agent/tests", "docs/usecases/tests"]
 pythonpath = [
     ".",
     "packages/agentbot/src",
@@ -90,6 +90,11 @@ reportMissingTypeStubs = false
 
 # Backend and the Windows companion stay on basic checking. The warning list
 # is recorded in docs/adr/0015-local-quality-gates.md.
+[[tool.pyright.executionEnvironments]]
+root = "packages/agentbot-product-tools/src"
+extraPaths = ["packages/agentbot/src", "packages/agentbot-product-tools/src", "packages/agentbot-windows-companion/src"]
+reportMissingTypeStubs = false
+
 [[tool.pyright.executionEnvironments]]
 root = "packages/agent-control-backend/src"
 extraPaths = ["packages/agentbot-product-tools/src", "packages/agent-control-backend/src", "packages/agentbot/src", "packages/agentbot-windows-companion/src", "packages/agentbot-macOS-companion/src"]

@@ -61,6 +61,9 @@ PRODUCT_SPECS = (
         ("connector.github",),
         resource="connector",
         bundle=True,
+        parameters=("connection_id", "operation", "title", "text"),
+        optional_parameters=("title", "text"),
+        parameter_enums=(("operation", ("list_issues", "create_issue")),),
     ),
     ToolSpec(
         "skills.replay",
@@ -73,6 +76,8 @@ PRODUCT_SPECS = (
         ("capture", "human_input"),
         resource="skill",
         bundle=True,
+        parameters=("skill_id", "parameters_json"),
+        optional_parameters=("parameters_json",),
     ),
 )
 

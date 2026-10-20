@@ -164,6 +164,22 @@ class ToolAccess:
             raise ToolUnavailable("This tool does not declare the requested action.")
         return binding
 
+    def function_schemas(self) -> list[dict[str, Any]]:
+        """Schemas for selected factory tools. Native bundles stay on their SDK schema."""
+        schemas = []
+        seen: set[str] = set()
+        for binding in self.bindings:
+            tool_id = binding["tool_id"]
+            if not binding.get("ready", True) or tool_id not in self.factories or tool_id in seen:
+                continue
+            spec = self.registry[f"{binding['library_id']}/{tool_id}"]
+            body = spec.input_schema()
+            if body.get("native_bundle"):
+                continue
+            seen.add(tool_id)
+            schemas.append({"name": tool_id, "description": spec.description, "input_schema": body})
+        return schemas
+
     def guidance(self) -> str:
         return "\n".join(
             dict.fromkeys(

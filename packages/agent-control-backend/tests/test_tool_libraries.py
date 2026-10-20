@@ -134,11 +134,12 @@ def test_run_pins_additions_and_revokes_remove_readd(tmp_path):
 
 
 def test_composite_extension_needs_no_generic_shell_or_file_tool(tmp_path, monkeypatch):
+    from agentbot.tools.catalog import ToolCatalog
     from agentbot_tools.registry import REGISTRY
-    from tool_fakes import WORKFLOW, access
+    from tool_fakes import WORKFLOW, workflow
 
-    monkeypatch.setitem(REGISTRY, WORKFLOW.key, WORKFLOW)
-    monkeypatch.setattr("agentbot_control.tool_libraries.product_access", access)
+    catalog = ToolCatalog({**REGISTRY, WORKFLOW.key: WORKFLOW}, {WORKFLOW.tool_id: workflow})
+    monkeypatch.setattr("agentbot_tools.catalog.load_catalog", lambda **_kwargs: catalog)
     selected = ToolLibraries.item(WORKFLOW.library_id, WORKFLOW.tool_id)
 
     async def runner(tools, *args):
@@ -260,3 +261,60 @@ def test_removal_allows_executing_action_to_settle_and_fences_next_call(tmp_path
         assert sandbox.commands == ["first"]
         assert len(result["actions"]) == 1
         assert result["actions"][0]["status"] == "completed"
+
+
+def test_cli_manifest_is_selectable_and_runs_in_the_sandbox(tmp_path, monkeypatch):
+    import shlex
+
+    manifests = tmp_path / "manifests"
+    manifests.mkdir()
+    (manifests / "list_dir.toml").write_text(
+        """
+tool_id = "list_dir"
+name = "List directory"
+description = "List one workspace directory with ls."
+binary = "ls"
+argv = ["ls", "-la", "{path}"]
+
+[parameters.path]
+description = "Workspace directory"
+required = true
+max_length = 200
+""".strip(),
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("AGENTBOT_TOOL_MANIFESTS", str(manifests))
+
+    async def runner(tools, *_args):
+        assert set(tools) == {"list_dir"}
+        return await tools["list_dir"](path="/workspace/My files")
+
+    app, sandboxes, _ = application(tmp_path, runner=runner)
+    with TestClient(app) as client:
+        bid = bot_for(client)
+        listed = next(
+            tool
+            for tool in client.get("/api/tool-libraries?framework=microsoft").json()["libraries"]
+            if tool["tool_id"] == "list_dir"
+        )
+        assert listed["library_id"] == "plugin.cli"
+        assert listed["provenance"] == "Installed CLI manifest"
+        assert listed["compatible"]
+        assert save(client, bid, [ToolLibraries.item("plugin.cli", "list_dir")]).status_code == 200
+        client.post(
+            f"/api/bots/{bid}/autopilot",
+            json={"enabled": True, "expected_revision": 0, "request_id": "autopilot_cli"},
+        )
+        run = start(client, bid, prompt="List the directory").json()
+        finished(client, bid)
+        assert sandboxes._cache[run["session_id"]].commands == [
+            "ls -la " + shlex.quote("/workspace/My files")
+        ]
+        missing = {
+            "library_id": "plugin.cli",
+            "tool_id": "missing_tool",
+            "version": "1.0.0",
+            "configuration": {},
+        }
+        app.state.runtime.tools.readiness(None, bid, missing)
+        assert missing["reason"] == "Unavailable library version"
