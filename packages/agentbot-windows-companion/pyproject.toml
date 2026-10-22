@@ -3,7 +3,7 @@ name = "agentbot-windows-companion"
 version = "0.1.0"
 description = "Paired user-session Windows companion for Agent Control and Microsoft UFO"
 requires-python = ">=3.11"
-dependencies = ["pydantic>=2.14.1,<3", "websockets>=13,<16", "cryptography>=44", "httpx>=0.27"]
+dependencies = ["pydantic>=2.14.1,<3", "websockets>=17.2,<18", "cryptography>=44", "httpx>=0.27"]
 
 [project.scripts]
 agentbot-windows = "agentbot_windows.app:main"
