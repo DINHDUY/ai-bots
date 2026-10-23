@@ -11,7 +11,7 @@ dependencies = [
     "agentbot-windows-companion",
     "agentbot-macos-companion",
     "cryptography>=43",
-    "fastapi>=0.115",
+    "fastapi>=0.147.0",
     "python-multipart>=0.0.20",
     "pyyaml>=6.0.3,<7",
     "uvicorn>=0.32",
