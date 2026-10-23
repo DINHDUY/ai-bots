@@ -7,7 +7,7 @@ name = "agentbot-computer-agent"
 version = "0.1.0"
 description = "Trusted outbound Linux host service for Agent Control computers"
 requires-python = ">=3.11"
-dependencies = ["agentbot", "httpx>=0.28,<1", "websockets>=14,<17", "docker>=7,<8"]
+dependencies = ["agentbot", "httpx>=0.28,<1", "websockets>=17.2,<18", "docker>=7,<8"]
 
 [project.scripts]
 agentbot-computer-agent = "agentbot_computer_agent.app:main"
