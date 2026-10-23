@@ -65,7 +65,7 @@ requires-dist = [
     { name = "azure-identity", marker = "extra == 'azure'", specifier = ">=1.19,<2" },
     { name = "azure-keyvault-secrets", marker = "extra == 'azure'", specifier = ">=4.9,<5" },
     { name = "azure-mgmt-compute", marker = "extra == 'azure'", specifier = ">=38.4.0,<39" },
-    { name = "azure-mgmt-network", marker = "extra == 'azure'", specifier = ">=30.2,<31" },
+    { name = "azure-mgmt-network", marker = "extra == 'azure'", specifier = ">=33.1.0,<34" },
     { name = "azure-storage-blob", marker = "extra == 'dev'", specifier = ">=12.24" },
     { name = "behave", marker = "extra == 'dev'", specifier = ">=1.2.6" },
     { name = "cryptography", specifier = ">=43" },
@@ -434,16 +434,16 @@ wheels = [
 
 [[package]]
 name = "azure-mgmt-network"
-version = "30.2.0"
+version = "33.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "azure-mgmt-core" },
     { name = "isodate" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9a/e5/31cf174ef67087532f159083e2e007507fe163f58c58fbd0e08d05209cf4/azure_mgmt_network-30.2.0.tar.gz", hash = "sha256:9b17c259e6344808aaa80a34bbc4b13f16bc01185dd9db137eaa0ae26664861a", size = 708178, upload-time = "2026-02-13T03:45:39.617Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a4/64/745a47ed48aa3c193d6941c6d9d314f61043cd777bfe4f380c04a8819329/azure_mgmt_network-33.1.0.tar.gz", hash = "sha256:ca44e95967e530bdac32ff7d7e6476c84e852225e5aae148eef2694f34f9710b", size = 1124214, upload-time = "2026-10-12T07:38:56.088Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a0/5a/14c8cfb1655267dfed7529d35e5dd6581746238c9f50d4307b9e2faaacf8/azure_mgmt_network-30.2.0-py3-none-any.whl", hash = "sha256:a87edffd7c38aa9d3494daa8d42914213b0863a9072cf8c7c7e48018b12b6532", size = 631894, upload-time = "2026-02-13T03:45:41.738Z" },
+    { url = "https://files.pythonhosted.org/packages/b6/d2/c0ba9d3515d10f943ac662d293d01a28145c0de605b37cb70b56997e644a/azure_mgmt_network-33.1.0-py3-none-any.whl", hash = "sha256:c768d065799db9751999bf041fa5130bff6ab7b2ac281207a2a3845c3c1cfe6f", size = 927178, upload-time = "2026-10-12T07:38:58.171Z" },
 ]
 
 [[package]]
